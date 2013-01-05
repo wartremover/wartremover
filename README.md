@@ -28,6 +28,17 @@ They're "disabled" mostly because they're hard to understand. Let's
 disable those warnings. These features are sane and we know what we're
 doing.
 
+### Disable postfix operators
+
+Scala allowed postfix operators, like so:
+
+    List(1, 2, 3) length
+
+Notice the lack of a `.` before length? That means the operator is
+"postfix". The problem is that postfix operators mess up semicolon
+inference. Let's make postfix operators impossible to accidentally
+use.
+
 ### any2stringadd
 
 What do you expect the following to do?
