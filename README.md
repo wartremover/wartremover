@@ -5,7 +5,7 @@ things or making implicits ambiguous.
 
 ## Usage
 
-`WartRemover` is meant to by extended by a `package object` for your
+`WartRemover` is meant to be extended by a `package object` for your
 project's package (via the special `package.scala`). For example:
 
     import org.brianmckenna.wartremover.WartRemover
