@@ -16,6 +16,18 @@ You don't have to do anything else to your project to get more safety!
 
 ## Warts
 
+### Warnings for "advanced" features
+
+SIP-18 introduced warnings for the following features:
+
+* Existentials
+* Higher-kinds
+* Implicit conversions
+
+They're "disabled" mostly because they're hard to understand. Let's
+disable those warnings. These features are sane and we know what we're
+doing.
+
 ### any2stringadd
 
 What do you expect the following to do?
