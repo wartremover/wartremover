@@ -28,7 +28,7 @@ They're "disabled" mostly because they're hard to understand. Let's
 disable those warnings. These features are sane and we know what we're
 doing.
 
-### Disable postfix operators
+### Postfix operators
 
 Scala allowed postfix operators, like so:
 
@@ -38,6 +38,18 @@ Notice the lack of a `.` before length? That means the operator is
 "postfix". The problem is that postfix operators mess up semicolon
 inference. Let's make postfix operators impossible to accidentally
 use.
+
+### Manifests
+
+A Scala Manifest is a way of getting full type information at
+runtime. Requiring runtime type information almost certainly means
+dangerous stuff is happening:
+
+    def makeMeA[T](implicit m: Manifest[T]) = m.erasure.newInstance
+    makeMeA[List[Int]] // throws a nice Exception
+
+The runtime of your program shouldn't rely on type information to
+work. Get some type safety back by making this not compile.
 
 ### any2stringadd
 

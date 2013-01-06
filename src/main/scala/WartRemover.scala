@@ -15,6 +15,10 @@ trait WartRemover {
   implicit def amb1postfixops: languageFeature.postfixOps = undefined
   implicit def amb2postfixops: languageFeature.postfixOps = undefined
 
+  // Manifest, runtime type information.
+  implicit def amb1manifest[A]: Manifest[A] = undefined
+  implicit def amb2manifest[A]: Manifest[A] = undefined
+
   // any2stringadd allows anything to be added against String.
   class AmbiguousStringAdd {
     def +(b: String) = undefined
