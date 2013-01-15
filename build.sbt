@@ -9,3 +9,5 @@ scalacOptions ++= Seq(
   "-Ywarn-all",
   "-Xfatal-warnings"
 )
+
+libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _)

@@ -5,12 +5,27 @@ things or making implicits ambiguous.
 
 ## Usage
 
-`WartRemover` is meant to be extended by a `package object` for your
-project's package (via the special `package.scala`). For example:
+Wart Remover contains two parts. A `WartRemover` trait and a `safe`
+macro.
+
+The `WartRemover` trait is meant to be extended by a `package object`
+for your project's package (via the special `package.scala`). For
+example:
 
     import org.brianmckenna.wartremover.WartRemover
 
     package object com.precog extends WartRemover
+
+The `safe` macro takes any expression and performs extra checks on the
+AST. For example, you can use it on a block:
+
+    def main(args: Array[String]) = safe {
+      def x[A](a: A) = a
+      // Won't compile: Statements must return Unit
+      // x(100)
+      x(())
+      println("Hello world")
+    }
 
 For extra safety, turn on all of Scala's warnings and make them
 errors. You can do this in your project's `build.sbt`:
