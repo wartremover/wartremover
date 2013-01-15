@@ -12,7 +12,14 @@ project's package (via the special `package.scala`). For example:
 
     package object com.precog extends WartRemover
 
-You don't have to do anything else to your project to get more safety!
+For extra safety, turn on all of Scala's warnings and make them
+errors. You can do this in your project's `build.sbt`:
+
+    scalaVersion := "2.10.0"
+
+    // -Ywarn-adapted-args has a bug (see SI-6923). Need to use
+    // -Yno-adapted-args for it to fully work.
+    scalacOptions ++= Seq("-Yno-adapted-args", "-Ywarn-all", "-Xfatal-warnings")
 
 ## Warts
 
