@@ -36,7 +36,7 @@ errors. You can do this in your project's `build.sbt`:
     // -Yno-adapted-args for it to fully work.
     scalacOptions ++= Seq("-Yno-adapted-args", "-Ywarn-all", "-Xfatal-warnings")
 
-## Warts
+## Package Object Warts
 
 ### Warnings for "advanced" features
 
@@ -82,3 +82,21 @@ What do you expect the following to do?
 Print `()test`, of course... Scala has an implicit which will convert
 anything to a String if the right side of `+` is a String. Get some
 type safety back by making this not compile.
+
+## Macro Warts
+
+### Non-unit statements
+
+Scala allows statements to return any type. Statements should only
+return `Unit` (this ensures that they're really intended to be
+statements). The macro enforces that:
+
+    safe {
+      def x[A](a: A) = a
+      // x(100)
+      x(())
+
+      100
+    }
+
+This is like a better `-Xfatal-warnings -Xwarn-value-discard`.
