@@ -110,3 +110,12 @@ type safety.
       // Won't compile: null is disabled
       val s: String = null
     }
+
+### var
+
+Mutation breaks equational reasoning.
+
+    safe {
+      // Won't compile: var is disabled
+      var x = 100
+    }

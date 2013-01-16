@@ -52,6 +52,18 @@ object macros {
     }
     NoNull.traverse(expr.tree)
 
+    object NoVar extends Traverser {
+      override def traverse(tree: Tree) {
+        tree match {
+          case ValDef(m, _, _, _) if m.hasFlag(Flag.MUTABLE) =>
+            c.error(tree.pos, "var is disabled")
+          case _ =>
+        }
+        super.traverse(tree)
+      }
+    }
+    NoVar.traverse(expr.tree)
+
     expr
   }
 }
