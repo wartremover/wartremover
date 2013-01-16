@@ -16,21 +16,41 @@ object macros {
       case _ => false
     }
 
-    object NoUnit extends Traverser {
+    object NoNonUnitStatements extends Traverser {
+      def checkUnitLike(statements: List[Tree]) {
+        statements.foreach { stat =>
+          val unitLike = stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
+          if (!unitLike)
+            c.error(stat.pos, "Statements must return Unit")
+        }
+      }
+
       override def traverse(tree: Tree) {
         tree match {
           case Block(statements, _) =>
-            statements.foreach { stat =>
-              val unitLike = stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
-              if (!unitLike)
-                c.error(stat.pos, "Statements must return Unit")
-            }
+            checkUnitLike(statements)
+          case ClassDef(_, _, _, Template((_, _, statements))) =>
+            checkUnitLike(statements)
+          case ModuleDef(_, _, Template((_, _, statements))) =>
+            checkUnitLike(statements)
           case _ =>
         }
         super.traverse(tree)
       }
     }
-    NoUnit.traverse(expr.tree)
+    NoNonUnitStatements.traverse(expr.tree)
+
+    object NoNull extends Traverser {
+      override def traverse(tree: Tree) {
+        tree match {
+          case Literal(Constant(null)) =>
+            c.error(tree.pos, "null is disabled")
+          case _ =>
+        }
+        super.traverse(tree)
+      }
+    }
+    NoNull.traverse(expr.tree)
 
     expr
   }

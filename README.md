@@ -100,3 +100,13 @@ statements). The macro enforces that:
     }
 
 This is like a better `-Xfatal-warnings -Xwarn-value-discard`.
+
+### null
+
+null is a special value that inhabits all reference types. It breaks
+type safety.
+
+    safe {
+      // Won't compile: null is disabled
+      val s: String = null
+    }
