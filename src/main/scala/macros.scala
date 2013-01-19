@@ -19,7 +19,7 @@ object macros {
     object NoNonUnitStatements extends Traverser {
       def checkUnitLike(statements: List[Tree]) {
         statements.foreach { stat =>
-          val unitLike = stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
+          val unitLike = stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
           if (!unitLike)
             c.error(stat.pos, "Statements must return Unit")
         }
@@ -63,6 +63,22 @@ object macros {
       }
     }
     NoVar.traverse(expr.tree)
+
+    object NoNothing extends Traverser {
+      val nothingSymbol = typeOf[Nothing].typeSymbol
+      override def traverse(tree: Tree) {
+        def error() = c.error(tree.pos, "Inferred type containing Nothing from assignment")
+        tree match {
+          case ValDef(_, _, tpt, _) if tpt.tpe.contains(nothingSymbol) =>
+            error()
+          case DefDef(_, _, _, _, tpt, _) if tpt.tpe.contains(nothingSymbol) =>
+            error()
+          case _ =>
+        }
+        super.traverse(tree)
+      }
+    }
+    NoNothing.traverse(expr.tree)
 
     expr
   }
