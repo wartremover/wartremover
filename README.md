@@ -99,7 +99,7 @@ statements). The macro enforces that:
       100
     }
 
-This is like a better `-Xfatal-warnings -Xwarn-value-discard`.
+This is like a better `-Xfatal-warnings -Ywarn-value-discard`.
 
 ### null
 
