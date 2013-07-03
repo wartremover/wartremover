@@ -1,3 +1,8 @@
+import sbtrelease._
+import sbtrelease.ReleasePlugin.ReleaseKeys._
+import sbtrelease.ReleaseStateTransformations._
+import com.typesafe.sbt.pgp.PgpKeys._
+
 name := "wartremover"
 
 organization := "org.brianmckenna"
@@ -5,6 +10,23 @@ organization := "org.brianmckenna"
 scalaVersion := "2.10.0"
 
 releaseSettings
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  ReleaseStep(action = st => {
+    val extracted = Project.extract(st)
+    val ref = extracted.get(thisProjectRef)
+    extracted.runAggregated(publishSigned in Global in ref, st)
+  }),
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)
 
 // -Ywarn-adapted-args has a bug (see SI-6923). Need to
 // use -Yno-adapted-args for it to fully
@@ -48,4 +70,5 @@ pomExtra := (
       <name>Brian McKenna</name>
       <url>http://brianmckenna.org/</url>
     </developer>
-  </developers>)
+  </developers>
+)
