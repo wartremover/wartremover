@@ -124,8 +124,8 @@ Mutation breaks equational reasoning.
 
 Nothing is a special bottom type; it is a subtype of every other
 type. The Scala compiler loves to infer Nothing as a generic type but
-that almost always incorrect. Explicit type arguments should be used
-instead.
+that is almost always incorrect. Explicit type arguments should be
+used instead.
 
     safe {
       // Won't compile: Inferred type containing Nothing from assignment
