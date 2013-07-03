@@ -1,7 +1,5 @@
 name := "wartremover"
 
-version := "0.1-SNAPSHOT"
-
 organization := "org.brianmckenna"
 
 scalaVersion := "2.10.0"
