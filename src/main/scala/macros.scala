@@ -72,13 +72,35 @@ object macros {
     NoNull.traverse(expr.tree)
 
     object NoVar extends Traverser {
+      val HashCodeName: TermName = "hashCode"
       override def traverse(tree: Tree) {
         tree match {
-          case ValDef(m, _, _, _) if m.hasFlag(Flag.MUTABLE) =>
+          // Ignore case class's synthetic hashCode
+          case ClassDef(mods, _, tparams, Template(parents, self, stats)) if mods.hasFlag(Flag.CASE) =>
+            mods.annotations foreach { annotation =>
+              traverse(annotation)
+            }
+            tparams foreach { tparam =>
+              traverse(tparam)
+            }
+            parents foreach { parent =>
+              traverse(parent)
+            }
+            traverse(self)
+            stats filter {
+              case DefDef(_, HashCodeName, _, _, _, _) =>
+                false
+              case _ =>
+                true
+            } foreach { stat =>
+              traverse(stat)
+            }
+          case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) =>
             c.error(tree.pos, "var is disabled")
+            super.traverse(tree)
           case _ =>
+            super.traverse(tree)
         }
-        super.traverse(tree)
       }
     }
     NoVar.traverse(expr.tree)
