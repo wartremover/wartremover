@@ -6,6 +6,8 @@ organization := "org.brianmckenna"
 
 scalaVersion := "2.10.0"
 
+releaseSettings
+
 // -Ywarn-adapted-args has a bug (see SI-6923). Need to
 // use -Yno-adapted-args for it to fully
 // work. Also -Ywarn-numeric-widen isn't in warn-wall.
