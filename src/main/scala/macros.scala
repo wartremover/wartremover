@@ -41,13 +41,32 @@ object macros {
     NoNonUnitStatements.traverse(expr.tree)
 
     object NoNull extends Traverser {
+      val UnapplyName: TermName = "unapply"
       override def traverse(tree: Tree) {
         tree match {
+          // Ignore synthetic case class's companion object unapply
+          case ModuleDef(mods, _, Template(parents, self, stats)) =>
+            mods.annotations foreach { annotation =>
+              traverse(annotation)
+            }
+            parents foreach { parent =>
+              traverse(parent)
+            }
+            traverse(self)
+            stats filter {
+              case DefDef(_, UnapplyName, _, _, _, _) =>
+                false
+              case _ =>
+                true
+            } foreach { stat =>
+              traverse(stat)
+            }
           case Literal(Constant(null)) =>
             c.error(tree.pos, "null is disabled")
+            super.traverse(tree)
           case _ =>
+            super.traverse(tree)
         }
-        super.traverse(tree)
       }
     }
     NoNull.traverse(expr.tree)
