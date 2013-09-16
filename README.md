@@ -19,7 +19,7 @@ WartRemover can be used in the following ways:
 
 ### Compiler plugin
 
-    addCompilerPlugin("org.brianmckenna" % "wartremover" % "0.5" cross CrossVersion.full)
+    addCompilerPlugin("org.brianmckenna" % "wartremover" % "0.4" cross CrossVersion.full)
 
     scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
 
