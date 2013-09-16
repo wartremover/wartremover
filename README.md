@@ -19,6 +19,8 @@ WartRemover can be used in the following ways:
 
 ### Compiler plugin
 
+    resolvers += Resolver.sonatypeRepo("releases")
+
     addCompilerPlugin("org.brianmckenna" % "wartremover" % "0.4" cross CrossVersion.full)
 
     scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
