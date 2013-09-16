@@ -8,9 +8,10 @@ object Null extends WartTraverser {
     val UnapplyName: TermName = "unapply"
     new Traverser {
       override def traverse(tree: Tree) {
+        val synthetic = isSynthetic(u)(tree)
         tree match {
           // Ignore synthetic case class's companion object unapply
-          case ModuleDef(mods, _, Template(parents, self, stats)) =>
+          case ModuleDef(mods, _, Template(parents, self, stats)) if synthetic =>
             mods.annotations foreach { annotation =>
               traverse(annotation)
             }
@@ -29,6 +30,8 @@ object Null extends WartTraverser {
           case Literal(Constant(null)) =>
             u.error(tree.pos, "null is disabled")
             super.traverse(tree)
+          case LabelDef(_, _, _) if synthetic =>
+            // Don't check these
           case _ =>
             super.traverse(tree)
         }

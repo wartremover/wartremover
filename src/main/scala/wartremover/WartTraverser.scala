@@ -31,6 +31,12 @@ trait WartTraverser {
       }
     }
   }
+
+  def isSynthetic(u: WartUniverse)(t: u.universe.Tree): Boolean =
+    if(t.symbol != null)
+      t.symbol.isSynthetic
+    else
+      false
 }
 
 object WartTraverser {
