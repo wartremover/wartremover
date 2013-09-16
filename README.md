@@ -1,134 +1,132 @@
-# Wart Remover
+# WartRemover
 
-This project aims to clean up some of Scala's warts by shadowing
-things or making implicits ambiguous.
+WartRemover is a flexible Scala code linting tool.
 
 ## Usage
 
-Wart Remover contains two parts. A `WartRemover` trait and a `safe`
-macro.
+WartRemover can be used in the following ways:
 
-The `WartRemover` trait is meant to be extended by a `package object`
-for your project's package (via the special `package.scala`). For
-example:
+* As a command-line tool
+* As a compiler plugin
+* To derive macros
 
-    import org.brianmckenna.wartremover.WartRemover
+### Command-line
 
-    package object com.precog extends WartRemover
+    $ ./wartremover -traverser org.brianmckenna.wartremover.warts.Unsafe src/main/scala/wartremover/Plugin.scala
+    src/main/scala/wartremover/Plugin.scala:15: error: var is disabled
+      private[this] var traversers: List[WartTraverser] = List.empty
+                        ^
 
-The `safe` macro takes any expression and performs extra checks on the
-AST. For example, you can use it on a block:
+### Compiler plugin
 
-    def main(args: Array[String]) = safe {
-      def x[A](a: A) = a
-      // Won't compile: Statements must return Unit
-      // x(100)
-      x(())
-      println("Hello world")
-    }
+    addCompilerPlugin("org.brianmckenna" % "wartremover" % "0.5" cross CrossVersion.full)
 
-For extra safety, turn on all of Scala's warnings and make them
-errors. You can do this in your project's `build.sbt`:
+    scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
 
-    scalaVersion := "2.10.0"
+### Macros
 
-    // -Ywarn-adapted-args has a bug (see SI-6923). Need to use
-    // -Yno-adapted-args for it to fully work.
-    scalacOptions ++= Seq("-Yno-adapted-args", "-Ywarn-all", "-Xfatal-warnings")
+You can make any wart into a macro, like so:
 
-## Package Object Warts
+    scala> import language.experimental.macros
+    import language.experimental.macros
 
-### Warnings for "advanced" features
+    scala> import org.brianmckenna.wartremover.warts.Unsafe
+    import org.brianmckenna.wartremover.warts.Unsafe
 
-SIP-18 introduced warnings for the following features:
+    scala> def safe(expr: Any) = macro Unsafe.asMacro
+    safe: (expr: Any)Any
 
-* Existentials
-* Higher-kinds
-* Implicit conversions
+    scala> safe { null }
+    <console>:10: error: null is disabled
+                  safe { null }
 
-They're "disabled" mostly because they're hard to understand. Let's
-disable those warnings. These features are sane and we know what we're
-doing.
+## Warts
 
-### Postfix operators
+Here is a list of built-in warts under the
+`org.brianmckenna.wartremover.warts` package.
 
-Scala allowed postfix operators, like so:
+### Any2StringAdd
 
-    List(1, 2, 3) length
+Scala has an implicit which converts anything to a `String` if the
+right hand side of `+` is a `String`.
 
-Notice the lack of a `.` before length? That means the operator is
-"postfix". The problem is that postfix operators mess up semicolon
-inference. Let's make postfix operators impossible to accidentally
-use.
-
-### Manifests
-
-A Scala Manifest is a way of getting full type information at
-runtime. Requiring runtime type information almost certainly means
-dangerous stuff is happening:
-
-    def makeMeA[T](implicit m: Manifest[T]) = m.erasure.newInstance
-    makeMeA[List[Int]] // throws a nice Exception
-
-The runtime of your program shouldn't rely on type information to
-work. Get some type safety back by making this not compile.
-
-### any2stringadd
-
-What do you expect the following to do?
-
+    // Won't compile: Scala inserted an any2stringadd call
     println({} + "test")
 
-Print `()test`, of course... Scala has an implicit which will convert
-anything to a String if the right side of `+` is a String. Get some
-type safety back by making this not compile.
-
-## Macro Warts
-
-### Non-unit statements
+### NonUnitStatements
 
 Scala allows statements to return any type. Statements should only
 return `Unit` (this ensures that they're really intended to be
-statements). The macro enforces that:
+statements).
 
-    safe {
-      def x[A](a: A) = a
-      // x(100)
-      x(())
+    // Won't compile: Statements must return Unit
+    10
+    false
 
-      100
-    }
-
-This is like a better `-Xfatal-warnings -Ywarn-value-discard`.
-
-### null
-
-null is a special value that inhabits all reference types. It breaks
-type safety.
-
-    safe {
-      // Won't compile: null is disabled
-      val s: String = null
-    }
-
-### var
-
-Mutation breaks equational reasoning.
-
-    safe {
-      // Won't compile: var is disabled
-      var x = 100
-    }
-
-### Nothing inference
+### Nothing
 
 Nothing is a special bottom type; it is a subtype of every other
 type. The Scala compiler loves to infer Nothing as a generic type but
 that is almost always incorrect. Explicit type arguments should be
 used instead.
 
-    safe {
-      // Won't compile: Inferred type containing Nothing from assignment
-      val nothing = ???
-      val nothingList = List.empty
+    // Won't compile: Inferred type containing Nothing from assignment
+    val nothing = ???
+    val nothingList = List.empty
+
+### Null
+
+`null` is a special value that inhabits all reference types. It breaks
+type safety.
+
+    // Won't compile: null is disabled
+    val s: String = null
+
+### Unsafe
+
+Checks for the following warts:
+
+* Null
+* NonUnitStatements
+* Any2StringAdd
+* Var
+
+### Var
+
+Mutation breaks equational reasoning.
+
+    // Won't compile: var is disabled
+    var x = 100
+
+## Writing Wart Rules
+
+A wart rule has to be an object which extends `WartTraverser`. The
+object only needs an `apply` method which takes a `WartUniverse` and
+returns a `WartUniverse#universe#Traverser`.
+
+The `WartUniverse` has `error` and `warning` methods which both take
+`(WartUniverse#universe#Position, String)`. They are side-effecting
+methods for adding errors and warnings.
+
+Most traversers will want a `super.traverse` call to be able to
+recursively continue.
+
+    import org.brianmckenna.wartremover.{WartTraverser, WartUniverse}
+
+    object Unimplemented extends WartTraverser {
+      def apply(u: WartUniverse): u.Traverser = {
+        import u.universe._
+
+        val NotImplementedName: TermName = "$qmark$qmark$qmark" // ???
+        new Traverser {
+          override def traverse(tree: Tree) {
+            tree match {
+              case Select(_, NotImplementedName) =>
+                u.error(tree.pos, "There was something left unimplemented")
+              case _ =>
+            }
+            super.traverse(tree)
+          }
+        }
+      }
     }

@@ -1,0 +1,2 @@
+#!/bin/sh
+java -jar target/scala-2.10/wartremover-assembly-*.jar "$@"

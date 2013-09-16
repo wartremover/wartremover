@@ -2,14 +2,17 @@ import sbtrelease._
 import sbtrelease.ReleasePlugin.ReleaseKeys._
 import sbtrelease.ReleaseStateTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
+import AssemblyKeys._
 
 name := "wartremover"
 
 organization := "org.brianmckenna"
 
-scalaVersion := "2.10.0"
+scalaVersion := "2.10.2"
 
 releaseSettings
+
+assemblySettings
 
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
@@ -28,17 +31,20 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges
 )
 
-// -Ywarn-adapted-args has a bug (see SI-6923). Need to
-// use -Yno-adapted-args for it to fully
-// work. Also -Ywarn-numeric-widen isn't in warn-wall.
-scalacOptions ++= Seq(
-  "-Ywarn-numeric-widen",
-  "-Yno-adapted-args",
-  "-Ywarn-all",
-  "-Xfatal-warnings"
-)
+resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _)
+addCompilerPlugin("org.scala-lang.plugins" % "macro-paradise" % "2.0.0-SNAPSHOT" cross CrossVersion.full)
+
+libraryDependencies <++= scalaVersion { scalaVer => Seq(
+  "org.scala-lang" % "scala-compiler" % scalaVer,
+  "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+) }
+
+scalacOptions in Test <++= packageBin in Compile map { pluginJar => Seq(
+  "-Xplugin:" + pluginJar,
+  "-P:wartremover:cp:" + pluginJar.toURI.toURL,
+  "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+) }
 
 publishMavenStyle := true
 
