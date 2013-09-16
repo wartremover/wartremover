@@ -10,6 +10,8 @@ organization := "org.brianmckenna"
 
 scalaVersion := "2.10.2"
 
+crossVersion := CrossVersion.full
+
 releaseSettings
 
 assemblySettings
