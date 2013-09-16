@@ -19,11 +19,13 @@ WartRemover can be used in the following ways:
 
 ### Compiler plugin
 
-    resolvers += Resolver.sonatypeRepo("releases")
+```scala
+resolvers += Resolver.sonatypeRepo("releases")
 
-    addCompilerPlugin("org.brianmckenna" % "wartremover" % "0.4" cross CrossVersion.full)
+addCompilerPlugin("org.brianmckenna" % "wartremover" % "0.4" cross CrossVersion.full)
 
-    scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+```
 
 ### Macros
 
@@ -52,8 +54,10 @@ Here is a list of built-in warts under the
 Scala has an implicit which converts anything to a `String` if the
 right hand side of `+` is a `String`.
 
-    // Won't compile: Scala inserted an any2stringadd call
-    println({} + "test")
+```scala
+// Won't compile: Scala inserted an any2stringadd call
+println({} + "test")
+```
 
 ### NonUnitStatements
 
@@ -61,9 +65,11 @@ Scala allows statements to return any type. Statements should only
 return `Unit` (this ensures that they're really intended to be
 statements).
 
-    // Won't compile: Statements must return Unit
-    10
-    false
+```scala
+// Won't compile: Statements must return Unit
+10
+false
+```
 
 ### Nothing
 
@@ -72,17 +78,21 @@ type. The Scala compiler loves to infer Nothing as a generic type but
 that is almost always incorrect. Explicit type arguments should be
 used instead.
 
-    // Won't compile: Inferred type containing Nothing from assignment
-    val nothing = ???
-    val nothingList = List.empty
+```scala
+// Won't compile: Inferred type containing Nothing from assignment
+val nothing = ???
+val nothingList = List.empty
+```
 
 ### Null
 
 `null` is a special value that inhabits all reference types. It breaks
 type safety.
 
-    // Won't compile: null is disabled
-    val s: String = null
+```scala
+// Won't compile: null is disabled
+val s: String = null
+```
 
 ### Unsafe
 
@@ -97,8 +107,10 @@ Checks for the following warts:
 
 Mutation breaks equational reasoning.
 
-    // Won't compile: var is disabled
-    var x = 100
+```scala
+// Won't compile: var is disabled
+var x = 100
+```
 
 ## Writing Wart Rules
 
@@ -113,22 +125,24 @@ methods for adding errors and warnings.
 Most traversers will want a `super.traverse` call to be able to
 recursively continue.
 
-    import org.brianmckenna.wartremover.{WartTraverser, WartUniverse}
+```scala
+import org.brianmckenna.wartremover.{WartTraverser, WartUniverse}
 
-    object Unimplemented extends WartTraverser {
-      def apply(u: WartUniverse): u.Traverser = {
-        import u.universe._
+object Unimplemented extends WartTraverser {
+  def apply(u: WartUniverse): u.Traverser = {
+    import u.universe._
 
-        val NotImplementedName: TermName = "$qmark$qmark$qmark" // ???
-        new Traverser {
-          override def traverse(tree: Tree) {
-            tree match {
-              case Select(_, NotImplementedName) =>
-                u.error(tree.pos, "There was something left unimplemented")
-              case _ =>
-            }
-            super.traverse(tree)
-          }
+    val NotImplementedName: TermName = "$qmark$qmark$qmark" // ???
+    new Traverser {
+      override def traverse(tree: Tree) {
+        tree match {
+          case Select(_, NotImplementedName) =>
+            u.error(tree.pos, "There was something left unimplemented")
+          case _ =>
         }
+        super.traverse(tree)
       }
     }
+  }
+}
+```
