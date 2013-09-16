@@ -12,7 +12,6 @@ class UnsafeTest extends FunSuite {
       10
       println(null)
     }
-    println(result)
     assert(result.errors == List("Statements must return Unit", "var is disabled", "null is disabled", "Scala inserted an any2stringadd call"))
     assert(result.warnings == List.empty)
   }
