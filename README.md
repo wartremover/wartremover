@@ -12,12 +12,16 @@ WartRemover can be used in the following ways:
 
 ### Command-line
 
+Compile the command-line tool via `sbt assembly`.
+
     $ ./wartremover -traverser org.brianmckenna.wartremover.warts.Unsafe src/main/scala/wartremover/Plugin.scala
     src/main/scala/wartremover/Plugin.scala:15: error: var is disabled
       private[this] var traversers: List[WartTraverser] = List.empty
                         ^
 
 ### Compiler plugin
+
+Add the following to `build.sbt`:
 
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
