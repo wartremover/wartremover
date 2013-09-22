@@ -98,13 +98,20 @@ type safety.
 val s: String = null
 ```
 
+### OptionPartial
+
+`scala.Option` has a `get` method which will throw if the value is
+`None`. The program should be refactored to use `scala.Option#fold` to
+explicitly handle both the `Some` and `None` cases.
+
 ### Unsafe
 
 Checks for the following warts:
 
-* Null
-* NonUnitStatements
 * Any2StringAdd
+* NonUnitStatements
+* Null
+* OptionPartial
 * Var
 
 ### Var
