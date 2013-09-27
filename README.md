@@ -104,6 +104,14 @@ val s: String = null
 `None`. The program should be refactored to use `scala.Option#fold` to
 explicitly handle both the `Some` and `None` cases.
 
+### EitherProjectionPartial
+
+`scala.util.Either.LeftProjection` and `scala.util.Either.RightProjection`
+have a `get` method which will throw if the value doesn't match the
+projection.  The program should be refactored to use `scala.util.Either.LeftProjection#toOption`
+and `scala.util.Either.RightProjection#toOption` to explicitly handle both
+the `Some` and `None` cases.
+
 ### Unsafe
 
 Checks for the following warts:
@@ -112,6 +120,7 @@ Checks for the following warts:
 * NonUnitStatements
 * Null
 * OptionPartial
+* EitherProjectionPartial
 * Var
 
 ### Var
