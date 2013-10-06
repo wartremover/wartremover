@@ -6,10 +6,13 @@ object Null extends WartTraverser {
     import u.universe._
 
     val UnapplyName: TermName = "unapply"
+    val elemSymbol = rootMirror.staticClass("scala.xml.Elem")
     new Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
         tree match {
+          // Ignore xml literals
+          case Apply(Select(left, _), _) if left.tpe.baseType(elemSymbol) != NoType =>
           // Ignore synthetic case class's companion object unapply
           case ModuleDef(mods, _, Template(parents, self, stats)) if synthetic =>
             mods.annotations foreach { annotation =>
