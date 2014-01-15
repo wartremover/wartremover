@@ -9,6 +9,7 @@ object Var extends WartTraverser {
 
     new Traverser {
       override def traverse(tree: Tree) {
+        val synthetic = isSynthetic(u)(tree)
         tree match {
           // Ignore case class's synthetic hashCode
           case ClassDef(mods, _, tparams, Template(parents, self, stats)) if mods.hasFlag(Flag.CASE) =>
@@ -30,6 +31,9 @@ object Var extends WartTraverser {
             } foreach { stat =>
               traverse(stat)
             }
+          // Scala pattern matching outputs synthetic vars
+          case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
+
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) =>
             u.error(tree.pos, "var is disabled")
             super.traverse(tree)
