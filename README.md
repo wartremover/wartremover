@@ -112,6 +112,16 @@ projection.  The program should be refactored to use `scala.util.Either.LeftProj
 and `scala.util.Either.RightProjection#toOption` to explicitly handle both
 the `Some` and `None` cases.
 
+### Return
+
+`return` breaks referential transparency. Refactor to terminate computations in a safe way.
+
+```scala
+// Won't compile: return is disabled
+def foo(n:Int): Int = return n + 1
+def foo(ns: List[Int]): Any = ns.map(n => return n + 1)
+```
+
 ### Unsafe
 
 Checks for the following warts:
@@ -122,6 +132,7 @@ Checks for the following warts:
 * OptionPartial
 * EitherProjectionPartial
 * Var
+* Return
 
 ### Var
 

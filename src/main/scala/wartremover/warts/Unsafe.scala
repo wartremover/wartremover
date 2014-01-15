@@ -8,7 +8,8 @@ object Unsafe extends WartTraverser {
     Null,
     OptionPartial,
     EitherProjectionPartial,
-    Var
+    Var,
+    Return
   )
 
   def apply(u: WartUniverse): u.Traverser =
