@@ -14,7 +14,7 @@ object Null extends WartTraverser {
           // Ignore xml literals
           case Apply(Select(left, _), _) if left.tpe.baseType(elemSymbol) != NoType =>
           // Ignore synthetic case class's companion object unapply
-          case ModuleDef(mods, _, Template(parents, self, stats)) if synthetic =>
+          case ModuleDef(mods, _, Template(parents, self, stats)) =>
             mods.annotations foreach { annotation =>
               traverse(annotation)
             }
@@ -23,7 +23,7 @@ object Null extends WartTraverser {
             }
             traverse(self)
             stats filter {
-              case DefDef(_, UnapplyName, _, _, _, _) =>
+              case dd@DefDef(_, UnapplyName, _, _, _, _) if isSynthetic(u)(dd) =>
                 false
               case _ =>
                 true
