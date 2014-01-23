@@ -162,12 +162,15 @@ import org.brianmckenna.wartremover.{WartTraverser, WartUniverse}
 object Unimplemented extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
+    import scala.reflect.NameTransformer
 
-    val NotImplementedName: TermName = "$qmark$qmark$qmark" // ???
+    val notImplementedName: TermName = NameTransformer.encode("???")
+    val notImplemented: Symbol = typeOf[Predef.type].member(notImplementedName)
+    require(notImplemented != NoSymbol)
     new Traverser {
       override def traverse(tree: Tree) {
         tree match {
-          case Select(_, NotImplementedName) =>
+          case rt: RefTree if rt.symbol == notImplemented =>
             u.error(tree.pos, "There was something left unimplemented")
           case _ =>
         }
