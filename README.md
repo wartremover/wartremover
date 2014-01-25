@@ -1,5 +1,7 @@
 # WartRemover
 
+[![Build Status](https://travis-ci.org/puffnfresh/wartremover.png?branch=master)](https://travis-ci.org/puffnfresh/wartremover)
+
 WartRemover is a flexible Scala code linting tool.
 
 ## Usage
