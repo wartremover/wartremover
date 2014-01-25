@@ -61,7 +61,7 @@ almost always incorrect. Explicit type arguments should be used
 instead.
 
 ```scala
-// Won't compile: Inferred type containing Any from assignment
+// Won't compile: Inferred type containing Any
 val any = List(1, true, "three")
 ```
 
@@ -74,6 +74,14 @@ right hand side of `+` is a `String`.
 // Won't compile: Scala inserted an any2stringadd call
 println({} + "test")
 ```
+
+### EitherProjectionPartial
+
+`scala.util.Either.LeftProjection` and `scala.util.Either.RightProjection`
+have a `get` method which will throw if the value doesn't match the
+projection.  The program should be refactored to use `scala.util.Either.LeftProjection#toOption`
+and `scala.util.Either.RightProjection#toOption` to explicitly handle both
+the `Some` and `None` cases.
 
 ### NonUnitStatements
 
@@ -95,7 +103,7 @@ that is almost always incorrect. Explicit type arguments should be
 used instead.
 
 ```scala
-// Won't compile: Inferred type containing Nothing from assignment
+// Won't compile: Inferred type containing Nothing
 val nothing = ???
 val nothingList = List.empty
 ```
@@ -116,13 +124,17 @@ val s: String = null
 `None`. The program should be refactored to use `scala.Option#fold` to
 explicitly handle both the `Some` and `None` cases.
 
-### EitherProjectionPartial
+### Product
 
-`scala.util.Either.LeftProjection` and `scala.util.Either.RightProjection`
-have a `get` method which will throw if the value doesn't match the
-projection.  The program should be refactored to use `scala.util.Either.LeftProjection#toOption`
-and `scala.util.Either.RightProjection#toOption` to explicitly handle both
-the `Some` and `None` cases.
+Product is a type common to many structures; it is the supertype of
+case classes and tuples. The Scala compiler loves to infer Product as
+a generic type but that is almost always incorrect. Explicit type
+arguments should be used instead.
+
+```scala
+// Won't compile: Inferred type containing Product
+val any = List((1, 2, 3), (1, 2))
+```
 
 ### Return
 
