@@ -10,9 +10,9 @@ object Nothing extends WartTraverser {
       override def traverse(tree: Tree) {
         def error() = u.error(tree.pos, "Inferred type containing Nothing from assignment")
         tree match {
-          case ValDef(_, _, tpt, _) if tpt.tpe.contains(nothingSymbol) =>
+          case ValDef(_, _, tpt: TypeTree, _) if wasInferred(u)(tpt) && tpt.tpe.contains(nothingSymbol) =>
             error()
-          case DefDef(_, _, _, _, tpt, _) if tpt.tpe.contains(nothingSymbol) =>
+          case DefDef(_, _, _, _, tpt: TypeTree, _) if wasInferred(u)(tpt) && tpt.tpe.contains(nothingSymbol) =>
             error()
           case _ =>
         }

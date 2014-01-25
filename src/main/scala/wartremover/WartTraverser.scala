@@ -37,6 +37,9 @@ trait WartTraverser {
       t.symbol.isSynthetic
     else
       false
+
+  def wasInferred(u: WartUniverse)(t: u.universe.TypeTree): Boolean =
+    t.original == null
 }
 
 object WartTraverser {
