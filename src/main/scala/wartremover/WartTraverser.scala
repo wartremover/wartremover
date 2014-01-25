@@ -50,6 +50,7 @@ object WartTraverser {
 trait WartUniverse {
   val universe: Universe
   type Traverser = universe.Traverser
+  type TypeTag[T] = universe.TypeTag[T]
   def error(pos: universe.Position, message: String)
   def warning(pos: universe.Position, message: String)
 }

@@ -3,6 +3,7 @@ package warts
 
 object Unsafe extends WartTraverser {
   val safeTraversers = List(
+    Any,
     Any2StringAdd,
     NonUnitStatements,
     Null,

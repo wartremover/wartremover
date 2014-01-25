@@ -1,6 +1,6 @@
 package org.brianmckenna.wartremover
 package warts
 
-object Nothing extends ForbidInference[Nothing] {
+object Any extends ForbidInference[Any] {
   def apply(u: WartUniverse): u.Traverser = applyForbidden(u)
 }

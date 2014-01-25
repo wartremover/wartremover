@@ -53,6 +53,18 @@ You can make any wart into a macro, like so:
 Here is a list of built-in warts under the
 `org.brianmckenna.wartremover.warts` package.
 
+### Any
+
+Any is the top type; it is the supertype of every other type. The
+Scala compiler loves to infer Any as a generic type but that is
+almost always incorrect. Explicit type arguments should be used
+instead.
+
+```scala
+// Won't compile: Inferred type containing Any from assignment
+val any = List(1, true, "three")
+```
+
 ### Any2StringAdd
 
 Scala has an implicit which converts anything to a `String` if the
