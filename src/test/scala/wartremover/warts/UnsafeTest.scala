@@ -18,7 +18,8 @@ class UnsafeTest extends FunSuite {
       println(null)
     }
     assert(result.errors ==
-      List("Inferred type containing Any from assignment",
+      List("Inferred type containing Any",
+           "Inferred type containing Any",
            "Scala inserted an any2stringadd call",
            "Statements must return Unit",
            "null is disabled",

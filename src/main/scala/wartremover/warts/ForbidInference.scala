@@ -8,11 +8,9 @@ trait ForbidInference[T] extends WartTraverser {
     val tSymbol = typeOf[T].typeSymbol
     new Traverser {
       override def traverse(tree: Tree) {
-        def error() = u.error(tree.pos, s"Inferred type containing ${tSymbol.name} from assignment")
+        def error() = u.error(tree.pos, s"Inferred type containing ${tSymbol.name}")
         tree match {
-          case ValDef(_, _, tpt: TypeTree, _) if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
-            error()
-          case DefDef(_, _, _, _, tpt: TypeTree, _) if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
+          case tpt @ TypeTree() if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
             error()
           case _ =>
         }
