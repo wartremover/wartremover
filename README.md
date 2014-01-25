@@ -146,6 +146,16 @@ def foo(n:Int): Int = return n + 1
 def foo(ns: List[Int]): Any = ns.map(n => return n + 1)
 ```
 
+### Serializable
+
+Serializable is a type common to many structures. The Scala compiler
+loves to infer Serializable as a generic type but that is almost
+always incorrect. Explicit type arguments should be used instead.
+
+```scala
+// Won't compile: Inferred type containing Serializable
+val any = List((1, 2, 3), (1, 2))
+```
 ### Unsafe
 
 Checks for the following warts:

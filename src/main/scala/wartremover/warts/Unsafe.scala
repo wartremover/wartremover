@@ -5,12 +5,14 @@ object Unsafe extends WartTraverser {
   val safeTraversers = List(
     Any,
     Any2StringAdd,
+    EitherProjectionPartial,
     NonUnitStatements,
     Null,
     OptionPartial,
-    EitherProjectionPartial,
-    Var,
-    Return
+    Product,
+    Return,
+    Serializable,
+    Var
   )
 
   def apply(u: WartUniverse): u.Traverser =
