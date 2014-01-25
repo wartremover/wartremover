@@ -160,13 +160,16 @@ val any = List((1, 2, 3), (1, 2))
 
 Checks for the following warts:
 
+* Any
 * Any2StringAdd
+* EitherProjectionPartial
 * NonUnitStatements
 * Null
 * OptionPartial
-* EitherProjectionPartial
-* Var
+* Product
 * Return
+* Serializable
+* Var
 
 ### Var
 
