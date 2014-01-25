@@ -14,4 +14,12 @@ class NonUnitStatementsTest extends FunSuite {
     assert(result.errors == List("Statements must return Unit"))
     assert(result.warnings == List.empty)
   }
+  test("XML literals don't fail") {
+    val result = WartTestTraverser(NonUnitStatements) {
+      val a = 13
+      <x>{a}</x>
+    }
+    assert(result.errors == List.empty)
+    assert(result.warnings == List.empty)
+  }
 }
