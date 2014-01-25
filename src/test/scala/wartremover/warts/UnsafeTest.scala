@@ -21,13 +21,13 @@ class UnsafeTest extends FunSuite {
       List("Inferred type containing Any",
            "Inferred type containing Any",
            "Scala inserted an any2stringadd call",
+           "LeftProjection#get is disabled - use LeftProjection#toOption instead",
+           "RightProjection#get is disabled - use RightProjection#toOption instead",
+           "LeftProjection#get is disabled - use LeftProjection#toOption instead",
+           "RightProjection#get is disabled - use RightProjection#toOption instead",
            "Statements must return Unit",
            "null is disabled",
            "Option#get is disabled - use Option#fold instead",
-           "LeftProjection#get is disabled - use LeftProjection#toOption instead",
-           "RightProjection#get is disabled - use RightProjection#toOption instead",
-           "LeftProjection#get is disabled - use LeftProjection#toOption instead",
-           "RightProjection#get is disabled - use RightProjection#toOption instead",
            "var is disabled"))
     assert(result.warnings == List.empty)
   }
