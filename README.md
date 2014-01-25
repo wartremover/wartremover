@@ -49,6 +49,7 @@ You can make any wart into a macro, like so:
     scala> safe { null }
     <console>:10: error: null is disabled
                   safe { null }
+                         ^
 
 ## Warts
 
