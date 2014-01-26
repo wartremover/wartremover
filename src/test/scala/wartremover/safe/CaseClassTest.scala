@@ -9,6 +9,7 @@ class CaseClassTest extends FunSuite {
   test("case classes still work") {
     val result = WartTestTraverser(Any) {
       case class A(a: Int)
+      case class B[X](a: X)
     }
     assert(result.errors == List.empty)
     assert(result.warnings == List.empty)

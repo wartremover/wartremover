@@ -5,7 +5,13 @@ trait ForbidInference[T] extends WartTraverser {
   def applyForbidden(u: WartUniverse)(implicit t: u.TypeTag[T]): u.Traverser = {
     import u.universe._
 
+    val CanEqualName: TermName = "canEqual"
+    val EqualsName: TermName = "equals"
+    val ProductElementName: TermName = "productElement"
+    val ProductIteratorName: TermName = "productIterator"
+
     val tSymbol = typeOf[T].typeSymbol
+
     new Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
@@ -14,8 +20,10 @@ trait ForbidInference[T] extends WartTraverser {
         tree match {
           case tpt @ TypeTree() if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
             error()
-          case ValDef(_, _, tpt: TypeTree, _) if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) && synthetic =>
-          case DefDef(_, _, _, _, tpt: TypeTree, _) if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) && synthetic =>
+
+          // Ignore case classes generated methods
+          case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _) if synthetic =>
+
           case _ =>
             super.traverse(tree)
         }
