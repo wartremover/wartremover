@@ -28,13 +28,6 @@ class NullTest extends FunSuite {
     assert(result.errors == List("null is disabled"))
     assert(result.warnings == List.empty)
   }
-  test("can use case classes") {
-    val result = WartTestTraverser(Null) {
-      case class A(b: Int)
-    }
-    assert(result.errors == List.empty)
-    assert(result.warnings == List.empty)
-  }
   test("can use xml literals") {
     val result = WartTestTraverser(Null) {
       val x = <foo />
