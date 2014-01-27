@@ -28,18 +28,4 @@ class NullTest extends FunSuite {
     assert(result.errors == List("null is disabled"))
     assert(result.warnings == List.empty)
   }
-  test("can use xml literals") {
-    val result = WartTestTraverser(Null) {
-      val x = <foo />
-    }
-    assert(result.errors == List.empty)
-    assert(result.warnings == List.empty)
-  }
-  test("can use xmlns attrib in XML literals") {
-    val result = WartTestTraverser(Null) {
-      <x xmlns="y"/>
-    }
-    assert(result.errors == List.empty)
-    assert(result.warnings == List.empty)
-  }
 }
