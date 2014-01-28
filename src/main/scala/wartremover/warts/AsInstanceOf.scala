@@ -9,7 +9,7 @@ object AsInstanceOf extends WartTraverser {
     new Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
-        tree match {
+       tree match {
 
           // Ignore usage in synthetic classes
           case ClassDef(_, _, _, _) if synthetic => 
@@ -17,8 +17,11 @@ object AsInstanceOf extends WartTraverser {
           // Ignore synthetic equals()
           case DefDef(_, EqualsName, _, _, _, _) if synthetic => 
 
-          // Otherwise it's verboten
-          case u.universe.Select(_, AsInstanceOfName) =>
+          // Pattern matcher writes var x1 = null.asInstanceOf[...]
+          case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
+
+          // Otherwise it's verboten for non-synthetic exprs
+          case Select(e, AsInstanceOfName) if !isSynthetic(u)(e) =>
             u.error(tree.pos, "asInstanceOf is disabled")
 
           case _ => super.traverse(tree)
