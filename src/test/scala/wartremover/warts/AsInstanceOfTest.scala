@@ -43,4 +43,20 @@ class AsInstanceOfTest extends FunSuite {
     assert(result.errors == List.empty)
     assert(result.warnings == List.empty)
   }
+  test("asInstanceOf wart doesn't break case classes") {
+    val result = WartTestTraverser(AsInstanceOf) {
+      case class Foo(n: Int)
+    }
+    assert(result.errors == List.empty)
+    assert(result.warnings == List.empty)
+  }
+  test("asInstanceOf wart doesn't break partial functions") {
+    val result = WartTestTraverser(AsInstanceOf) {
+      val f: PartialFunction[Int, String] = {
+        case 1 => "foo"
+      }
+    }
+    assert(result.errors == List.empty)
+    assert(result.warnings == List.empty)
+  }
 }
