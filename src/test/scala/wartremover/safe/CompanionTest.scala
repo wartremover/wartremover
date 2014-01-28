@@ -12,7 +12,7 @@ class CompanionTest extends FunSuite {
       object Foo {
       }
     }
-    assert(result.errors == List.empty)
-    assert(result.warnings == List.empty)
+    expectResult(List.empty, "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }

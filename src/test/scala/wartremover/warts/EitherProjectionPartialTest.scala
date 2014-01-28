@@ -10,28 +10,28 @@ class EitherProjectionPartialTest extends FunSuite {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Left(1).left.get)
     }
-    assert(result.errors == List("LeftProjection#get is disabled - use LeftProjection#toOption instead"))
-    assert(result.warnings == List.empty)
+    expectResult(List("LeftProjection#get is disabled - use LeftProjection#toOption instead"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use LeftProjection#get on Right") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Right(1).left.get)
     }
-    assert(result.errors == List("LeftProjection#get is disabled - use LeftProjection#toOption instead"))
-    assert(result.warnings == List.empty)
+    expectResult(List("LeftProjection#get is disabled - use LeftProjection#toOption instead"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use RightProjection#get on Left") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Left(1).right.get)
     }
-    assert(result.errors == List("RightProjection#get is disabled - use RightProjection#toOption instead"))
-    assert(result.warnings == List.empty)
+    expectResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use RightProjection#get on Right") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Right(1).right.get)
     }
-    assert(result.errors == List("RightProjection#get is disabled - use RightProjection#toOption instead"))
-    assert(result.warnings == List.empty)
+    expectResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }

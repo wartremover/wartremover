@@ -10,7 +10,7 @@ class Any2StringAddTest extends FunSuite {
     val result = WartTestTraverser(Any2StringAdd) {
       {} + "lol"
     }
-    assert(result.errors == List("Scala inserted an any2stringadd call"))
-    assert(result.warnings == List.empty)
+    expectResult(List("Scala inserted an any2stringadd call"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }
