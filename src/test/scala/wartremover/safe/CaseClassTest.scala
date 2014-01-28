@@ -11,7 +11,7 @@ class CaseClassTest extends FunSuite {
       case class A(a: Int)
       case class B[X](a: X)
     }
-    assert(result.errors == List.empty)
-    assert(result.warnings == List.empty)
+    expectResult(List.empty, "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }

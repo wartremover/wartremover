@@ -10,22 +10,22 @@ class NullTest extends FunSuite {
     val result = WartTestTraverser(Null) {
       println(null)
     }
-    assert(result.errors == List("null is disabled"))
-    assert(result.warnings == List.empty)
+    expectResult(List("null is disabled"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use null in patterns") {
     val result = WartTestTraverser(Null) {
       val (a, b) = (1, null)
       println(a)
     }
-    assert(result.errors == List("null is disabled"))
-    assert(result.warnings == List.empty)
+    expectResult(List("null is disabled"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use null inside of Map#partition") {
     val result = WartTestTraverser(Null) {
       Map(1 -> "one", 2 -> "two").partition { case (k, v) => null.asInstanceOf[Boolean] }
     }
-    assert(result.errors == List("null is disabled"))
-    assert(result.warnings == List.empty)
+    expectResult(List("null is disabled"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }

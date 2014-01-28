@@ -10,14 +10,14 @@ class ReturnTest extends FunSuite {
     val result = WartTestTraverser(Return) {
       def foo(n:Int): Int = return n + 1
     }
-    assert(result.errors == List("return is disabled"))
-    assert(result.warnings == List.empty)
+    expectResult(List("return is disabled"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
   test("nonlocal return is disabled") {
     val result = WartTestTraverser(Return) {
       def foo(ns: List[Int]): Any = ns.map(n => return n + 1)
     }
-    assert(result.errors == List("return is disabled"))
-    assert(result.warnings == List.empty)
+    expectResult(List("return is disabled"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }

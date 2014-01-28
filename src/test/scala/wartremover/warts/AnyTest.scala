@@ -11,7 +11,7 @@ class AnyTest extends FunSuite {
       val x = readf1("{0}")
       x
     }
-    assert(result.errors == List("Inferred type containing Any"))
-    assert(result.warnings == List.empty)
+    expectResult(List("Inferred type containing Any"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }
