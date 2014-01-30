@@ -21,9 +21,13 @@ trait ForbidInference[T] extends WartTraverser {
           case tpt @ TypeTree() if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
             error()
 
-          // Ignore case classes generated methods
-          case ModuleDef(_, _, Template((_, _, statements))) if synthetic =>
+          // Ignore inferred supertypes for all `object` declarations
+          case ModuleDef(_, _, Template((_, _, statements))) =>
             statements.foreach(super.traverse)
+
+          // Ignore inference for all synthetic classes
+          case ClassDef(_, _, _, _) if synthetic =>
+
           case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _) if synthetic =>
 
           case _ =>
