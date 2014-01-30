@@ -10,7 +10,7 @@ class AsInstanceOfTest extends FunSuite {
     val result = WartTestTraverser(AsInstanceOf) {
       "abc".asInstanceOf[String]
     }
-    assert(result.errors == List("asInstanceOf is disabled"))
-    assert(result.warnings == List.empty)
+    expectResult(List("asInstanceOf is disabled"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }
