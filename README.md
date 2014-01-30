@@ -78,6 +78,15 @@ right hand side of `+` is a `String`.
 println({} + "test")
 ```
 
+### AsInstanceOf
+
+`asInstanceOf` is unsafe in isolation and violates parametricity when guarded by `isInstanceOf`. Refactor so that the desired type is proven statically.
+
+```scala
+// Won't compile: asInstanceOf is disabled
+x.asInstanceOf[String]
+```
+
 ### EitherProjectionPartial
 
 `scala.util.Either.LeftProjection` and `scala.util.Either.RightProjection`
@@ -85,6 +94,15 @@ have a `get` method which will throw if the value doesn't match the
 projection.  The program should be refactored to use `scala.util.Either.LeftProjection#toOption`
 and `scala.util.Either.RightProjection#toOption` to explicitly handle both
 the `Some` and `None` cases.
+
+### IsInstanceOf
+
+`isInstanceOf` violates parametricity. Refactor so that the  type is established statically.
+
+```scala
+// Won't compile: isInstanceOf is disabled
+x.isInstanceOf[String]
+```
 
 ### NonUnitStatements
 
@@ -165,7 +183,9 @@ Checks for the following warts:
 
 * Any
 * Any2StringAdd
+* AsInstanceOf
 * EitherProjectionPartial
+* IsInstanceOf
 * NonUnitStatements
 * Null
 * OptionPartial
