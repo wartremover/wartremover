@@ -23,7 +23,7 @@ Compile the command-line tool via `sbt assembly`.
 
 ### Compiler plugin
 
-Add the following to `build.sbt`.
+Add the following to `build.sbt`:
 
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
