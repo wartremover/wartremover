@@ -30,7 +30,7 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 addCompilerPlugin("org.brianmckenna" %% "wartremover" % "0.7")
 
-scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+scalacOptions in (Compile, compile) += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
 ```
 
 ### Macros
