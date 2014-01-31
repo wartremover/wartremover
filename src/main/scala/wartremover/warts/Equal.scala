@@ -1,12 +1,14 @@
 package org.brianmckenna.wartremover
 package warts
 
+import reflect.NameTransformer
+
 object Equal extends WartTraverser {
 
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val EqEqName: TermName = "$eq$eq"
+    val EqEqName: TermName = NameTransformer.encode("==")
 
     // We can only compare types that conform
     def bogus(a: Type, b: Type): Boolean = 
