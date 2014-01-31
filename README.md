@@ -95,6 +95,16 @@ projection.  The program should be refactored to use `scala.util.Either.LeftProj
 and `scala.util.Either.RightProjection#toOption` to explicitly handle both
 the `Some` and `None` cases.
 
+
+### Equal
+
+Universal equality breaks parametricity and should be avoided, but if you insist on using it you probably don't want to compare types that don't conform with each other. This wart disables comparison between types if the don't conform in either direction.
+
+```scala
+// Won't compile: Non-conforming types List[Int] and scala.collection.immutable.Set[Int] cannot be compared
+List(1) == Set(1)
+```
+
 ### IsInstanceOf
 
 `isInstanceOf` violates parametricity. Refactor so that the  type is established statically.
