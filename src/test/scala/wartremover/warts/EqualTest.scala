@@ -62,4 +62,11 @@ class EqualTest extends FunSuite {
     expectResult(List("Non-conforming types Int and List[Int] cannot be compared"), "result.errors")(result.errors)
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("works when types differ only in type args") {
+    val result = WartTestTraverser(Equal) {
+      List(1,2) == List(true)
+    }
+    expectResult(List("Non-conforming types List[Int] and List[Boolean] cannot be compared"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
+  }
 }
