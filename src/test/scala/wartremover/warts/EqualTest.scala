@@ -33,6 +33,14 @@ class EqualTest extends FunSuite {
     expectResult(twice("Non-conforming types Some[Int] and None.type cannot be compared"), "result.errors")(result.errors)
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("can't compare non-conforming types (4)") {
+    val result = WartTestTraverser(Equal) {
+      Vector(1,2,3) == List(1,2,3).map(_ + 1) // This triggers the wart
+      Vector(1,2,3) equals List(1,2,3).map(_ + 1) // This does not
+    }
+    expectResult(List("Non-conforming types scala.collection.immutable.Vector[Int] and List[Int] cannot be compared"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
+  }
   test("ok to compare conforming types (1)") {
     val result = WartTestTraverser(Equal) {
       Option(1) == None
@@ -57,15 +65,23 @@ class EqualTest extends FunSuite {
     expectResult(twice("Non-conforming types Iterable[Char] and String(\"abc\") cannot be compared"), "result.errors")(result.errors)
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("numeric widening sometimes, sorry") {
+  test("overloading of == (1)") {
     val result = WartTestTraverser(Equal) {
-      1 == 1.0     // can't do anything about widening here
+      1 == 1.0     // can't catch this because == is overloaded
       1 equals 1.0 // but we can catch it here
     }
     expectResult(List("Non-conforming types Int(1) and Double(1.0) cannot be compared"), "result.errors")(result.errors)
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("works with complex exprs") {
+  test("overloading of == (2)") {
+    val result = WartTestTraverser(Equal) {
+      (1 max 2) == List(3, 4)
+      (1 max 2) equals List(3, 4)
+    }
+    expectResult(twice("Non-conforming types Int and List[Int] cannot be compared"), "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
+  }
+  test("overloading of == (3)") {
     val result = WartTestTraverser(Equal) {
       (1 max 2) == List(3, 4).map(_ + 1)
       (1 max 2) equals List(3, 4).map(_ + 1) // Here the RHS is inferred as `Any`
