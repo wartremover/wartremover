@@ -9,16 +9,17 @@ object Equal extends WartTraverser {
     import u.universe._
 
     val EqEqName: TermName = NameTransformer.encode("==")
+    val Equals: TermName = NameTransformer.encode("equals")
 
     // We can only compare types that conform
-    def bogus(a: Type, b: Type): Boolean = 
+    def nonConforming(a: Type, b: Type): Boolean = 
       !(a <:< b || b <:< a)
 
     new Traverser {
       override def traverse(tree: Tree) {
         tree match {
 
-          case Apply(Select(lhs, EqEqName), List(rhs)) if bogus(lhs.tpe, rhs.tpe) =>
+          case Apply(Select(lhs, EqEqName | Equals), List(rhs)) if nonConforming(lhs.tpe, rhs.tpe) =>
             val msg = s"Non-conforming types ${lhs.tpe} and ${rhs.tpe} cannot be compared"
             u.error(tree.pos, msg)
 
