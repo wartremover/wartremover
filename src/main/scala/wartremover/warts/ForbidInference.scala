@@ -26,7 +26,13 @@ trait ForbidInference[T] extends WartTraverser {
 
         tree match {
           case tpt @ TypeTree() if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
-            error()
+            tpt.tpe match {
+              // Ignore existential types, they supposedly contain "any"
+              case ExistentialType(_, _) =>
+
+              case _ =>
+                error()
+            }
 
           // Ignore case classes generated methods
           case ModuleDef(_, _, Template((parents, self, statements))) =>
