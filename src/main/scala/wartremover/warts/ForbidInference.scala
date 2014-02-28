@@ -12,6 +12,13 @@ trait ForbidInference[T] extends WartTraverser {
 
     val tSymbol = typeOf[T].typeSymbol
 
+    // Scala compiler inserts stuff like "extends AnyRef with Serializable"
+    // This method filters those out.
+    def explicitParents(parents: List[Tree]): List[Tree] = parents.collect {
+      case tpt @ TypeTree() if !wasInferred(u)(tpt) =>
+        tpt
+    }
+
     new Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
@@ -23,12 +30,11 @@ trait ForbidInference[T] extends WartTraverser {
 
           // Ignore case classes generated methods
           case ModuleDef(_, _, Template((parents, self, statements))) =>
-            // Companion objects get synthetic parents
-            val explicitParents = parents.collect {
-              case tpt @ TypeTree() if !wasInferred(u)(tpt) =>
-                tpt
-            }
-            explicitParents.foreach(traverse)
+            explicitParents(parents).foreach(traverse)
+            traverse(self)
+            statements.foreach(traverse)
+          case ClassDef(_, _, _, Template((parents, self, statements))) if synthetic =>
+            explicitParents(parents).foreach(traverse)
             traverse(self)
             statements.foreach(traverse)
           case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _) if synthetic =>
