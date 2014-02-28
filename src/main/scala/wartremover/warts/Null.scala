@@ -37,7 +37,7 @@ object Null extends WartTraverser {
             super.traverse(tree)
           // Scala pattern matching outputs synthetic null.asInstanceOf[X]
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
-          // Ignore labels
+          // TODO: This ignores a lot
           case LabelDef(_, _, _) if synthetic =>
           case _ =>
             super.traverse(tree)
