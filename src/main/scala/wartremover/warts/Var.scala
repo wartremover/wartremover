@@ -6,6 +6,8 @@ object Var extends WartTraverser {
     import u.universe._
 
     val HashCodeName: TermName = "hashCode"
+    val metaDataSymbol = rootMirror.staticClass("scala.xml.MetaData")
+    val namespaceBindingSymbol = rootMirror.staticClass("scala.xml.NamespaceBinding")
 
     new Traverser {
       override def traverse(tree: Tree) {
@@ -34,7 +36,10 @@ object Var extends WartTraverser {
           // Scala pattern matching outputs synthetic vars
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
 
-          case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) =>
+          // XML literals output vars
+          case ValDef(mods, _, tpt, _) if tpt.tpe.baseType(metaDataSymbol) != NoType || tpt.tpe.baseType(namespaceBindingSymbol) != NoType =>
+
+          case ValDef(mods, _, tpt, _) if mods.hasFlag(Flag.MUTABLE) =>
             u.error(tree.pos, "var is disabled")
             super.traverse(tree)
           case _ =>
