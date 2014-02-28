@@ -9,8 +9,7 @@ class CompanionTest extends FunSuite {
   test("can use companion objects for case classes") {
     val result = WartTestTraverser(Unsafe) {
       case class Foo(n: Int)
-      object Foo {
-      }
+      object Foo
     }
     expectResult(List.empty, "result.errors")(result.errors)
     expectResult(List.empty, "result.warnings")(result.warnings)

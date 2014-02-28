@@ -22,8 +22,15 @@ trait ForbidInference[T] extends WartTraverser {
             error()
 
           // Ignore case classes generated methods
-          case ModuleDef(_, _, Template((_, _, statements))) if synthetic =>
-            statements.foreach(super.traverse)
+          case ModuleDef(_, _, Template((parents, self, statements))) =>
+            // Companion objects get synthetic parents
+            val explicitParents = parents.collect {
+              case tpt @ TypeTree() if !wasInferred(u)(tpt) =>
+                tpt
+            }
+            explicitParents.foreach(traverse)
+            traverse(self)
+            statements.foreach(traverse)
           case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _) if synthetic =>
 
           case _ =>
