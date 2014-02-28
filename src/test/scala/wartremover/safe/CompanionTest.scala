@@ -14,4 +14,13 @@ class CompanionTest extends FunSuite {
     expectResult(List.empty, "result.errors")(result.errors)
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("can use companion objects for type aliases") {
+    val result = WartTestTraverser(Unsafe) {
+      trait T[R]
+      type T1 = String
+      object T1 extends T[Unit]
+    }
+    expectResult(List.empty, "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
+  }
 }
