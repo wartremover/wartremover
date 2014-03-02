@@ -21,6 +21,19 @@ trait WartTraverser {
     expr
   }
 
+  def asAnnotationMacro(c: Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
+    import c.universe._
+
+    val block = Block(annottees.map(_.tree).toList, Literal(Constant(())))
+    c.typeCheck(block)
+
+    annottees.foreach { expr =>
+      asMacro(c)(expr)
+    }
+
+    c.Expr[Any](block)
+  }
+
   def compose(o: WartTraverser): WartTraverser = new WartTraverser {
     def apply(u: WartUniverse): u.Traverser = {
       new u.Traverser {
