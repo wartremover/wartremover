@@ -6,6 +6,7 @@ object Null extends WartTraverser {
     import u.universe._
 
     val UnapplyName: TermName = "unapply"
+    val UnapplySeqName: TermName = "unapplySeq"
     val xmlSymbols = (classOf[scala.xml.Elem]
       :: classOf[scala.xml.NamespaceBinding]
       :: Nil) map (c => rootMirror.staticClass(c.getCanonicalName))
@@ -25,7 +26,7 @@ object Null extends WartTraverser {
             }
             traverse(self)
             stats filter {
-              case dd@DefDef(_, UnapplyName, _, _, _, _) if isSynthetic(u)(dd) =>
+              case dd@DefDef(_, UnapplyName | UnapplySeqName, _, _, _, _) if isSynthetic(u)(dd) =>
                 false
               case _ =>
                 true
