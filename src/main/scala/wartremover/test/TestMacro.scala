@@ -11,7 +11,7 @@ object WartTestTraverser {
   def applyImpl(c: Context)(t: c.Expr[WartTraverser])(a: c.Expr[Any]) = {
     import c.universe._
 
-    val traverser = c.eval[WartTraverser](c.Expr(c.resetAllAttrs(t.tree.duplicate)))
+    val traverser = c.eval[WartTraverser](c.Expr(c.resetLocalAttrs(t.tree.duplicate)))
 
     var errors = collection.mutable.ListBuffer[String]()
     var warnings = collection.mutable.ListBuffer[String]()
