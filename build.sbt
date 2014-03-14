@@ -39,9 +39,10 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.0-M3" cross CrossVersion.full)
 
-libraryDependencies ++= (scalaVersion.value match {
-  case "2.10.3" => Seq("org.scalamacros" % "quasiquotes" % "2.0.0-M3" cross CrossVersion.full)
-  case "2.11.0-RC1" => Seq()
+libraryDependencies ++= (if (scalaVersion.value.startsWith("2.10")) {
+  Seq("org.scalamacros" % "quasiquotes" % "2.0.0-M3" cross CrossVersion.full)
+} else {
+  Seq()
 })
 
 libraryDependencies ++= Seq(
