@@ -12,6 +12,8 @@ object Any2StringAdd extends WartTraverser {
         tree match {
           case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             u.error(tree.pos, "Scala inserted an any2stringadd call")
+          case TypeApply(Select(Select(_, PredefName), Any2StringAddName), _) =>
+            u.error(tree.pos, "Scala inserted an any2stringadd call")
           case _ =>
         }
         super.traverse(tree)

@@ -10,6 +10,8 @@ organization := "org.brianmckenna"
 
 scalaVersion := "2.10.3"
 
+crossScalaVersions := Seq("2.10.3", "2.11.0-RC1")
+
 crossVersion := CrossVersion.binary
 
 releaseSettings
@@ -35,12 +37,18 @@ releaseProcess := Seq[ReleaseStep](
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-addCompilerPlugin("org.scala-lang.plugins" % "macro-paradise" % "2.0.0-SNAPSHOT" cross CrossVersion.full)
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.0-M3" cross CrossVersion.full)
 
-libraryDependencies <++= scalaVersion { scalaVer => Seq(
-  "org.scala-lang" % "scala-compiler" % scalaVer,
-  "org.scalatest" %% "scalatest" % "1.9.1" % "test"
-) }
+libraryDependencies ++= (if (scalaVersion.value.startsWith("2.10")) {
+  Seq("org.scalamacros" % "quasiquotes" % "2.0.0-M3" cross CrossVersion.full)
+} else {
+  Seq()
+})
+
+libraryDependencies ++= Seq(
+  "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+  "org.scalatest" %% "scalatest" % "2.1.0" % "test"
+)
 
 scalacOptions in Test <++= packageBin in Compile map { pluginJar => Seq(
   "-Xplugin:" + pluginJar,
