@@ -33,6 +33,12 @@ addCompilerPlugin("org.brianmckenna" %% "wartremover" % "0.8")
 scalacOptions in (Compile, compile) += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
 ```
 
+By default, WartRemover generates compile-time errors. If you want to be warned only, use an `only-warn-traverser`:
+
+```scala
+scalacOptions in (Compile, compile) += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
+```
+
 ### Macros
 
 You can make any wart into a macro, like so:
