@@ -13,6 +13,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   val components = List[PluginComponent](Traverser)
 
   private[this] var traversers: List[WartTraverser] = List.empty
+  private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -34,8 +35,13 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val mirror = reflect.runtime.universe.runtimeMirror(classLoader)
 
-    val traverserNames = filterOptions("traverser", options)
-    traversers = traverserNames.map(getTraverser(mirror))
+    def ts(p: String) = {
+      val traverserNames = filterOptions(p, options)
+      traverserNames.map(getTraverser(mirror))
+    }
+
+    traversers = ts("traverser")
+    onlyWarnTraversers = ts("only-warn-traverser")
   }
 
   object Traverser extends PluginComponent {
@@ -49,13 +55,19 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     override def newPhase(prev: Phase) = new StdPhase(prev) {
       override def apply(unit: CompilationUnit) {
-        val wartUniverse = new WartUniverse {
+        def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
           val universe: global.type = global
-          def error(pos: Position, message: String) = unit.error(pos, message)
+          def error(pos: Position, message: String) =
+            if (onlyWarn) unit.warning(pos, message)
+            else unit.error(pos, message)
           def warning(pos: Position, message: String) = unit.warning(pos, message)
         }
 
-        traversers.foreach(_(wartUniverse).traverse(unit.body))
+        def go(ts: List[WartTraverser], onlyWarn: Boolean) =
+          ts.foreach(_(wartUniverse(onlyWarn)).traverse(unit.body))
+
+        go(traversers, onlyWarn = false)
+        go(onlyWarnTraversers, onlyWarn = true)
       }
     }
   }
