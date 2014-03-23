@@ -13,6 +13,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   val components = List[PluginComponent](Traverser)
 
   private[this] var traversers: List[WartTraverser] = List.empty
+  private[this] var onlyWarn = false
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -36,6 +37,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     val traverserNames = filterOptions("traverser", options)
     traversers = traverserNames.map(getTraverser(mirror))
+
+    onlyWarn = options contains "only-warn"
   }
 
   object Traverser extends PluginComponent {
@@ -51,7 +54,9 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
       override def apply(unit: CompilationUnit) {
         val wartUniverse = new WartUniverse {
           val universe: global.type = global
-          def error(pos: Position, message: String) = unit.error(pos, message)
+          def error(pos: Position, message: String) =
+            if (onlyWarn) unit.warning(pos, message)
+            else unit.error(pos, message)
           def warning(pos: Position, message: String) = unit.warning(pos, message)
         }
 
