@@ -1,4 +1,4 @@
 language: scala
 scala:
   - 2.10.3
-  - 2.11.0-RC1
+  - 2.11.0-RC3
