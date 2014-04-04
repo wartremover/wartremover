@@ -6,7 +6,7 @@ object AsInstanceOf extends WartTraverser {
     import u.universe._
     val EqualsName: TermName = "equals"
     val AsInstanceOfName: TermName = "asInstanceOf"
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
        tree match {

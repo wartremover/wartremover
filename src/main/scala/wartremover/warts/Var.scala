@@ -9,7 +9,7 @@ object Var extends WartTraverser {
     val metaDataSymbol = rootMirror.staticClass("scala.xml.MetaData")
     val namespaceBindingSymbol = rootMirror.staticClass("scala.xml.NamespaceBinding")
 
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
         tree match {

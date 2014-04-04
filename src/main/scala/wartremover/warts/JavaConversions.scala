@@ -7,7 +7,7 @@ object JavaConversions extends WartTraverser {
 
     val javaConversions = rootMirror.staticModule("scala.collection.JavaConversions")
 
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
           case Select(tpt, _) if tpt.tpe.contains(javaConversions) => {

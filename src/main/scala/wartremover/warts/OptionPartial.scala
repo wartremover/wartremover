@@ -7,7 +7,7 @@ object OptionPartial extends WartTraverser {
 
     val optionSymbol = rootMirror.staticClass("scala.Option")
     val GetName: TermName = "get"
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>

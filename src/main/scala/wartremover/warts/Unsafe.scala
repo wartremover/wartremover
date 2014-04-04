@@ -18,5 +18,5 @@ object Unsafe extends WartTraverser {
   )
 
   def apply(u: WartUniverse): u.Traverser =
-    WartTraverser.sumList(u)(safeTraversers)
+    WartTraverser.sumList(u)(safeTraversers.reverse)
 }
