@@ -10,7 +10,7 @@ organization := "org.brianmckenna"
 
 scalaVersion := "2.10.4"
 
-crossScalaVersions := Seq("2.10.4", "2.11.0-RC3")
+crossScalaVersions := Seq("2.10.4", "2.11.0-RC4")
 
 crossVersion := CrossVersion.binary
 
@@ -50,7 +50,7 @@ libraryDependencies := {
 
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-  "org.scalatest" %% "scalatest" % "2.1.2" % "test"
+  "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 )
 
 scalacOptions in Test <++= packageBin in Compile map { pluginJar => Seq(
