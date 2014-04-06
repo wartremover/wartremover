@@ -8,9 +8,9 @@ name := "wartremover"
 
 organization := "org.brianmckenna"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.4"
 
-crossScalaVersions := Seq("2.10.3", "2.11.0-RC3")
+crossScalaVersions := Seq("2.10.4", "2.11.0-RC3")
 
 crossVersion := CrossVersion.binary
 
@@ -37,12 +37,12 @@ releaseProcess := Seq[ReleaseStep](
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.0-M3" cross CrossVersion.full)
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.0-M7" cross CrossVersion.full)
 
 libraryDependencies := {
   CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((2, 10)) =>
-      libraryDependencies.value :+ ("org.scalamacros" % "quasiquotes" % "2.0.0-M3" cross CrossVersion.full)
+      libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.0-M7")
     case _ =>
       libraryDependencies.value
   }
