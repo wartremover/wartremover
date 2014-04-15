@@ -69,9 +69,9 @@ trait WartUniverse {
   val excludes: List[String]
   trait ExcludingTraverser extends universe.Traverser {
     abstract override def traverse(tree: universe.Tree) = {
-      val notExcluded =  if (tree.symbol==null || tree.symbol.fullName==null || !excludes.nonEmpty) true else {
+      val notExcluded =
+        (tree.symbol==null || tree.symbol.fullName==null || excludes.isEmpty) ||
         !excludes.exists(tree.symbol.fullName.startsWith(_))
-      }
       if(notExcluded) super.traverse(tree)
     }
   }
