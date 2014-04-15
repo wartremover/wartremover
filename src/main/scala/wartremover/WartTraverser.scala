@@ -14,7 +14,7 @@ trait WartTraverser {
       val universe: c.universe.type = c.universe
       def error(pos: universe.Position, message: String) = c.error(pos, message)
       def warning(pos: universe.Position, message: String) = c.warning(pos, message)
-      val excludes: List[String] = List.empty // TODO
+      val excludes: List[String] = List.empty // TODO: find a sensible way to initialize this field with useful data
     }
 
     apply(MacroUniverse).traverse(expr.tree)
