@@ -69,8 +69,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
         def go(ts: List[WartTraverser], onlyWarn: Boolean) = {
            ts.foreach{ wt =>
              val wu = wartUniverse(onlyWarn)
-             // the cast below is necessary to make the path-dependent type happy
-             wt(wu).traverse(unit.body.asInstanceOf[wu.universe.Tree])
+             wt(wu).traverse(unit.body)
            }
         }
 
