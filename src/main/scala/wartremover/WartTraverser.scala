@@ -14,6 +14,7 @@ trait WartTraverser {
       val universe: c.universe.type = c.universe
       def error(pos: universe.Position, message: String) = c.error(pos, message)
       def warning(pos: universe.Position, message: String) = c.warning(pos, message)
+      val excludes: List[String] = List.empty // TODO: find a sensible way to initialize this field with useful data
     }
 
     apply(MacroUniverse).traverse(expr.tree)
@@ -62,8 +63,17 @@ object WartTraverser {
 
 trait WartUniverse {
   val universe: Universe
-  type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
   def error(pos: universe.Position, message: String)
   def warning(pos: universe.Position, message: String)
+  val excludes: List[String]
+  trait ExcludingTraverser extends universe.Traverser {
+    abstract override def traverse(tree: universe.Tree) = {
+      val notExcluded =
+        (tree.symbol==null || tree.symbol.fullName==null || excludes.isEmpty) ||
+        !excludes.exists(tree.symbol.fullName.startsWith(_))
+      if(notExcluded) super.traverse(tree)
+    }
+  }
+  trait Traverser extends universe.Traverser with ExcludingTraverser
 }

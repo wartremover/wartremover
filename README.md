@@ -39,6 +39,15 @@ By default, WartRemover generates compile-time errors. If you want to be warned 
 scalacOptions in (Compile, compile) += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
 ```
 
+If you want to exclude Wart verification in some places you can use:
+
+```scala
+scalacOptions in (Compile, compile) += "-P:wartremover:excluded:somepack1,otherpack2.Clazz"
+```
+
+This will prevent WartRemover from been applied in `somepack1` and in `otherpack2.Clazz`. In other words the option
+`excluded:` accepts a comma separated list of prefixes that are going to be ignored during WartRemover processing.
+
 ### Macros
 
 You can make any wart into a macro, like so:
