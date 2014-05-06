@@ -18,7 +18,7 @@ class UnsafeTest extends FunSuite {
       println(null)
     }
     expectResult(
-      List("Inferred type containing Any",
+      Set("Inferred type containing Any",
            "Inferred type containing Any",
            "Scala inserted an any2stringadd call",
            "LeftProjection#get is disabled - use LeftProjection#toOption instead",
@@ -28,7 +28,7 @@ class UnsafeTest extends FunSuite {
            "Statements must return Unit",
            "null is disabled",
            "Option#get is disabled - use Option#fold instead",
-           "var is disabled"), "result.errors")(result.errors)
+           "var is disabled"), "result.errors")(result.errors.toSet)
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
 }

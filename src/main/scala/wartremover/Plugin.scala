@@ -5,7 +5,7 @@ import tools.nsc.{Global, Phase}
 
 import java.net.{URL, URLClassLoader}
 
-class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
+class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
   import global._
 
   val name = "wartremover"
@@ -14,6 +14,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
   private[this] var traversers: List[WartTraverser] = List.empty
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
+  private[this] var excludes:List[String] = List.empty
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -41,6 +42,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     }
 
     traversers = ts("traverser")
+    excludes = filterOptions("excludes",options).mkString(",").split(",").toList.map(_.trim)
     onlyWarnTraversers = ts("only-warn-traverser")
   }
 
@@ -61,10 +63,15 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
             if (onlyWarn) unit.warning(pos, message)
             else unit.error(pos, message)
           def warning(pos: Position, message: String) = unit.warning(pos, message)
+          val excludes = plugin.excludes
         }
 
-        def go(ts: List[WartTraverser], onlyWarn: Boolean) =
-          ts.foreach(_(wartUniverse(onlyWarn)).traverse(unit.body))
+        def go(ts: List[WartTraverser], onlyWarn: Boolean) = {
+           ts.foreach{ wt =>
+             val wu = wartUniverse(onlyWarn)
+             wt(wu).traverse(unit.body)
+           }
+        }
 
         go(traversers, onlyWarn = false)
         go(onlyWarnTraversers, onlyWarn = true)

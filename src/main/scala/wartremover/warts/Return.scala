@@ -4,7 +4,7 @@ package warts
 object Return extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
           case u.universe.Return(_) =>

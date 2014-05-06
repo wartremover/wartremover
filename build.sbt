@@ -54,7 +54,8 @@ libraryDependencies ++= Seq(
 scalacOptions in Test <++= packageBin in Compile map { pluginJar => Seq(
   "-Xplugin:" + pluginJar,
   "-P:wartremover:cp:" + pluginJar.toURI.toURL,
-  "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+  "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe",
+  "-P:wartremover:excluded:org.brianmckenna.wartremover.test.tobeexcluded"
 ) }
 
 publishMavenStyle := true

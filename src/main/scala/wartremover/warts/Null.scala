@@ -10,7 +10,7 @@ object Null extends WartTraverser {
     val xmlSymbols = (classOf[scala.xml.Elem]
       :: classOf[scala.xml.NamespaceBinding]
       :: Nil) map (c => rootMirror.staticClass(c.getCanonicalName))
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
         tree match {

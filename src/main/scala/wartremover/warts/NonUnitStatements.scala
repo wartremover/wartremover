@@ -28,7 +28,7 @@ object NonUnitStatements extends WartTraverser {
       }
     }
 
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
           case Block(statements, _) =>

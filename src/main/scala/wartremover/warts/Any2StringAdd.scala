@@ -7,7 +7,7 @@ object Any2StringAdd extends WartTraverser {
 
     val PredefName: TermName = "Predef"
     val Any2StringAddName: TermName = "any2stringadd"
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
           case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>

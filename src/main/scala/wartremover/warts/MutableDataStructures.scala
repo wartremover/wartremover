@@ -7,7 +7,7 @@ object MutableDataStructures extends WartTraverser {
 
     val mutablePackage = rootMirror.staticPackage("scala.collection.mutable")
 
-    new Traverser {
+    new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
           case Select(tpt, _) if tpt.tpe.contains(mutablePackage) && tpt.tpe.termSymbol.isPackage =>
