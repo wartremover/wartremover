@@ -42,7 +42,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
     }
 
     traversers = ts("traverser")
-    excludes = filterOptions("excludes",options).mkString(",").split(",").toList.map(_.trim)
+    excludes = filterOptions("excluded",options) flatMap { _.split(":").toList } map { _.trim }
     onlyWarnTraversers = ts("only-warn-traverser")
   }
 
