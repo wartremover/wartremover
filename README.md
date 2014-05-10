@@ -42,11 +42,11 @@ scalacOptions in (Compile, compile) += "-P:wartremover:only-warn-traverser:org.b
 If you want to exclude Wart verification in some places you can use:
 
 ```scala
-scalacOptions in (Compile, compile) += "-P:wartremover:excluded:somepack1,otherpack2.Clazz"
+scalacOptions in (Compile, compile) += "-P:wartremover:excluded:somepack1:otherpack2.Clazz"
 ```
 
 This will prevent WartRemover from been applied in `somepack1` and in `otherpack2.Clazz`. In other words the option
-`excluded:` accepts a comma separated list of prefixes that are going to be ignored during WartRemover processing.
+`excluded:` accepts a colon separated list of prefixes that are going to be ignored during WartRemover processing.
 
 ### Macros
 
