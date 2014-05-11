@@ -9,6 +9,7 @@ object Unsafe extends WartTraverser {
     EitherProjectionPartial,
     IsInstanceOf,
     NonUnitStatements,
+    Nothing,
     Null,
     OptionPartial,
     Product,
