@@ -12,7 +12,7 @@ object DefaultArguments extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
-          case DefDef(_, _, _, vs, _, _) if vs.find(containsDef).isDefined =>
+          case d@DefDef(_, _, _, vs, _, _) if !isSynthetic(u)(d) && vs.find(containsDef).isDefined =>
             u.error(tree.pos, "Function has default arguments")
           case _ =>
             super.traverse(tree)
