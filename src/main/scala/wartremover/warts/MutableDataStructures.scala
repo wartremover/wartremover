@@ -11,7 +11,7 @@ object MutableDataStructures extends WartTraverser {
       override def traverse(tree: Tree) {
         tree match {
           case Select(tpt, _) if tpt.tpe.contains(mutablePackage) && tpt.tpe.termSymbol.isPackage =>
-            u.error(tree.pos, "scala.collection.mutable package is disabled -  use java.util instead")
+            u.error(tree.pos, "scala.collection.mutable package is disabled")
           case _ =>
         }
         super.traverse(tree)
