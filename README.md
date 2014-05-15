@@ -102,6 +102,15 @@ println({} + "test")
 x.asInstanceOf[String]
 ```
 
+### DefaultArguments
+
+Scala allows methods to have default arguments. This is insane.
+
+```scala
+// Won't compile: Function has default arguments
+def x(y: Int = 0)
+```
+
 ### EitherProjectionPartial
 
 `scala.util.Either.LeftProjection` and `scala.util.Either.RightProjection`

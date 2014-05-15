@@ -6,6 +6,7 @@ object Unsafe extends WartTraverser {
     Any,
     Any2StringAdd,
     AsInstanceOf,
+    DefaultArguments,
     EitherProjectionPartial,
     IsInstanceOf,
     NonUnitStatements,
