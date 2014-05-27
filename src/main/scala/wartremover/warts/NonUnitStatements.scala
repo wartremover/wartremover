@@ -6,7 +6,8 @@ object NonUnitStatements extends WartTraverser {
     import u.universe._
     import scala.reflect.NameTransformer
 
-    val PrintName: TermName = "$print"
+    val ReadName: TermName = "$read"
+    val IwName: TermName = "$iw"
     val NodeBufferAddName: TermName = NameTransformer.encode("&+")
 
     def isIgnoredStatement(tree: Tree) = tree match {
@@ -17,6 +18,8 @@ object NonUnitStatements extends WartTraverser {
       // val x = <x>5</x> desugars to a non-Unit statement; ignore.
       case Apply(Select(qual, NodeBufferAddName), _)
         if qual.symbol.typeSignature =:= typeOf[scala.xml.NodeBuffer] => true
+      // REPL needs this
+      case Select(Select(Select(Ident(_), ReadName), IwName), IwName) => true
       case _ => false
     }
 
