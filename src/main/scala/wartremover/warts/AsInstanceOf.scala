@@ -6,10 +6,16 @@ object AsInstanceOf extends WartTraverser {
     import u.universe._
     val EqualsName: TermName = "equals"
     val AsInstanceOfName: TermName = "asInstanceOf"
+
+    val allowedCasts = List(
+      "scala.tools.nsc.interpreter.IMain" // REPL needs this
+    ) // cannot do `map rootMirror.staticClass` here because then:
+      //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
+
     new u.Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
-       tree match {
+        tree match {
 
           // Ignore usage in synthetic classes
           case ClassDef(_, _, _, _) if synthetic => 
@@ -19,6 +25,10 @@ object AsInstanceOf extends WartTraverser {
 
           // Pattern matcher writes var x1 = null.asInstanceOf[...]
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
+
+          // Ignore allowed casts
+          case TypeApply(Select(_, AsInstanceOfName), List(tt))
+            if tt.isType && allowedCasts.contains(tt.tpe.typeSymbol.fullName) =>
 
           // Otherwise it's verboten for non-synthetic exprs
           case Select(e, AsInstanceOfName) if !isSynthetic(u)(e) =>

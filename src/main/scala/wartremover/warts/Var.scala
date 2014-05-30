@@ -6,8 +6,12 @@ object Var extends WartTraverser {
     import u.universe._
 
     val HashCodeName: TermName = "hashCode"
-    val metaDataSymbol = rootMirror.staticClass("scala.xml.MetaData")
-    val namespaceBindingSymbol = rootMirror.staticClass("scala.xml.NamespaceBinding")
+
+    val allowedTypes = List(
+      "scala.xml.MetaData", "scala.xml.NamespaceBinding", // XML literals output vars
+      "scala.tools.nsc.interpreter.IMain" // REPL needs this
+    ) // cannot do `map rootMirror.staticClass` here because then:
+      //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
 
     new u.Traverser {
       override def traverse(tree: Tree) {
@@ -36,8 +40,8 @@ object Var extends WartTraverser {
           // Scala pattern matching outputs synthetic vars
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
 
-          // XML literals output vars
-          case ValDef(mods, _, tpt, _) if tpt.tpe.baseType(metaDataSymbol) != NoType || tpt.tpe.baseType(namespaceBindingSymbol) != NoType =>
+          // Ignore allowed types
+          case ValDef(mods, _, tpt, _) if allowedTypes.contains(tpt.tpe.typeSymbol.fullName) =>
 
           case ValDef(mods, _, tpt, _) if mods.hasFlag(Flag.MUTABLE) =>
             u.error(tree.pos, "var is disabled")
