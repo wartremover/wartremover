@@ -30,19 +30,19 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 addCompilerPlugin("org.brianmckenna" %% "wartremover" % "0.10")
 
-scalacOptions in (Compile, compile) += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
 ```
 
 By default, WartRemover generates compile-time errors. If you want to be warned only, use an `only-warn-traverser`:
 
 ```scala
-scalacOptions in (Compile, compile) += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
+scalacOptions += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
 ```
 
 If you want to exclude Wart verification in some places you can use:
 
 ```scala
-scalacOptions in (Compile, compile) += "-P:wartremover:excluded:somepack1:otherpack2.Clazz"
+scalacOptions += "-P:wartremover:excluded:somepack1:otherpack2.Clazz"
 ```
 
 This will prevent WartRemover from been applied in `somepack1` and in `otherpack2.Clazz`. In other words the option
