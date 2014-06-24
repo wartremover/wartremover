@@ -7,15 +7,17 @@ object Null extends WartTraverser {
 
     val UnapplyName: TermName = "unapply"
     val UnapplySeqName: TermName = "unapplySeq"
-    val xmlSymbols = (classOf[scala.xml.Elem]
-      :: classOf[scala.xml.NamespaceBinding]
-      :: Nil) map (c => rootMirror.staticClass(c.getCanonicalName))
+    val xmlSymbols = List(
+      "scala.xml.Elem", "scala.xml.NamespaceBinding"
+    ) // cannot do `map rootMirror.staticClass` here because then:
+      //   scala.ScalaReflectionException: object scala.xml.Elem in compiler mirror not found.
+
     new u.Traverser {
       override def traverse(tree: Tree) {
         val synthetic = isSynthetic(u)(tree)
         tree match {
           // Ignore xml literals
-          case Apply(Select(left, _), _) if xmlSymbols exists (left.tpe.baseType(_) != NoType) =>
+          case Apply(Select(left, _), _) if xmlSymbols.contains(left.tpe.typeSymbol.fullName) =>
           // Ignore synthetic case class's companion object unapply
           case ModuleDef(mods, _, Template(parents, self, stats)) =>
             mods.annotations foreach { annotation =>
