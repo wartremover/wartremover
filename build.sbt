@@ -1,16 +1,17 @@
 import sbtrelease._
-import sbtrelease.ReleasePlugin.ReleaseKeys._
+import sbtrelease.ReleasePlugin._
+import ReleaseKeys._
 import sbtrelease.ReleaseStateTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
-import AssemblyKeys._
+import sbtassembly.Plugin._
 
 name := "wartremover"
 
 organization := "org.brianmckenna"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.1"
 
-crossScalaVersions := Seq("2.10.4", "2.11.1")
+crossScalaVersions := Seq("2.11.1", "2.10.4")
 
 crossVersion := CrossVersion.binary
 
@@ -51,13 +52,6 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 )
 
-scalacOptions in Test <++= packageBin in Compile map { pluginJar => Seq(
-  "-Xplugin:" + pluginJar,
-  "-P:wartremover:cp:" + pluginJar.toURI.toURL,
-  "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe",
-  "-P:wartremover:excluded:org.brianmckenna.wartremover.test.tobeexcluded"
-) }
-
 publishMavenStyle := true
 
 publishArtifact in Test := false
@@ -75,12 +69,12 @@ licenses := Seq(
     url("http://www.apache.org/licenses/LICENSE-2.0.txt")
 )
 
-homepage := Some(url("https://github.com/puffnfresh/wartremover"))
+homepage := Some(url("https://github.com/typelevel/wartremover"))
 
 pomExtra := (
   <scm>
-    <url>git@github.com:puffnfresh/wartremover.git</url>
-    <connection>scm:git:git@github.com:puffnfresh/wartremover.git</connection>
+    <url>git@github.com:typelevel/wartremover.git</url>
+    <connection>scm:git:git@github.com:typelevel/wartremover.git</connection>
   </scm>
   <developers>
     <developer>
