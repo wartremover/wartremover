@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar target/scala-2.10/wartremover-assembly-*.jar "$@"
+java -jar core/target/scala-2.11/wartremover-assembly-*.jar "$@"
