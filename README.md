@@ -6,65 +6,66 @@ WartRemover is a flexible Scala code linting tool.
 
 ## Usage
 
-WartRemover can be used in the following ways:
-
-* As a command-line tool
-* As a compiler plugin
-* To derive macros
-
-### Command-line
-
-Compile the command-line tool via `sbt assembly`.
-
-    $ ./wartremover -traverser org.brianmckenna.wartremover.warts.Unsafe src/main/scala/wartremover/Plugin.scala
-    src/main/scala/wartremover/Plugin.scala:15: error: var is disabled
-      private[this] var traversers: List[WartTraverser] = List.empty
-                        ^
-
-### Compiler plugin
-
-Add the following to `build.sbt`:
+Add the following to your `project/plugins.sbt`:
 
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-addCompilerPlugin("org.brianmckenna" %% "wartremover" % "0.10")
-
-scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.11")
 ```
 
-By default, WartRemover generates compile-time errors. If you want to be warned only, use an `only-warn-traverser`:
+If you're using `sbt` ≥ 0.13.5, you'll be able to make use of the new auto plugin feature. If not, you'll probably want to add the following to your `build.sbt`:
 
 ```scala
-scalacOptions += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
+import wartremover._
+
+wartremoverSettings
 ```
 
-If you want to exclude Wart verification in some places you can use:
+Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all errors, use:
 
 ```scala
-scalacOptions += "-P:wartremover:excluded:somepack1:otherpack2.Clazz"
+wartremoverErrors ++= Warts.all
 ```
 
-This will prevent WartRemover from been applied in `somepack1` and in `otherpack2.Clazz`. In other words the option
-`excluded:` accepts a colon separated list of prefixes that are going to be ignored during WartRemover processing.
+Similarly, to just issue warnings instead of errors for all built-in warts, you can use:
 
-### Macros
+```scala
+wartremoverWarnings ++= Warts.all
+```
 
-You can make any wart into a macro, like so:
+You can also use scopes, e.g. to turn on all warts only for compilation (and not for the tests nor the `sbt console`), use:
 
-    scala> import language.experimental.macros
-    import language.experimental.macros
+```scala
+wartremoverErrors in (Compile, compile) ++= Warts.all
+```
 
-    scala> import org.brianmckenna.wartremover.warts.Unsafe
-    import org.brianmckenna.wartremover.warts.Unsafe
+To choose warts more selectively, use any of the following:
 
-    scala> def safe(expr: Any) = macro Unsafe.asMacro
-    safe: (expr: Any)Any
+```scala
+wartremoverErrors ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable)
 
-    scala> safe { null }
-    <console>:10: error: null is disabled
-                  safe { null }
-                         ^
+wartremoverWarnings += Wart.Nothing
+
+wartremoverWarnings ++= Seq(Wart.Any, Wart.Serializable)
+```
+
+To exclude a package or a class from all checks:
+
+```scala
+wartremoverExcluded ++= Seq("org.some.package", "org.other.package.SomeClass")
+```
+
+Finally, if you want to add your custom `WartTraverser`, provide its classpath first:
+
+```scala
+wartremoverClasspaths += "some-url"
+
+wartremoverErrors += Wart.custom("org.your.custom.WartTraverser")
+```
+
+See also [other ways of using WartRemover](/OTHER-WAYS.md) for information on how to use it as a command-line tool, a macro or a compiler plugin, while providing all the `scalac` options manually.
+
 
 ## Warts
 
