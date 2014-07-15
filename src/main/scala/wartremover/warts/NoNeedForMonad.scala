@@ -37,10 +37,13 @@ object NoNeedForMonad extends WartTraverser {
       }.flatten
 
       if(!subtrees.isEmpty) {
-        val asFunc = subtrees.map { case q"(..$args) => $body" =>
+        def asFuncTransform(args: List[Tree], body: Tree) =
           (args.map { case arg @ ValDef(_, name, _, _) =>
             Ident(name): Tree
           }, body)
+        val asFunc = subtrees.map {
+          case q"(..$args) => $body" => asFuncTransform(args, body)
+          case Block(args, body)     => asFuncTransform(args, body)
         }
         val yields = asFunc.last._2
 
