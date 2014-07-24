@@ -137,14 +137,14 @@ explicitly handle both the populated and empty `List`.
 ### List.last
 
 `scala.collection.immutable.List` has a `last` method which will throw if the list
-is empty. The program should be refactored to use `List#lastOption`  to
+is empty. The program should be refactored to use `List#lastOption` to
 explicitly handle both the populated and empty `List`. 
 
 ### List.tail
 
 `scala.collection.immutable.List` has a `tail` method which will throw if the list
 is empty. The program should be refactored to use `List#drop(1)` to
-explicitly  handle both the populated and empty `List`. 
+explicitly handle both the populated and empty `List`. 
 
 ### NoNeedForMonad
 
