@@ -128,6 +128,24 @@ the `Some` and `None` cases.
 x.isInstanceOf[String]
 ```
 
+### List.head
+
+`scala.collection.immutable.List` has a `head` method which will throw if the list
+is empty. The program should be refactored to use `List#headOption` to
+explicitly handle both the populated and empty `List`. 
+
+### List.last
+
+`scala.collection.immutable.List` has a `last` method which will throw if the list
+is empty. The program should be refactored to use `List#lastOption` to
+explicitly handle both the populated and empty `List`. 
+
+### List.tail
+
+`scala.collection.immutable.List` has a `tail` method which will throw if the list
+is empty. The program should be refactored to use `List#drop(1)` to
+explicitly handle both the populated and empty `List`. 
+
 ### NoNeedForMonad
 
 Sometimes an additional power of `Monad` is not needed, and
@@ -244,6 +262,7 @@ Checks for the following warts:
 * Return
 * Serializable
 * Var
+* ListOps
 
 ### Var
 

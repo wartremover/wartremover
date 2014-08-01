@@ -16,7 +16,10 @@ object Unsafe extends WartTraverser {
     Return,
     Serializable,
     TryPartial,
-    Var
+    Var,
+    ListOps.Head,
+    ListOps.Tail,
+    ListOps.Last
   )
 
   def apply(u: WartUniverse): u.Traverser =

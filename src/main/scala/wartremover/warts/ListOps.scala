@@ -1,0 +1,31 @@
+package org.brianmckenna.wartremover
+package warts
+
+object ListOps {
+
+  class Op(name: String, error: String) extends WartTraverser {
+    def apply(u: WartUniverse): u.Traverser = {
+      import u.universe._
+
+      val listSymbol = rootMirror.staticClass("scala.collection.immutable.List")
+      val Name: TermName = name
+      new u.Traverser {
+        override def traverse(tree: Tree) {
+          tree match {
+            case Select(left, Name) if left.tpe.baseType(listSymbol) != NoType ⇒
+              u.error(tree.pos, error)
+            // TODO: This ignores a lot
+            case LabelDef(_, _, rhs) if isSynthetic(u)(tree) ⇒
+            case _ ⇒
+              super.traverse(tree)
+          }
+        }
+      }
+    }
+  }
+
+  object Head extends Op("head", "List#head is disabled - use List#headOption instead")
+  object Tail extends Op("tail", "List#tail is disabled - use List#drop(1) instead")
+  object Last extends Op("last", "List#last is disabled - use List#lastOption instead")
+
+} 
