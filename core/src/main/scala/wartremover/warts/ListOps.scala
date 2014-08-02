@@ -1,7 +1,7 @@
 package org.brianmckenna.wartremover
 package warts
 
-object ListOps {
+object ListOps extends WartTraverser {
 
   class Op(name: String, error: String) extends WartTraverser {
     def apply(u: WartUniverse): u.Traverser = {
@@ -24,8 +24,11 @@ object ListOps {
     }
   }
 
-  object Head extends Op("head", "List#head is disabled - use List#headOption instead")
-  object Tail extends Op("tail", "List#tail is disabled - use List#drop(1) instead")
-  object Last extends Op("last", "List#last is disabled - use List#lastOption instead")
+  def apply(u: WartUniverse): u.Traverser =
+    WartTraverser.sumList(u)(List(
+      new Op("head", "List#head is disabled - use List#headOption instead"),
+      new Op("tail", "List#tail is disabled - use List#drop(1) instead"),
+      new Op("last", "List#last is disabled - use List#lastOption instead")
+    ))
 
-} 
+}
