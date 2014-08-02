@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar target/scala-2.10/wartremover-assembly-*.jar "$@"
+
+java -jar "$(dirname "$0")"/core/target/scala-2.11/wartremover-assembly-*.jar "$@"
