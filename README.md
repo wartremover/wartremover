@@ -105,7 +105,7 @@ x.asInstanceOf[String]
 
 ### DefaultArguments
 
-Scala allows methods to have default arguments. This is insane.
+Scala allows methods to have default arguments, which make it hard to use methods as functions.
 
 ```scala
 // Won't compile: Function has default arguments
