@@ -22,7 +22,13 @@ import wartremover._
 wartremoverSettings
 ```
 
-Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all errors, use:
+Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
+
+```scala
+wartremoverErrors ++= Warts.unsafe
+```
+
+To turn on *all* available errors (some have false positives), use:
 
 ```scala
 wartremoverErrors ++= Warts.all
@@ -31,7 +37,7 @@ wartremoverErrors ++= Warts.all
 Similarly, to just issue warnings instead of errors for all built-in warts, you can use:
 
 ```scala
-wartremoverWarnings ++= Warts.all
+wartremoverWarnings ++= Warts.all    // or Warts.unsafe
 ```
 
 You can also use scopes, e.g. to turn on all warts only for compilation (and not for the tests nor the `sbt console`), use:
