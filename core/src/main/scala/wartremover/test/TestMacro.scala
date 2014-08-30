@@ -20,7 +20,6 @@ object WartTestTraverser {
       val universe: c.universe.type = c.universe
       def error(pos: universe.Position, message: String) = errors += message
       def warning(pos: universe.Position, message: String) = warnings += message
-      val excludes: List[String] = List("org.brianmckenna.wartremover.test.tobeexcluded")
     }
 
     traverser(MacroTestUniverse).traverse(a.tree)
