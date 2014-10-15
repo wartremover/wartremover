@@ -17,9 +17,21 @@ package object wartremover {
     resolvers += Resolver.sonatypeRepo("releases"),
     addCompilerPlugin("org.brianmckenna" %% "wartremover" % Wart.PluginVersion)
   ) ++ inScope(Global)(Seq(
-    Def.derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
-    Def.derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
-    Def.derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:$c")),
-    Def.derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
+    derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
+    derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
+    derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:$c")),
+    derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
   ))
+
+  // Workaround for typelevel/wartremover#123
+  private[wartremover] def derive[T](s: Setting[T]): Setting[T] = {
+    try {
+      Def derive s
+    } catch {
+      case _: LinkageError =>
+        import scala.language.reflectiveCalls
+        Def.asInstanceOf[{def derive[T](setting: Setting[T], allowDynamic: Boolean, filter: Scope => Boolean, trigger: AttributeKey[_] => Boolean, default: Boolean): Setting[T]}]
+          .derive(s, false, _ => true, _ => true, false)
+    }
+  }
 }
