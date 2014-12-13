@@ -9,8 +9,6 @@ WartRemover is a flexible Scala code linting tool.
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-resolvers += Resolver.sonatypeRepo("releases")
-
 addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.11")
 ```
 
@@ -71,6 +69,8 @@ wartremoverErrors += Wart.custom("org.your.custom.WartTraverser")
 ```
 
 See also [other ways of using WartRemover](/OTHER-WAYS.md) for information on how to use it as a command-line tool, a macro or a compiler plugin, while providing all the `scalac` options manually.
+
+* Note - the WartRemover SBT plugin sets scalac options - make sure you're not overwriting those by having a `scalacOptions := ...` setting in your SBT settings. Use `scalacOptions ++= ...` instead.
 
 
 ## Warts
