@@ -63,17 +63,8 @@ object WartTraverser {
 
 trait WartUniverse {
   val universe: Universe
+  type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
   def error(pos: universe.Position, message: String)
   def warning(pos: universe.Position, message: String)
-  val excludes: List[String]
-  trait ExcludingTraverser extends universe.Traverser {
-    abstract override def traverse(tree: universe.Tree) = {
-      val notExcluded =
-        (tree.symbol==null || tree.symbol.fullName==null || excludes.isEmpty) ||
-        !excludes.exists(tree.symbol.fullName.startsWith(_))
-      if(notExcluded) super.traverse(tree)
-    }
-  }
-  trait Traverser extends universe.Traverser with ExcludingTraverser
 }

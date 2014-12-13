@@ -37,13 +37,13 @@ By default, WartRemover generates compile-time errors. If you want to be warned 
 scalacOptions += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
 ```
 
-If you don't want to perform the checks in some class (or even in a whole package), you can use:
+If you don't want to perform the checks in some file, you can use:
 
 ```scala
-scalacOptions += "-P:wartremover:excluded:package1:package2.Clazz"
+scalacOptions += "-P:wartremover:excluded:ABSOLUTE_PATH_TO_THE_FILE"
 ```
 
-Here, the option will prevent WartRemover from being applied in `package1` package and in `package2.Clazz` class (`excluded` accepts a colon-separated list of prefixes that are going to be ignored).
+The `excluded` option accepts a colon-separated list of absolute paths to files to ignore.
 
 To use your custom `WartTraverser`, you'll need to provide a classpath where it can be found:
 

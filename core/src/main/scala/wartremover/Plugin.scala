@@ -5,7 +5,7 @@ import tools.nsc.{Global, Phase}
 
 import java.net.{URL, URLClassLoader}
 
-class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
+class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   import global._
 
   val name = "wartremover"
@@ -14,7 +14,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
 
   private[this] var traversers: List[WartTraverser] = List.empty
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
-  private[this] var excludes:List[String] = List.empty
+  private[this] var excludedFiles: List[String] = List.empty
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -42,8 +42,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
     }
 
     traversers = ts("traverser")
-    excludes = filterOptions("excluded",options) flatMap { _.split(":").toList } map { _.trim }
     onlyWarnTraversers = ts("only-warn-traverser")
+    excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
   }
 
   object Traverser extends PluginComponent {
@@ -56,25 +56,24 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin { plugin =>
     val phaseName = "wartremover-traverser"
 
     override def newPhase(prev: Phase) = new StdPhase(prev) {
-      override def apply(unit: CompilationUnit) {
-        def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
-          val universe: global.type = global
-          def error(pos: Position, message: String) =
-            if (onlyWarn) unit.warning(pos, message)
-            else unit.error(pos, message)
-          def warning(pos: Position, message: String) = unit.warning(pos, message)
-          val excludes = plugin.excludes
-        }
+      override def apply(unit: CompilationUnit) = {
+        val isExcluded = excludedFiles contains unit.source.file.absolute.path
 
-        def go(ts: List[WartTraverser], onlyWarn: Boolean) = {
-           ts.foreach{ wt =>
-             val wu = wartUniverse(onlyWarn)
-             wt(wu).traverse(unit.body)
-           }
-        }
+        if (!isExcluded) {
+          def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
+            val universe: global.type = global
+            def error(pos: Position, message: String) =
+              if (onlyWarn) unit.warning(pos, message)
+              else unit.error(pos, message)
+            def warning(pos: Position, message: String) = unit.warning(pos, message)
+          }
 
-        go(traversers, onlyWarn = false)
-        go(onlyWarnTraversers, onlyWarn = true)
+          def go(ts: List[WartTraverser], onlyWarn: Boolean) =
+            ts.foreach(_(wartUniverse(onlyWarn)).traverse(unit.body))
+
+          go(traversers, onlyWarn = false)
+          go(onlyWarnTraversers, onlyWarn = true)
+        }
       }
     }
   }

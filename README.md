@@ -54,10 +54,10 @@ wartremoverWarnings += Wart.Nothing
 wartremoverWarnings ++= Seq(Wart.Any, Wart.Serializable)
 ```
 
-To exclude a package or a class from all checks:
+To exclude a file from all checks:
 
 ```scala
-wartremoverExcluded ++= Seq("org.some.package", "org.other.package.SomeClass")
+wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
 ```
 
 Finally, if you want to add your custom `WartTraverser`, provide its classpath first:

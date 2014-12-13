@@ -5,7 +5,7 @@ import Keys._
 package object wartremover {
   val wartremoverErrors = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation errors.")
   val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
-  val wartremoverExcluded = settingKey[Seq[String]]("List of fully-qualified class and package names to be excluded from all checks.")
+  val wartremoverExcluded = settingKey[Seq[File]]("List of files to be excluded from all checks.")
   val wartremoverClasspaths = settingKey[Seq[String]]("List of classpaths for custom Warts")
 
   lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
@@ -19,7 +19,7 @@ package object wartremover {
   ) ++ inScope(Global)(Seq(
     derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
     derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
-    derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:$c")),
+    derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
     derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
   ))
 
