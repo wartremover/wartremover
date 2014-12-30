@@ -8,7 +8,7 @@ object ListOps extends WartTraverser {
       import u.universe._
 
       val listSymbol = rootMirror.staticClass("scala.collection.immutable.List")
-      val Name: TermName = TermName(name)
+      val Name: TermName = name
       new u.Traverser {
         override def traverse(tree: Tree): Unit = {
           tree match {

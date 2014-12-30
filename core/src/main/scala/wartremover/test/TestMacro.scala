@@ -2,7 +2,7 @@ package org.brianmckenna.wartremover
 package test
 
 import language.experimental.macros
-import reflect.macros.blackbox.Context
+import reflect.macros.Context
 
 object WartTestTraverser {
   case class Result(errors: List[String], warnings: List[String])
@@ -11,7 +11,7 @@ object WartTestTraverser {
   def applyImpl(c: Context)(t: c.Expr[WartTraverser])(a: c.Expr[Any]) = {
     import c.universe._
 
-    val traverser = c.eval[WartTraverser](c.Expr(c.untypecheck(t.tree.duplicate)))
+    val traverser = c.eval[WartTraverser](c.Expr(c.resetLocalAttrs(t.tree.duplicate)))
 
     var errors = collection.mutable.ListBuffer[String]()
     var warnings = collection.mutable.ListBuffer[String]()

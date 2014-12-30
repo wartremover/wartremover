@@ -5,8 +5,8 @@ object Any2StringAdd extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val PredefName: TermName = TermName("Predef")
-    val Any2StringAddName: TermName = TermName("any2stringadd")
+    val PredefName: TermName = "Predef"
+    val Any2StringAddName: TermName = "any2stringadd"
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {

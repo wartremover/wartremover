@@ -6,7 +6,7 @@ object TryPartial extends WartTraverser {
     import u.universe._
 
     val optionSymbol = rootMirror.staticClass("scala.util.Try")
-    val GetName: TermName = TermName("get")
+    val GetName: TermName = "get"
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {

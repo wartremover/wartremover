@@ -5,10 +5,10 @@ trait ForbidInference[T] extends WartTraverser {
   def applyForbidden(u: WartUniverse)(implicit t: u.TypeTag[T]): u.Traverser = {
     import u.universe._
 
-    val CanEqualName: TermName = TermName("canEqual")
-    val EqualsName: TermName = TermName("equals")
-    val ProductElementName: TermName = TermName("productElement")
-    val ProductIteratorName: TermName = TermName("productIterator")
+    val CanEqualName: TermName = "canEqual"
+    val EqualsName: TermName = "equals"
+    val ProductElementName: TermName = "productElement"
+    val ProductIteratorName: TermName = "productIterator"
 
     val tSymbol = typeOf[T].typeSymbol
 

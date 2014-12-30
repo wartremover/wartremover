@@ -5,8 +5,8 @@ object Null extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val UnapplyName: TermName = TermName("unapply")
-    val UnapplySeqName: TermName = TermName("unapplySeq")
+    val UnapplyName: TermName = "unapply"
+    val UnapplySeqName: TermName = "unapplySeq"
     val xmlSymbols = List(
       "scala.xml.Elem", "scala.xml.NamespaceBinding"
     ) // cannot do `map rootMirror.staticClass` here because then:

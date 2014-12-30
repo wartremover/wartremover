@@ -4,8 +4,8 @@ package warts
 object AsInstanceOf extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
-    val EqualsName: TermName = TermName("equals")
-    val AsInstanceOfName: TermName = TermName("asInstanceOf")
+    val EqualsName: TermName = "equals"
+    val AsInstanceOfName: TermName = "asInstanceOf"
 
     val allowedCasts = List(
       "scala.tools.nsc.interpreter.IMain" // REPL needs this

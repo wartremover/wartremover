@@ -2,7 +2,7 @@ package org.brianmckenna.wartremover
 
 import tools.nsc.Global
 import reflect.api.Universe
-import reflect.macros.blackbox.Context
+import reflect.macros.Context
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
@@ -26,7 +26,7 @@ trait WartTraverser {
     import c.universe._
 
     val block = Block(annottees.map(_.tree).toList, Literal(Constant(())))
-    c.typecheck(block)
+    c.typeCheck(block)
 
     annottees.foreach { expr =>
       asMacro(c)(expr)

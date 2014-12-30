@@ -6,14 +6,14 @@ object NonUnitStatements extends WartTraverser {
     import u.universe._
     import scala.reflect.NameTransformer
 
-    val ReadName: TermName = TermName("$read")
-    val IwName: TermName = TermName("$iw")
-    val NodeBufferAddName: TermName = TermName(NameTransformer.encode("&+"))
+    val ReadName: TermName = "$read"
+    val IwName: TermName = "$iw"
+    val NodeBufferAddName: TermName = NameTransformer.encode("&+")
 
     def isIgnoredStatement(tree: Tree) = tree match {
       // Scala creates synthetic blocks with <init> calls on classes.
       // The calls return Object so we need to ignore them.
-      case Apply(Select(_, termNames.CONSTRUCTOR), _) => true
+      case Apply(Select(_, nme.CONSTRUCTOR), _) => true
       // scala.xml.NodeBuffer#&+ returns NodeBuffer instead of Unit, so
       // val x = <x>5</x> desugars to a non-Unit statement; ignore.
       case Apply(Select(qual, NodeBufferAddName), _)

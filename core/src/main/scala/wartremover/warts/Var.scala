@@ -5,7 +5,7 @@ object Var extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val HashCodeName: TermName = TermName("hashCode")
+    val HashCodeName: TermName = "hashCode"
 
     val allowedTypes = List(
       "scala.xml.MetaData", "scala.xml.NamespaceBinding", // XML literals output vars
