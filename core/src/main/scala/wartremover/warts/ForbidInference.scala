@@ -5,10 +5,10 @@ trait ForbidInference[T] extends WartTraverser {
   def applyForbidden(u: WartUniverse)(implicit t: u.TypeTag[T]): u.Traverser = {
     import u.universe._
 
-    val CanEqualName: TermName = "canEqual"
-    val EqualsName: TermName = "equals"
-    val ProductElementName: TermName = "productElement"
-    val ProductIteratorName: TermName = "productIterator"
+    val CanEqualName: TermName = TermName("canEqual")
+    val EqualsName: TermName = TermName("equals")
+    val ProductElementName: TermName = TermName("productElement")
+    val ProductIteratorName: TermName = TermName("productIterator")
 
     val tSymbol = typeOf[T].typeSymbol
 
@@ -20,7 +20,7 @@ trait ForbidInference[T] extends WartTraverser {
     }
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         def error() = u.error(tree.pos, s"Inferred type containing ${tSymbol.name}")
 

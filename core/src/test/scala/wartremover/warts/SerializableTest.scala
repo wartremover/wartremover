@@ -10,7 +10,7 @@ class SerializableTest extends FunSuite {
     val result = WartTestTraverser(Serializable) {
       List((1, 2, 3), (1, 2))
     }
-    expectResult(List("Inferred type containing Serializable"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("Inferred type containing Serializable"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

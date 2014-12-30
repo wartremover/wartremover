@@ -35,17 +35,17 @@ object Main {
     !global.reporter.hasErrors
   }
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     val wartArgs = processArgs(args.toList, WartArgs.empty)
 
     if (wartArgs == WartArgs.empty) {
       System.err.println("usage: wartremover [-traverser qualifiedname ...] [file ...]")
       System.exit(1)
     } else if (wartArgs.traversers == WartArgs.empty.traversers) {
-      System.err.println("errer: no traverser rules were provided")
+      System.err.println("error: no traverser rules were provided")
       System.exit(1)
     } else if (wartArgs.names == WartArgs.empty.names) {
-      System.err.println("errer: no Scala files were provided")
+      System.err.println("error: no Scala files were provided")
       System.exit(1)
     } else if (!compile(wartArgs)) {
       System.exit(1)

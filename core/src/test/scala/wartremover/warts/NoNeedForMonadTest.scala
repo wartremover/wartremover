@@ -34,13 +34,13 @@ class NoNeedForMonadTest extends FunSuite {
       Option(3).flatMap { case t => Some(t) }
     }
 
-    expectResult(List.empty, "result.errors")(withWarnings.errors)
-    expectResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
+    assertResult(List.empty, "result.errors")(withWarnings.errors)
+    assertResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
 
-    expectResult(List.empty, "result.errors")(noWarnings.errors)
-    expectResult(List.empty, "result.warnings")(noWarnings.warnings)
+    assertResult(List.empty, "result.errors")(noWarnings.errors)
+    assertResult(List.empty, "result.warnings")(noWarnings.warnings)
 
-    expectResult(List.empty, "result.errors")(test.errors)
-    expectResult(List(NoNeedForMonad.message), "result.warnings")(test.warnings)
+    assertResult(List.empty, "result.errors")(test.errors)
+    assertResult(List(NoNeedForMonad.message), "result.warnings")(test.warnings)
   }
 }

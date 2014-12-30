@@ -5,15 +5,15 @@ object Null extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val UnapplyName: TermName = "unapply"
-    val UnapplySeqName: TermName = "unapplySeq"
+    val UnapplyName: TermName = TermName("unapply")
+    val UnapplySeqName: TermName = TermName("unapplySeq")
     val xmlSymbols = List(
       "scala.xml.Elem", "scala.xml.NamespaceBinding"
     ) // cannot do `map rootMirror.staticClass` here because then:
       //   scala.ScalaReflectionException: object scala.xml.Elem in compiler mirror not found.
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
           // Ignore xml literals

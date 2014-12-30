@@ -11,7 +11,7 @@ class NothingTest extends FunSuite {
       val x = ???
       x
     }
-    expectResult(List("Inferred type containing Nothing"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("Inferred type containing Nothing"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

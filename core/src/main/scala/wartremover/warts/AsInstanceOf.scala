@@ -4,8 +4,8 @@ package warts
 object AsInstanceOf extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
-    val EqualsName: TermName = "equals"
-    val AsInstanceOfName: TermName = "asInstanceOf"
+    val EqualsName: TermName = TermName("equals")
+    val AsInstanceOfName: TermName = TermName("asInstanceOf")
 
     val allowedCasts = List(
       "scala.tools.nsc.interpreter.IMain" // REPL needs this
@@ -13,7 +13,7 @@ object AsInstanceOf extends WartTraverser {
       //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
 

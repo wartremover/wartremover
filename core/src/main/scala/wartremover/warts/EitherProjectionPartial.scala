@@ -7,9 +7,9 @@ object EitherProjectionPartial extends WartTraverser {
 
     val leftProjectionSymbol = rootMirror.staticClass("scala.util.Either.LeftProjection")
     val rightProjectionSymbol = rootMirror.staticClass("scala.util.Either.RightProjection")
-    val GetName: TermName = "get"
+    val GetName: TermName = TermName("get")
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case Select(left, GetName) if left.tpe.baseType(leftProjectionSymbol) != NoType =>
             u.error(tree.pos, "LeftProjection#get is disabled - use LeftProjection#toOption instead")

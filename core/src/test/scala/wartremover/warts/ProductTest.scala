@@ -10,7 +10,7 @@ class ProductTest extends FunSuite {
     val result = WartTestTraverser(Product) {
       List((1, 2, 3), (1, 2))
     }
-    expectResult(List("Inferred type containing Product"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("Inferred type containing Product"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

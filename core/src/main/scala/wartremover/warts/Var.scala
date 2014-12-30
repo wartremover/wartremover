@@ -5,7 +5,7 @@ object Var extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val HashCodeName: TermName = "hashCode"
+    val HashCodeName: TermName = TermName("hashCode")
 
     val allowedTypes = List(
       "scala.xml.MetaData", "scala.xml.NamespaceBinding", // XML literals output vars
@@ -14,7 +14,7 @@ object Var extends WartTraverser {
       //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
           // Ignore case class's synthetic hashCode

@@ -6,14 +6,14 @@ object NonUnitStatements extends WartTraverser {
     import u.universe._
     import scala.reflect.NameTransformer
 
-    val ReadName: TermName = "$read"
-    val IwName: TermName = "$iw"
-    val NodeBufferAddName: TermName = NameTransformer.encode("&+")
+    val ReadName: TermName = TermName("$read")
+    val IwName: TermName = TermName("$iw")
+    val NodeBufferAddName: TermName = TermName(NameTransformer.encode("&+"))
 
     def isIgnoredStatement(tree: Tree) = tree match {
       // Scala creates synthetic blocks with <init> calls on classes.
       // The calls return Object so we need to ignore them.
-      case Apply(Select(_, nme.CONSTRUCTOR), _) => true
+      case Apply(Select(_, termNames.CONSTRUCTOR), _) => true
       // scala.xml.NodeBuffer#&+ returns NodeBuffer instead of Unit, so
       // val x = <x>5</x> desugars to a non-Unit statement; ignore.
       case Apply(Select(qual, NodeBufferAddName), _)
@@ -23,7 +23,7 @@ object NonUnitStatements extends WartTraverser {
       case _ => false
     }
 
-    def checkUnitLike(statements: List[Tree]) {
+    def checkUnitLike(statements: List[Tree]): Unit = {
       statements.foreach { stat =>
         val unitLike = stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
         if (!unitLike)
@@ -32,7 +32,7 @@ object NonUnitStatements extends WartTraverser {
     }
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case Block(statements, _) =>
             checkUnitLike(statements)

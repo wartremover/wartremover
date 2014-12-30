@@ -66,6 +66,7 @@ lazy val core = Project(
   base = file("core"),
   aggregate = Seq(sbtPlug)
 ).settings(assemblySettings ++ commonSettings ++ Seq(
+  scalacOptions += "-deprecation",
   name := "wartremover",
   scalaVersion := "2.11.1",
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.0" cross CrossVersion.full),

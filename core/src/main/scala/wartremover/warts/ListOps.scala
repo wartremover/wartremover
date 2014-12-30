@@ -8,9 +8,9 @@ object ListOps extends WartTraverser {
       import u.universe._
 
       val listSymbol = rootMirror.staticClass("scala.collection.immutable.List")
-      val Name: TermName = name
+      val Name: TermName = TermName(name)
       new u.Traverser {
-        override def traverse(tree: Tree) {
+        override def traverse(tree: Tree): Unit = {
           tree match {
             case Select(left, Name) if left.tpe.baseType(listSymbol) != NoType ⇒
               u.error(tree.pos, error)

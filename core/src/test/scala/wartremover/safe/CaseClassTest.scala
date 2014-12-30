@@ -11,14 +11,14 @@ class CaseClassTest extends FunSuite {
       case class A(a: Int)
       case class B[X](a: X)
     }
-    expectResult(List.empty, "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("vararg case classes still work") {
     val result = WartTestTraverser(Unsafe) {
       case class A(a: Int*)
     }
-    expectResult(List.empty, "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

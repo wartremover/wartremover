@@ -2,7 +2,7 @@ package org.brianmckenna.wartremover
 
 import tools.nsc.Global
 import reflect.api.Universe
-import reflect.macros.Context
+import reflect.macros.blackbox.Context
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
@@ -26,7 +26,7 @@ trait WartTraverser {
     import c.universe._
 
     val block = Block(annottees.map(_.tree).toList, Literal(Constant(())))
-    c.typeCheck(block)
+    c.typecheck(block)
 
     annottees.foreach { expr =>
       asMacro(c)(expr)
@@ -38,7 +38,7 @@ trait WartTraverser {
   def compose(o: WartTraverser): WartTraverser = new WartTraverser {
     def apply(u: WartUniverse): u.Traverser = {
       new u.Traverser {
-        override def traverse(tree: u.universe.Tree) {
+        override def traverse(tree: u.universe.Tree): Unit = {
           WartTraverser.this(u).traverse(tree)
           o(u).traverse(tree)
         }
@@ -65,6 +65,6 @@ trait WartUniverse {
   val universe: Universe
   type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
-  def error(pos: universe.Position, message: String)
-  def warning(pos: universe.Position, message: String)
+  def error(pos: universe.Position, message: String): Unit
+  def warning(pos: universe.Position, message: String): Unit
 }

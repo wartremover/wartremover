@@ -10,7 +10,7 @@ class IsInstanceOfTest extends FunSuite {
     val result = WartTestTraverser(IsInstanceOf) {
       "abc".isInstanceOf[String]
     }
-    expectResult(List("isInstanceOf is disabled"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("isInstanceOf is disabled"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

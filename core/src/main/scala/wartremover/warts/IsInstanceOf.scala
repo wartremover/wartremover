@@ -4,11 +4,11 @@ package warts
 object IsInstanceOf extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
-    val IsInstanceOfName: TermName = "isInstanceOf"
-    val CanEqualName: TermName = "canEqual"
-    val EqualsName: TermName = "equals"
+    val IsInstanceOfName: TermName = TermName("isInstanceOf")
+    val CanEqualName: TermName = TermName("canEqual")
+    val EqualsName: TermName = TermName("equals")
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
 
