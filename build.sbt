@@ -20,11 +20,11 @@ lazy val commonSettings = Seq(
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
-  homepage := Some(url("https://github.com/typelevel/wartremover")),
+  homepage := Some(url("https://github.com/puffnfresh/wartremover")),
   pomExtra :=
     <scm>
-      <url>git@github.com:typelevel/wartremover.git</url>
-      <connection>scm:git:git@github.com:typelevel/wartremover.git</connection>
+      <url>git@github.com:puffnfresh/wartremover.git</url>
+      <connection>scm:git:git@github.com:puffnfresh/wartremover.git</connection>
     </scm>
     <developers>
       <developer>
