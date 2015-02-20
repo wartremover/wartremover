@@ -36,15 +36,18 @@ object NoNeedForMonad extends WartTraverser {
             if (termName.toString == "flatMap" || termName.toString == "map") => fn
       }.flatten
 
-      if(!subtrees.isEmpty) {
-        def asFuncTransform(args: List[Tree], body: Tree) =
-          (args.map { case arg @ ValDef(_, name, _, _) =>
-            Ident(name): Tree
-          }, body)
-        val asFunc = subtrees.map {
-          case q"(..$args) => $body" => asFuncTransform(args, body)
-          case Block(args, body)     => asFuncTransform(args, body)
-        }
+      def asFuncTransform(args: List[Tree], body: Tree) =
+        (args.map { case arg @ ValDef(_, name, _, _) =>
+           Ident(name): Tree
+         }, body)
+
+      val asFunc = subtrees.flatMap {
+        case q"(..$args) => $body" => Some(asFuncTransform(args, body))
+        case Block(args, body)     => Some(asFuncTransform(args, body))
+        case x                     => None
+      }
+
+      if(!asFunc.isEmpty) {
         val yields = asFunc.last._2
 
         val treesToCheck = asFunc.reverse.tail.toMap

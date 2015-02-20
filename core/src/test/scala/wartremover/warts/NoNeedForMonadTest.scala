@@ -34,6 +34,14 @@ class NoNeedForMonadTest extends FunSuite {
       Option(3).flatMap { case t => Some(t) }
     }
 
+    val extendsFunction = WartTestTraverser(NoNeedForMonad) {
+      object test extends Function1[Int, Option[Int]] {
+        def apply(i: Int) = Option(i + 2)
+      }
+
+      Option(1) flatMap test
+    }
+
     expectResult(List.empty, "result.errors")(withWarnings.errors)
     expectResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
 
@@ -42,5 +50,8 @@ class NoNeedForMonadTest extends FunSuite {
 
     expectResult(List.empty, "result.errors")(test.errors)
     expectResult(List(NoNeedForMonad.message), "result.warnings")(test.warnings)
+
+    expectResult(List.empty, "result.errors")(extendsFunction.errors)
+    expectResult(List.empty, "result.errors")(extendsFunction.warnings)
   }
 }
