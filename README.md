@@ -140,14 +140,22 @@ x.isInstanceOf[String]
 `scala.collection.immutable.List` has:
 
 * `head`,
-* `last` and
-* `tail` methods,
+* `tail`,
+* `init`,
+* `last`,
+* `reduce`,
+* `reduceLeft` and
+* `reduceRight` methods,
 
 all of which will throw if the list is empty. The program should be refactored to use:
 
 * `List#headOption`,
-* `List#lastOption` and
-* `List#drop(1)` respectively,
+* `List#drop(1)`,
+* `List#dropRight(1)`,
+* `List#lastOption`,
+* `List#reduceOption` or `List#fold`,
+* `List#reduceLeftOption` or `List#foldLeft` and
+* `List#reduceRightOption` or `List#foldRight` respectively,
 
 to explicitly handle both the populated and empty `List`.
 
