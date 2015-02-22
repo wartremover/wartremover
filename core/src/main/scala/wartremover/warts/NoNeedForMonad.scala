@@ -48,14 +48,13 @@ object NoNeedForMonad extends WartTraverser {
       }
 
       if(!asFunc.isEmpty) {
-        val yields = asFunc.last._2
-
+        val (_, yields) = asFunc.last
         val treesToCheck = asFunc.reverse.tail.toMap
         val results = treesToCheck.flatMap { case (args, body) =>
           args.map { arg =>
             // Argument should occur in the body of the function the number of times
             // it occurs in the yield statement
-            // (i.e. only occurances are in the yield statement are allowed).
+            // (i.e. only occurances in the yield statement are allowed).
             val countInYield = yields.filter(_ equalsStructure arg).size
             body.filter(_ equalsStructure arg).size == countInYield
           }

@@ -9,8 +9,8 @@ class NoNeedForMonadTest extends FunSuite {
   test("Report cases where Applicative is enough") {
     val withWarnings = WartTestTraverser(NoNeedForMonad) {
       for {
-        x <- List(1,2,3)
-        y <- List(2,3,4)
+        x <- List(1, 2, 3)
+        y <- List(2, 3, 4)
       } yield x * y
 
       Option(1).flatMap(i => Option(2).map(j => i + j))
@@ -38,8 +38,18 @@ class NoNeedForMonadTest extends FunSuite {
       object test extends Function1[Int, Option[Int]] {
         def apply(i: Int) = Option(i + 2)
       }
+      object test2 {
+        def apply(i: Int) = Option(i + 4)
+      }
 
-      Option(1) flatMap test
+      for {
+        x <- Option(1)
+        res <- test(x)
+      } yield res
+      for {
+        x <- Option(2)
+        res <- test2(x)
+      } yield res
     }
 
     expectResult(List.empty, "result.errors")(withWarnings.errors)

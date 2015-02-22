@@ -41,7 +41,7 @@ lazy val root = Project(
   aggregate = Seq(core)
 ).settings(releaseSettings ++ commonSettings ++ Seq(
   publishArtifact := false,
-  crossScalaVersions := Seq("2.11.1", "2.10.4"),
+  crossScalaVersions := Seq("2.11.5", "2.10.4"),
   crossVersion := CrossVersion.binary,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
@@ -68,18 +68,18 @@ lazy val core = Project(
 ).settings(assemblySettings ++ commonSettings ++ Seq(
   name := "wartremover",
   scalaVersion := "2.11.1",
-  addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.0" cross CrossVersion.full),
+  addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full),
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 10)) =>
-        libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.0")
+        libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.1")
       case _ =>
         libraryDependencies.value
     }
   },
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-    "org.scalatest" %% "scalatest" % "2.1.3" % "test"
+    "org.scalatest" %% "scalatest" % "2.2.1" % "test"
   ),
   // a hack (?) to make `compile` and `+compile` tasks etc. behave sanely
   aggregate := CrossVersion.partialVersion((scalaVersion in Global).value) != Some((2, 11))
