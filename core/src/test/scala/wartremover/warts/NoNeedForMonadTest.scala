@@ -24,7 +24,15 @@ class NoNeedForMonadTest extends FunSuite {
       Option(1).flatMap(i => Option(i + 1).map(j => i + j))
     }
 
-    val test = WartTestTraverser(NoNeedForMonad) {
+    expectResult(List.empty, "result.errors")(withWarnings.errors)
+    expectResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
+
+    expectResult(List.empty, "result.errors")(noWarnings.errors)
+    expectResult(List.empty, "result.warnings")(noWarnings.warnings)
+  }
+
+  test("Work properly with function literals, eta-expanded functions, objects with apply methods") {
+    val etaExpanded = WartTestTraverser(NoNeedForMonad) {
       def fun(in: Int) = 14
       val xs = for {
         y <- Nil
@@ -52,14 +60,9 @@ class NoNeedForMonadTest extends FunSuite {
       } yield res
     }
 
-    expectResult(List.empty, "result.errors")(withWarnings.errors)
-    expectResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
 
-    expectResult(List.empty, "result.errors")(noWarnings.errors)
-    expectResult(List.empty, "result.warnings")(noWarnings.warnings)
-
-    expectResult(List.empty, "result.errors")(test.errors)
-    expectResult(List(NoNeedForMonad.message), "result.warnings")(test.warnings)
+    expectResult(List.empty, "result.errors")(etaExpanded.errors)
+    expectResult(List(NoNeedForMonad.message), "result.warnings")(etaExpanded.warnings)
 
     expectResult(List.empty, "result.errors")(extendsFunction.errors)
     expectResult(List.empty, "result.errors")(extendsFunction.warnings)
