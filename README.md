@@ -251,6 +251,12 @@ always incorrect. Explicit type arguments should be used instead.
 // Won't compile: Inferred type containing Serializable
 val any = List((1, 2, 3), (1, 2))
 ```
+
+### Throw
+
+`throw` implies partiality referential transparency. Encode exceptions/errors as
+return values instead using `Either` or `Try`. 
+
 ### Unsafe
 
 Checks for the following warts:
@@ -266,6 +272,7 @@ Checks for the following warts:
 * Product
 * Return
 * Serializable
+* Throw
 * Var
 * ListOps
 
