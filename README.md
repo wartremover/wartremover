@@ -255,7 +255,7 @@ val any = List((1, 2, 3), (1, 2))
 ### Throw
 
 `throw` implies partiality. Encode exceptions/errors as return
-values instead using `Either` or `Try`. 
+values instead using `Either`. 
 
 ### Unsafe
 
