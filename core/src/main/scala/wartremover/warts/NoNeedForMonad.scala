@@ -36,23 +36,25 @@ object NoNeedForMonad extends WartTraverser {
             if (termName.toString == "flatMap" || termName.toString == "map") => fn
       }.flatten
 
-      if(!subtrees.isEmpty) {
-        def asFuncTransform(args: List[Tree], body: Tree) =
-          (args.map { case arg @ ValDef(_, name, _, _) =>
-            Ident(name): Tree
-          }, body)
-        val asFunc = subtrees.map {
-          case q"(..$args) => $body" => asFuncTransform(args, body)
-          case Block(args, body)     => asFuncTransform(args, body)
-        }
-        val yields = asFunc.last._2
+      def asFuncTransform(args: List[Tree], body: Tree) =
+        (args.map { case arg @ ValDef(_, name, _, _) =>
+           Ident(name): Tree
+         }, body)
 
+      val asFunc = subtrees.flatMap {
+        case q"(..$args) => $body" => Some(asFuncTransform(args, body))
+        case Block(args, body)     => Some(asFuncTransform(args, body))
+        case x                     => None
+      }
+
+      if(!asFunc.isEmpty) {
+        val (_, yields) = asFunc.last
         val treesToCheck = asFunc.reverse.tail.toMap
         val results = treesToCheck.flatMap { case (args, body) =>
           args.map { arg =>
             // Argument should occur in the body of the function the number of times
             // it occurs in the yield statement
-            // (i.e. only occurances are in the yield statement are allowed).
+            // (i.e. only occurrences in the yield statement are allowed).
             val countInYield = yields.filter(_ equalsStructure arg).size
             body.filter(_ equalsStructure arg).size == countInYield
           }
