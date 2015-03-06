@@ -54,7 +54,7 @@ object NoNeedForMonad extends WartTraverser {
           args.map { arg =>
             // Argument should occur in the body of the function the number of times
             // it occurs in the yield statement
-            // (i.e. only occurances in the yield statement are allowed).
+            // (i.e. only occurrences in the yield statement are allowed).
             val countInYield = yields.filter(_ equalsStructure arg).size
             body.filter(_ equalsStructure arg).size == countInYield
           }
