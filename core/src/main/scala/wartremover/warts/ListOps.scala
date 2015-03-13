@@ -28,7 +28,11 @@ object ListOps extends WartTraverser {
     WartTraverser.sumList(u)(List(
       new Op("head", "List#head is disabled - use List#headOption instead"),
       new Op("tail", "List#tail is disabled - use List#drop(1) instead"),
-      new Op("last", "List#last is disabled - use List#lastOption instead")
+      new Op("init", "List#init is disabled - use List#dropRight(1) instead"),
+      new Op("last", "List#last is disabled - use List#lastOption instead"),
+      new Op("reduce", "List#reduce is disabled - use List#reduceOption or List#fold instead"),
+      new Op("reduceLeft", "List#reduceLeft is disabled - use List#reduceLeftOption or List#foldLeft instead"),
+      new Op("reduceRight", "List#reduceRight is disabled - use List#reduceRightOption or List#foldRight instead")
     ))
 
 }
