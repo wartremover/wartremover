@@ -274,6 +274,7 @@ Checks for the following warts:
 * AsInstanceOf
 * EitherProjectionPartial
 * IsInstanceOf
+* ListOps
 * NonUnitStatements
 * Null
 * OptionPartial
@@ -282,7 +283,6 @@ Checks for the following warts:
 * Serializable
 * Throw
 * Var
-* ListOps
 
 ### Var
 
