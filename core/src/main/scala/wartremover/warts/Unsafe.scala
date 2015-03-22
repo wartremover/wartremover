@@ -9,6 +9,7 @@ object Unsafe extends WartTraverser {
     DefaultArguments,
     EitherProjectionPartial,
     IsInstanceOf,
+    ListOps,
     NonUnitStatements,
     Null,
     OptionPartial,
@@ -17,8 +18,7 @@ object Unsafe extends WartTraverser {
     Serializable,
     Throw,
     TryPartial,
-    Var,
-    ListOps
+    Var
   )
 
   def apply(u: WartUniverse): u.Traverser =
