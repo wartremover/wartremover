@@ -8,7 +8,7 @@ object JavaConversions extends WartTraverser {
     val javaConversions = rootMirror.staticModule("scala.collection.JavaConversions")
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case Select(tpt, _) if tpt.tpe.contains(javaConversions) => {
             u.error(tree.pos, "scala.collection.JavaConversions is disabled - use scala.collection.JavaConverters instead")

@@ -10,7 +10,7 @@ class DefaultArgumentsTest extends FunSuite {
     val result = WartTestTraverser(DefaultArguments) {
       def x(y: Int = 4) = y
     }
-    expectResult(List("Function has default arguments"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("Function has default arguments"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

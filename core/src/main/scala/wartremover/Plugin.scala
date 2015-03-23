@@ -31,7 +31,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   def filterOptions(prefix: String, options: List[String]) =
     options.map(prefixedOption(prefix)).flatten
 
-  override def processOptions(options: List[String], error: String => Unit) {
+  override def processOptions(options: List[String], error: String => Unit): Unit = {
     val classPathEntries = filterOptions("cp", options).map(new URL(_))
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val mirror = reflect.runtime.universe.runtimeMirror(classLoader)
@@ -63,9 +63,9 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
           def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
             val universe: global.type = global
             def error(pos: Position, message: String) =
-              if (onlyWarn) unit.warning(pos, message)
-              else unit.error(pos, message)
-            def warning(pos: Position, message: String) = unit.warning(pos, message)
+              if (onlyWarn) global.reporter.warning(pos, message)
+              else global.reporter.error(pos, message)
+            def warning(pos: Position, message: String) = global.reporter.warning(pos, message)
           }
 
           def go(ts: List[WartTraverser], onlyWarn: Boolean) =

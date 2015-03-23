@@ -24,11 +24,11 @@ class NoNeedForMonadTest extends FunSuite {
       Option(1).flatMap(i => Option(i + 1).map(j => i + j))
     }
 
-    expectResult(List.empty, "result.errors")(withWarnings.errors)
-    expectResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
+    assertResult(List.empty, "result.errors")(withWarnings.errors)
+    assertResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
 
-    expectResult(List.empty, "result.errors")(noWarnings.errors)
-    expectResult(List.empty, "result.warnings")(noWarnings.warnings)
+    assertResult(List.empty, "result.errors")(noWarnings.errors)
+    assertResult(List.empty, "result.warnings")(noWarnings.warnings)
   }
 
   test("Work properly with function literals, eta-expanded functions, objects with apply methods") {
@@ -61,10 +61,10 @@ class NoNeedForMonadTest extends FunSuite {
     }
 
 
-    expectResult(List.empty, "result.errors")(etaExpanded.errors)
-    expectResult(List(NoNeedForMonad.message), "result.warnings")(etaExpanded.warnings)
+    assertResult(List.empty, "result.errors")(etaExpanded.errors)
+    assertResult(List(NoNeedForMonad.message), "result.warnings")(etaExpanded.warnings)
 
-    expectResult(List.empty, "result.errors")(extendsFunction.errors)
-    expectResult(List.empty, "result.errors")(extendsFunction.warnings)
+    assertResult(List.empty, "result.errors")(extendsFunction.errors)
+    assertResult(List.empty, "result.errors")(extendsFunction.warnings)
   }
 }

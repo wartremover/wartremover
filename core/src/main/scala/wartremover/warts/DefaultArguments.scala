@@ -10,7 +10,7 @@ object DefaultArguments extends WartTraverser {
       v.find(_.mods.hasFlag(DEFAULTPARAM)).isDefined
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case d@DefDef(_, _, _, vs, _, _) if !isSynthetic(u)(d) && vs.find(containsDef).isDefined =>
             u.error(tree.pos, "Function has default arguments")

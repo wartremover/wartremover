@@ -38,7 +38,7 @@ trait WartTraverser {
   def compose(o: WartTraverser): WartTraverser = new WartTraverser {
     def apply(u: WartUniverse): u.Traverser = {
       new u.Traverser {
-        override def traverse(tree: u.universe.Tree) {
+        override def traverse(tree: u.universe.Tree): Unit = {
           WartTraverser.this(u).traverse(tree)
           o(u).traverse(tree)
         }
@@ -65,6 +65,6 @@ trait WartUniverse {
   val universe: Universe
   type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
-  def error(pos: universe.Position, message: String)
-  def warning(pos: universe.Position, message: String)
+  def error(pos: universe.Position, message: String): Unit
+  def warning(pos: universe.Position, message: String): Unit
 }

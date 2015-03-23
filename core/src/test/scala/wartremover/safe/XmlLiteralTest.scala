@@ -10,21 +10,21 @@ class XmlLiteralTest extends FunSuite {
     val result = WartTestTraverser(Unsafe) {
       val x = <foo />
     }
-    expectResult(List.empty, "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can use attributes in xml literals") {
     val result = WartTestTraverser(Unsafe) {
       <foo bar="baz" />
     }
-    expectResult(List.empty, "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can use xmlns attrib in XML literals") {
     val result = WartTestTraverser(Unsafe) {
       <x xmlns="y"/> // this one has special meaning
     }
-    expectResult(List.empty, "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

@@ -8,7 +8,7 @@ object IsInstanceOf extends WartTraverser {
     val CanEqualName: TermName = "canEqual"
     val EqualsName: TermName = "equals"
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
 

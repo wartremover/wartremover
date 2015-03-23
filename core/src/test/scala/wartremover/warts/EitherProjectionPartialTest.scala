@@ -10,28 +10,28 @@ class EitherProjectionPartialTest extends FunSuite {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Left(1).left.get)
     }
-    expectResult(List("LeftProjection#get is disabled - use LeftProjection#toOption instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("LeftProjection#get is disabled - use LeftProjection#toOption instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use LeftProjection#get on Right") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Right(1).left.get)
     }
-    expectResult(List("LeftProjection#get is disabled - use LeftProjection#toOption instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("LeftProjection#get is disabled - use LeftProjection#toOption instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use RightProjection#get on Left") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Left(1).right.get)
     }
-    expectResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use RightProjection#get on Right") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Right(1).right.get)
     }
-    expectResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

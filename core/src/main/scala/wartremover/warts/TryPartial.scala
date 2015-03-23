@@ -8,7 +8,7 @@ object TryPartial extends WartTraverser {
     val optionSymbol = rootMirror.staticClass("scala.util.Try")
     val GetName: TermName = "get"
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
             u.error(tree.pos, "Try#get is disabled")

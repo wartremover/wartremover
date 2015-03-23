@@ -8,7 +8,7 @@ object OptionPartial extends WartTraverser {
     val optionSymbol = rootMirror.staticClass("scala.Option")
     val GetName: TermName = "get"
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
             u.error(tree.pos, "Option#get is disabled - use Option#fold instead")

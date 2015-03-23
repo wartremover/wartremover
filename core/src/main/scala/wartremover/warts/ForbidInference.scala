@@ -20,7 +20,7 @@ trait ForbidInference[T] extends WartTraverser {
     }
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         def error() = u.error(tree.pos, s"Inferred type containing ${tSymbol.name}")
 

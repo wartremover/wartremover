@@ -66,7 +66,7 @@ object NoNeedForMonad extends WartTraverser {
     }
 
     new u.Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           // Note: first two cases currently don't not work in 2.10: https://github.com/scalamacros/paradise/issues/38
           // Will propagate to matching desugared chain of maps/flatMaps.

@@ -11,7 +11,7 @@ class VarTest extends FunSuite {
       var x = 10
       x
     }
-    expectResult(List("var is disabled"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("var is disabled"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }
