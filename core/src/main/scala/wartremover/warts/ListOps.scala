@@ -4,6 +4,8 @@ package warts
 object ListOps extends WartTraverser {
 
   class Op(name: String, error: String) extends WartTraverser {
+    override lazy val className = "org.brianmckenna.wartremover.warts.ListOps"
+
     def apply(u: WartUniverse): u.Traverser = {
       import u.universe._
 
@@ -12,6 +14,8 @@ object ListOps extends WartTraverser {
       new u.Traverser {
         override def traverse(tree: Tree): Unit = {
           tree match {
+            // Ignore trees marked by ignoreWarts
+            case t if hasWartAnnotation(u)(t) =>
             case Select(left, Name) if left.tpe.baseType(listSymbol) != NoType ⇒
               u.error(tree.pos, error)
             // TODO: This ignores a lot

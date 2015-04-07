@@ -34,15 +34,19 @@ object NonUnitStatements extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
+          // Ignore trees marked by ignoreWarts
+          case t if hasWartAnnotation(u)(t) =>
           case Block(statements, _) =>
             checkUnitLike(statements)
+            super.traverse(tree)
           case ClassDef(_, _, _, Template((_, _, statements))) =>
             checkUnitLike(statements)
+            super.traverse(tree)
           case ModuleDef(_, _, Template((_, _, statements))) =>
             checkUnitLike(statements)
-          case _ =>
+            super.traverse(tree)
+          case _ => super.traverse(tree)
         }
-        super.traverse(tree)
       }
     }
   }

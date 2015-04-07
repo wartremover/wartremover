@@ -12,6 +12,8 @@ object DefaultArguments extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
+          // Ignore trees marked by ignoreWarts
+          case t if hasWartAnnotation(u)(t) =>
           case d@DefDef(_, _, _, vs, _, _) if !isSynthetic(u)(d) && vs.find(containsDef).isDefined =>
             u.error(tree.pos, "Function has default arguments")
           case _ =>

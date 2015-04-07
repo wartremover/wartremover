@@ -68,6 +68,8 @@ object NoNeedForMonad extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
+          // Ignore trees marked by ignoreWarts
+          case t if hasWartAnnotation(u)(t) =>
           // Note: first two cases currently don't not work in 2.10: https://github.com/scalamacros/paradise/issues/38
           // Will propagate to matching desugared chain of maps/flatMaps.
           case q"for (..$enums) yield $body"                                                        => processForComprehension(tree, enums, body)

@@ -22,4 +22,15 @@ class NonUnitStatementsTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("NonUnitStatements wart obeys ignoreWarts") {
+    val result = WartTestTraverser(NonUnitStatements) {
+      @ignoreWarts("org.brianmckenna.wartremover.warts.NonUnitStatements")
+      val foo = {
+        1
+        2
+      }
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }

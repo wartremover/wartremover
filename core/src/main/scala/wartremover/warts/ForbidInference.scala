@@ -25,6 +25,8 @@ trait ForbidInference[T] extends WartTraverser {
         def error() = u.error(tree.pos, s"Inferred type containing ${tSymbol.name}")
 
         tree match {
+          // Ignore trees marked by ignoreWarts
+          case t if hasWartAnnotation(u)(t) =>
           case tpt @ TypeTree() if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
             tpt.tpe match {
               // Ignore existential types, they supposedly contain "any"

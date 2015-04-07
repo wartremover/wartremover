@@ -13,4 +13,12 @@ class AsInstanceOfTest extends FunSuite {
     assertResult(List("asInstanceOf is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("asInstanceOf wart obeys ignoreWarts") {
+    val result = WartTestTraverser(AsInstanceOf) {
+      @ignoreWarts("org.brianmckenna.wartremover.warts.AsInstanceOf")
+      val foo = "abc".asInstanceOf[String]
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }

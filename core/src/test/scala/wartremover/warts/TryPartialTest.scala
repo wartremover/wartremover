@@ -28,4 +28,15 @@ class TryPartialTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("TryPartial wart obeys ignoreWarts") {
+    val result = WartTestTraverser(TryPartial) {
+      @ignoreWarts("org.brianmckenna.wartremover.warts.TryPartial")
+      val foo = {
+        println(Success(1).get)
+        println(Failure(new Error).get)
+      }
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }

@@ -8,6 +8,8 @@ object Throw extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
+          // Ignore trees marked by ignoreWarts
+          case t if hasWartAnnotation(u)(t) =>
           case dd@DefDef(_, ProductElementName , _, _, _, _) if isSynthetic(u)(dd) =>
           case u.universe.Throw(_) =>
             u.error(tree.pos, "throw is disabled")

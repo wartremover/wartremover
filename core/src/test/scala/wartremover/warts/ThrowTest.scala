@@ -21,4 +21,13 @@ class ThrowTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+
+  test("Throw wart obeys ignoreWarts") {
+    val result = WartTestTraverser(Throw) {
+      @ignoreWarts("org.brianmckenna.wartremover.warts.Throw")
+      def foo(n: Int): Int = throw new IllegalArgumentException("bar")
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }
