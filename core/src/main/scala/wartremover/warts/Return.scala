@@ -7,7 +7,7 @@ object Return extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
-          // Ignore trees marked by ignoreWarts
+          // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case u.universe.Return(_) =>
             u.error(tree.pos, "return is disabled")

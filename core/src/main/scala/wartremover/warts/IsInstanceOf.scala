@@ -12,7 +12,7 @@ object IsInstanceOf extends WartTraverser {
         val synthetic = isSynthetic(u)(tree)
         tree match {
 
-          // Ignore trees marked by ignoreWarts
+          // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
 
           // Ignore synthetic canEquals() and equals()

@@ -13,9 +13,9 @@ class SerializableTest extends FunSuite {
     assertResult(List("Inferred type containing Serializable"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("Serializable wart obeys ignoreWarts") {
+  test("Serializable wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Serializable) {
-      @ignoreWarts("org.brianmckenna.wartremover.warts.Serializable")
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Serializable"))
       val foo = List((1, 2, 3), (1, 2))
     }
     assertResult(List.empty, "result.errors")(result.errors)

@@ -10,7 +10,7 @@ object TryPartial extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
-          // Ignore trees marked by ignoreWarts
+          // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
             u.error(tree.pos, "Try#get is disabled")

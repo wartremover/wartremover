@@ -25,9 +25,9 @@ class JavaConversionsTest extends FunSuite {
     assertResult(List.empty, "result.warnings")(result.warnings)
    
   }
-  test("JavaConversions wart obeys ignoreWarts") {
+  test("JavaConversions wart obeys SuppressWarnings") {
     val result = WartTestTraverser(JavaConversions) {
-      @ignoreWarts("org.brianmckenna.wartremover.warts.JavaConversions")
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.JavaConversions"))
       def ff[A](it: Iterable[A]) = collection.JavaConversions.asJavaCollection(it)
     }
     assertResult(List.empty, "result.errors")(result.errors)

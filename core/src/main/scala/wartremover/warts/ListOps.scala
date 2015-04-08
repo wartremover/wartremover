@@ -14,7 +14,7 @@ object ListOps extends WartTraverser {
       new u.Traverser {
         override def traverse(tree: Tree): Unit = {
           tree match {
-            // Ignore trees marked by ignoreWarts
+            // Ignore trees marked by SuppressWarnings
             case t if hasWartAnnotation(u)(t) =>
             case Select(left, Name) if left.tpe.baseType(listSymbol) != NoType ⇒
               u.error(tree.pos, error)

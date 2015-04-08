@@ -60,9 +60,11 @@ trait WartTraverser {
 
   def isWartAnnotation(u: WartUniverse)(a : u.universe.Annotation) : Boolean = {
     import u.universe._
-    a.tpe <:< typeTag[ignoreWarts].tpe &&
-      a.scalaArgs.exists {
-        case Literal(Constant(arg)) => arg == className
+    a.tpe <:< typeTag[java.lang.SuppressWarnings].tpe &&
+      a.javaArgs.exists {
+        case Tuple2(_, ArrayArgument(args)) => args.exists {
+          case LiteralArgument(Constant(arg)) => arg == className
+        }
         case _ => false
       }
   }

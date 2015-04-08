@@ -8,7 +8,7 @@ object Throw extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree) {
         tree match {
-          // Ignore trees marked by ignoreWarts
+          // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case dd@DefDef(_, ProductElementName , _, _, _, _) if isSynthetic(u)(dd) =>
           case u.universe.Throw(_) =>

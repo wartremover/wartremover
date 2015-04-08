@@ -14,9 +14,9 @@ class AnyTest extends FunSuite {
     assertResult(List("Inferred type containing Any"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("Any wart obeys ignoreWarts") {
+  test("Any wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any) {
-      @ignoreWarts("org.brianmckenna.wartremover.warts.Any")
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Any"))
       val x = readf1("{0}")
       x
     }

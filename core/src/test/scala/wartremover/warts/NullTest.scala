@@ -28,9 +28,9 @@ class NullTest extends FunSuite {
     assertResult(List("null is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("Null wart obeys ignoreWarts") {
+  test("Null wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Null) {
-      @ignoreWarts("org.brianmckenna.wartremover.warts.Null")
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Null"))
       val foo = {
         println(null)
         val (a, b) = (1, null)

@@ -13,9 +13,9 @@ class DefaultArgumentsTest extends FunSuite {
     assertResult(List("Function has default arguments"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("Default arguments wart obeys ignoreWarts") {
+  test("Default arguments wart obeys SuppressWarnings") {
     val result = WartTestTraverser(DefaultArguments) {
-      @ignoreWarts("org.brianmckenna.wartremover.warts.DefaultArguments")
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.DefaultArguments"))
       def x(y: Int = 4) = y
     }
     assertResult(List.empty, "result.errors")(result.errors)

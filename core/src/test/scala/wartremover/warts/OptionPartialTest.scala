@@ -28,9 +28,9 @@ class OptionPartialTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("OptionPartial wart obeys ignoreWarts") {
+  test("OptionPartial wart obeys SuppressWarnings") {
     val result = WartTestTraverser(OptionPartial) {
-      @ignoreWarts("org.brianmckenna.wartremover.warts.OptionPartial")
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
       val foo = {
         println(Some(1).get)
         println(None.get)
