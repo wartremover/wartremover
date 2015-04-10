@@ -62,4 +62,21 @@ class ListTest extends FunSuite {
     expectResult(List.empty, "result.warnings")(result.warnings)
   }
 
+  test("ListOps wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(ListOps) {
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.ListOps"))
+      val foo = {
+        println(List(1).head)
+        println(List().tail)
+        println(List().init)
+        println(List().last)
+        println(List.empty[Int].reduce(_ + _))
+        println(List.empty[Int].reduceLeft(_ + _))
+        println(List.empty[Int].reduceRight(_ + _))
+      }
+    }
+    expectResult(List.empty, "result.errors")(result.errors)
+    expectResult(List.empty, "result.warnings")(result.warnings)
+  }
+
 }

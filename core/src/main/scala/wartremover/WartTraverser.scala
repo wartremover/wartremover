@@ -3,9 +3,12 @@ package org.brianmckenna.wartremover
 import tools.nsc.Global
 import reflect.api.Universe
 import reflect.macros.Context
+import scala.util.Try
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
+
+  lazy val className = this.getClass.getName.stripSuffix("$")
 
   def asMacro(c: Context)(expr: c.Expr[Any]): c.Expr[Any] = {
     import c.universe._
@@ -54,6 +57,20 @@ trait WartTraverser {
 
   def wasInferred(u: WartUniverse)(t: u.universe.TypeTree): Boolean =
     t.original == null
+
+  def isWartAnnotation(u: WartUniverse)(a : u.universe.Annotation) : Boolean = {
+    import u.universe._
+    a.tpe <:< typeTag[java.lang.SuppressWarnings].tpe &&
+      a.javaArgs.exists {
+        case Tuple2(_, ArrayArgument(args)) => args.exists {
+          case LiteralArgument(Constant(arg)) => arg == className
+        }
+        case _ => false
+      }
+  }
+
+	def hasWartAnnotation(u: WartUniverse)(t: u.universe.Tree) =
+		Try(t.symbol.annotations.exists(isWartAnnotation(u))).getOrElse(false)
 }
 
 object WartTraverser {

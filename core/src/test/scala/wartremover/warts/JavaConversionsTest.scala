@@ -14,7 +14,7 @@ class JavaConversionsTest extends FunSuite {
     assertResult(List("scala.collection.JavaConversions is disabled - use scala.collection.JavaConverters instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
    
-  }  
+  }
   test("disable scala.collection.JavaConversions when referenced in an import") {
     val result = WartTestTraverser(JavaConversions) {
       import scala.collection.JavaConversions._
@@ -24,5 +24,14 @@ class JavaConversionsTest extends FunSuite {
     assertResult(List("scala.collection.JavaConversions is disabled - use scala.collection.JavaConverters instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
    
-  } 
+  }
+  test("JavaConversions wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(JavaConversions) {
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.JavaConversions"))
+      def ff[A](it: Iterable[A]) = collection.JavaConversions.asJavaCollection(it)
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+   
+  }
 }

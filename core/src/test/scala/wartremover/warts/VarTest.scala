@@ -14,4 +14,13 @@ class VarTest extends FunSuite {
     assertResult(List("var is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("Var wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(Var) {
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Var"))
+      var x = 10
+      x
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }

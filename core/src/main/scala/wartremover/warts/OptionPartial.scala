@@ -10,6 +10,8 @@ object OptionPartial extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
+          // Ignore trees marked by SuppressWarnings
+          case t if hasWartAnnotation(u)(t) =>
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
             u.error(tree.pos, "Option#get is disabled - use Option#fold instead")
           // TODO: This ignores a lot

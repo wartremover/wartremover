@@ -34,4 +34,17 @@ class EitherProjectionPartialTest extends FunSuite {
     assertResult(List("RightProjection#get is disabled - use RightProjection#toOption instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("EitherProjectionPartial wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(EitherProjectionPartial) {
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.EitherProjectionPartial"))
+      val foo = {
+        println(Left(1).left.get)
+        println(Right(1).left.get)
+        println(Left(1).right.get)
+        println(Right(1).right.get)
+      }
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }

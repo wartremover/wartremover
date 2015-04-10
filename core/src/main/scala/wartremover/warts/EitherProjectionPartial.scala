@@ -11,13 +11,16 @@ object EitherProjectionPartial extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
+          // Ignore trees marked by SuppressWarnings
+          case t if hasWartAnnotation(u)(t) =>
           case Select(left, GetName) if left.tpe.baseType(leftProjectionSymbol) != NoType =>
             u.error(tree.pos, "LeftProjection#get is disabled - use LeftProjection#toOption instead")
+            super.traverse(tree)
           case Select(left, GetName) if left.tpe.baseType(rightProjectionSymbol) != NoType =>
             u.error(tree.pos, "RightProjection#get is disabled - use RightProjection#toOption instead")
-          case _ =>
+            super.traverse(tree)
+          case _ => super.traverse(tree)
         }
-        super.traverse(tree)
       }
     }
   }

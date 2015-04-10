@@ -60,6 +60,12 @@ To exclude a file from all checks:
 wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
 ```
 
+To exclude a specific piece of code from one or more checks use the `SuppressWarnings` annotation:
+```scala
+@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Var", "org.brianmckenna.wartremover.warts.Null"))
+var foo = null
+```
+
 Finally, if you want to add your custom `WartTraverser`, provide its classpath first:
 
 ```scala

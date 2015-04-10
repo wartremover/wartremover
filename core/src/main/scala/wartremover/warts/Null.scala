@@ -16,6 +16,8 @@ object Null extends WartTraverser {
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
+          // Ignore trees marked by SuppressWarnings
+          case t if hasWartAnnotation(u)(t) =>
           // Ignore xml literals
           case Apply(Select(left, _), _) if xmlSymbols.contains(left.tpe.typeSymbol.fullName) =>
           // Ignore synthetic case class's companion object unapply

@@ -67,4 +67,21 @@ class NoNeedForMonadTest extends FunSuite {
     assertResult(List.empty, "result.errors")(extendsFunction.errors)
     assertResult(List.empty, "result.errors")(extendsFunction.warnings)
   }
+
+  test("NoNeedForMonad wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(NoNeedForMonad) {
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.NoNeedForMonad"))
+      val foo = {
+        for {
+          x <- List(1, 2, 3)
+          y <- List(2, 3, 4)
+        } yield x * y
+  
+        Option(1).flatMap(i => Option(2).map(j => i + j))
+      }
+    }
+
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }

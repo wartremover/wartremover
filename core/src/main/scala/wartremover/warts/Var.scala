@@ -17,6 +17,8 @@ object Var extends WartTraverser {
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {
+          // Ignore trees marked by SuppressWarnings
+          case t if hasWartAnnotation(u)(t) =>
           // Ignore case class's synthetic hashCode
           case ClassDef(mods, _, tparams, Template(parents, self, stats)) if mods.hasFlag(Flag.CASE) =>
             mods.annotations foreach { annotation =>
