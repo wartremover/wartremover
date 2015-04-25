@@ -26,8 +26,8 @@ class ListTest extends FunSuite {
     val result = WartTestTraverser(ListOps) {
       println(List().init)
     }
-    expectResult(List("List#init is disabled - use List#dropRight(1) instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("List#init is disabled - use List#dropRight(1) instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
   test("can't use List#last on List") {
@@ -42,24 +42,24 @@ class ListTest extends FunSuite {
     val result = WartTestTraverser(ListOps) {
       println(List.empty[Int].reduce(_ + _))
     }
-    expectResult(List("List#reduce is disabled - use List#reduceOption or List#fold instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("List#reduce is disabled - use List#reduceOption or List#fold instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
   test("can't use List#reduceLeft on List") {
     val result = WartTestTraverser(ListOps) {
       println(List.empty[Int].reduceLeft(_ + _))
     }
-    expectResult(List("List#reduceLeft is disabled - use List#reduceLeftOption or List#foldLeft instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("List#reduceLeft is disabled - use List#reduceLeftOption or List#foldLeft instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
   test("can't use List#reduceRight on List") {
     val result = WartTestTraverser(ListOps) {
       println(List.empty[Int].reduceRight(_ + _))
     }
-    expectResult(List("List#reduceRight is disabled - use List#reduceRightOption or List#foldRight instead"), "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List("List#reduceRight is disabled - use List#reduceRightOption or List#foldRight instead"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
 }
