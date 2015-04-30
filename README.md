@@ -9,7 +9,7 @@ WartRemover is a flexible Scala code linting tool.
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.12")
+addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.13")
 ```
 
 If you're using `sbt` ≥ 0.13.5, you'll be able to make use of the new auto plugin feature. If not, you'll probably want to add the following to your `build.sbt`:
