@@ -11,9 +11,8 @@ object Return extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case u.universe.Return(_) =>
             u.error(tree.pos, "return is disabled")
-          case _ =>
+          case _ => super.traverse(tree)
         }
-        super.traverse(tree)
       }
     }
   }
