@@ -29,33 +29,36 @@ object NoNeedForMonad extends WartTraverser {
     }
 
     def processFlatMapChain(tree: Tree): Unit = {
-      val subtrees = tree.collect {
-        case Apply(          Select(_, termName),     fn)
-            if (termName.toString == "flatMap" || termName.toString == "map") => fn
-        case Apply(TypeApply(Select(_, termName), _), fn)
-            if (termName.toString == "flatMap" || termName.toString == "map") => fn
-      }.flatten
+      def extractFuns(fname: String, tree: Tree): List[Tree] =
+        tree.collect {
+          case Apply(          Select(_, termName),     fn)
+              if (termName.toString == fname) => fn
+          case Apply(TypeApply(Select(_, termName), _), fn)
+              if (termName.toString == fname) => fn
+        }.flatten
 
       def asFuncTransform(args: List[Tree], body: Tree) =
         (args.map { case arg @ ValDef(_, name, _, _) =>
            Ident(name): Tree
          }, body)
 
-      val asFunc = subtrees.flatMap {
+      def processBodyArgs(tr: Tree) = tr match {
         case q"(..$args) => $body" => Some(asFuncTransform(args, body))
         case Block(args, body)     => Some(asFuncTransform(args, body))
         case x                     => None
       }
 
-      if(!asFunc.isEmpty) {
-        val (_, yields) = asFunc.last
-        val treesToCheck = asFunc.reverse.tail.toMap
-        val results = treesToCheck.flatMap { case (args, body) =>
+      val subTreeBody = extractFuns("map", tree).flatMap(t => processBodyArgs(t))
+      val subTreeFun  = extractFuns("flatMap", tree).flatMap(t => processBodyArgs(t))
+
+      if(!subTreeBody.isEmpty && !subTreeFun.isEmpty) {
+        val yields  = subTreeBody.map(_._2)
+        val results = subTreeFun.flatMap { case (args, body) =>
           args.map { arg =>
             // Argument should occur in the body of the function the number of times
             // it occurs in the yield statement
             // (i.e. only occurrences in the yield statement are allowed).
-            val countInYield = yields.filter(_ equalsStructure arg).size
+            val countInYield = yields.flatMap(_.filter(_ equalsStructure arg)).size
             body.filter(_ equalsStructure arg).size == countInYield
           }
         }
