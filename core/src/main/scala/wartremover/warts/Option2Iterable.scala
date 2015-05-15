@@ -24,4 +24,3 @@ object Option2Iterable extends WartTraverser {
     }
   }
 }
-// Select(Select(This(TypeName("scala")), scala.Option), TermName("option2Iterable"))
