@@ -76,9 +76,20 @@ class NoNeedForMonadTest extends FunSuite {
           x <- List(1, 2, 3)
           y <- List(2, 3, 4)
         } yield x * y
-  
+
         Option(1).flatMap(i => Option(2).map(j => i + j))
       }
+    }
+
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+
+  test("Does not produce false positives in one-level flatMaps") {
+    val result = WartTestTraverser(NoNeedForMonad) {
+      case class Group(singles: Seq[Int])
+      val groups = Seq(Group(Seq(1, 2)), Group(Seq(3, 4)))
+      groups flatMap (_.singles)
     }
 
     assertResult(List.empty, "result.errors")(result.errors)
