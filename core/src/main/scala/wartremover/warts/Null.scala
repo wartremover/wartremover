@@ -20,7 +20,7 @@ object Null extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           // Ignore xml literals
           case Apply(Select(left, _), _) if xmlSymbols.contains(left.tpe.typeSymbol.fullName) =>
-          // Ignore synthetic case class's companion object unapply
+          // Ignore synthetic methods in companion objects
           case ModuleDef(mods, _, Template(parents, self, stats)) =>
             mods.annotations foreach { annotation =>
               traverse(annotation)
@@ -30,7 +30,7 @@ object Null extends WartTraverser {
             }
             traverse(self)
             stats filter {
-              case dd@DefDef(_, UnapplyName | UnapplySeqName, _, _, _, _) if isSynthetic(u)(dd) =>
+              case dd: DefDef if isSynthetic(u)(dd) =>
                 false
               case _ =>
                 true

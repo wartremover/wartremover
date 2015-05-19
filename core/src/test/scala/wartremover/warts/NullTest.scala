@@ -21,6 +21,14 @@ class NullTest extends FunSuite {
     assertResult(List("null is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("can't use null in default arguments") {
+    val result = WartTestTraverser(Null) {
+      class ClassWithArgs(val foo: String = null)
+      case class CaseClassWithArgs(val foo: String = null)
+    }
+    assertResult(List("null is disabled", "null is disabled"), "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
   test("can't use null inside of Map#partition") {
     val result = WartTestTraverser(Null) {
       Map(1 -> "one", 2 -> "two").partition { case (k, v) => null.asInstanceOf[Boolean] }
@@ -37,6 +45,16 @@ class NullTest extends FunSuite {
         println(a)
         Map(1 -> "one", 2 -> "two").partition { case (k, v) => null.asInstanceOf[Boolean] }
       }
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+  test("Null wart obeys SuppressWarnings in classes with default arguments") {
+    val result = WartTestTraverser(Null) {
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Null"))
+      class ClassWithArgs(val foo: String = null)
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Null"))
+      case class CaseClassWithArgs(val foo: String = null)
     }
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
