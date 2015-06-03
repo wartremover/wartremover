@@ -29,6 +29,15 @@ class ExplicitImplicitTypesTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("can declare implicit parameters") {
+    val result = WartTestTraverser(ExplicitImplicitTypes) {
+      Option(1).map { implicit i =>
+        i
+      }
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
   test("can declare non-implicit vals") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       val foo = 5
