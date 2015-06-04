@@ -132,6 +132,23 @@ projection.  The program should be refactored to use `scala.util.Either.LeftProj
 and `scala.util.Either.RightProjection#toOption` to explicitly handle both
 the `Some` and `None` cases.
 
+### Enumeration
+
+Scala's `Enumeration` can cause performance problems due to its reliance on reflection. Additionally the lack of exhaustive match checks and partial methods can lead to runtime errors. Instead of `Enumeration`, a `sealed abstract class` extended by `case object`s should be used instead.
+
+### ExplicitImplicitTypes
+
+Scala has trouble correctly resolving implicits when some of them lack explicit result types. To avoid this all implicits should have explicit type ascriptions.
+
+### FinalCaseClass
+
+Scala's case classes provide a useful implementation of logicless data types. Extending a case class can break this functionality in surprising ways. This can be avoided by always making them final.
+
+```scala
+// Won't compile: case classes must be final
+case class Foo()
+```
+
 ### IsInstanceOf
 
 `isInstanceOf` violates parametricity. Refactor so that the  type is established statically.
@@ -139,6 +156,17 @@ the `Some` and `None` cases.
 ```scala
 // Won't compile: isInstanceOf is disabled
 x.isInstanceOf[String]
+```
+
+### JavaConversions
+
+The standard library provides implicits conversions to and from Java types in `scala.util.JavaConversions`. This can make code difficult to understand and read about. The explicit conversions provided by `scala.collection.JavaConverters` instead.
+
+```scala
+// Won't compile: scala.collection.JavaConversions is disabled
+import scala.collection.JavaConversions._
+val scalaMap: Map[String, String] = Map()
+val javaMap: java.util.Map[String, String] = scalaMap
 ```
 
 ### ListOps
@@ -164,6 +192,16 @@ all of which will throw if the list is empty. The program should be refactored t
 * `List#reduceRightOption` or `List#foldRight` respectively,
 
 to explicitly handle both the populated and empty `List`.
+
+### MutableDataStructures
+
+The standard library provides mutable collections. Mutation breaks equational reasoning.
+
+```scala
+// Won't compile: scala.collection.mutable package is disabled
+import scala.collection.mutable.ListBuffer
+val mutList = ListBuffer()
+```
 
 ### NoNeedForMonad
 
@@ -227,6 +265,10 @@ type safety.
 val s: String = null
 ```
 
+### Option2Iterable
+
+Scala inserts an implicit conversion from `Option` to `Iterable`. This can hide bugs and creates surprising situations like `Some(1) zip Some(2)` returning an `Iterable[(Int, Int)]`.
+
 ### OptionPartial
 
 `scala.Option` has a `get` method which will throw if the value is
@@ -270,6 +312,13 @@ val any = List((1, 2, 3), (1, 2))
 
 `throw` implies partiality. Encode exceptions/errors as return
 values instead using `Either`. 
+```
+
+### TryPartial
+
+`scala.util.Try` has a `get` method which will throw if the value is a
+`Failure`. The program should be refactored to use `scala.util.Try#map` and `scala.util.Try#getOrElse` to
+explicitly handle both the `Success` and `Failure` cases.
 
 ### Unsafe
 
