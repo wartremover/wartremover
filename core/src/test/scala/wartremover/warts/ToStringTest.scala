@@ -12,14 +12,14 @@ class ToStringTest extends FunSuite {
       val foo: Foo = new Foo(5)
 		foo.toString
     }
-    assertResult(List("foo.type does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
+    assertResult(List("class Foo does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use automatic toString method of TypeRefs") {
     val result = WartTestTraverser(ToString) {
       def foo[A](a: A): String = a.toString
     }
-    assertResult(List("a.type does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
+    assertResult(List("class Any does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use generated toString method of case classes") {
@@ -27,7 +27,7 @@ class ToStringTest extends FunSuite {
       case class Foo(i: Int)
 		Foo(5).toString
     }
-    assertResult(List("Foo does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
+    assertResult(List("class Foo does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use generated toString method of case objects") {
@@ -35,7 +35,7 @@ class ToStringTest extends FunSuite {
       case object Foo
 		Foo.toString
     }
-    assertResult(List("Foo.type does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
+    assertResult(List("object Foo does not override toString and automatic toString is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can use overridden toString method") {
@@ -54,13 +54,26 @@ class ToStringTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("ToString wart obeys SuppressWarnings") {
+  test("can use toString method of primitives") {
     val result = WartTestTraverser(ToString) {
-      case class Foo(i: Int)
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.ToString"))
-		val i = Foo(5).toString
+     1.toString
+     1l.toString
+     1f.toString
+     1.0.toString
+     true.toString
+     'a'.toString
+     "a".toString
     }
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-} 
+  test("ToString wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(ToString) {
+      case class Foo(i: Int)
+      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.ToString"))
+      val i = Foo(5).toString
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+}
