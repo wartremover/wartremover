@@ -312,6 +312,12 @@ val any = List((1, 2, 3), (1, 2))
 
 `throw` implies partiality. Encode exceptions/errors as return
 values instead using `Either`. 
+
+### ToString
+
+Scala creates a `toString` method automatically for all classes. Since `toString` is based on the class name, any rename can potentially introduce bugs. This is especially pernicious for `case object`s. `toString` should be explicitly overridden wherever used.
+```scala
+case object Foo { override val toString = "Foo" }
 ```
 
 ### TryPartial
