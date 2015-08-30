@@ -1,9 +1,5 @@
-import sbtrelease._
-import sbtrelease.ReleasePlugin._
-import ReleaseKeys._
-import sbtrelease.ReleaseStateTransformations._
+import ReleaseTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
-import sbtassembly.Plugin._
 
 lazy val commonSettings = Seq(
   organization := "org.brianmckenna",
@@ -39,7 +35,7 @@ lazy val root = Project(
   id = "root",
   base = file("."),
   aggregate = Seq(core)
-).settings(releaseSettings ++ commonSettings ++ Seq(
+).settings(commonSettings ++ Seq(
   publishArtifact := false,
   crossScalaVersions := Seq("2.11.6", "2.10.5"),
   crossVersion := CrossVersion.binary,
@@ -65,7 +61,7 @@ lazy val core = Project(
   id = "core",
   base = file("core"),
   aggregate = Seq(sbtPlug)
-).settings(assemblySettings ++ commonSettings ++ Seq(
+).settings(commonSettings ++ Seq(
   name := "wartremover",
   scalaVersion := "2.11.6",
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full),
