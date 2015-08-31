@@ -17,7 +17,7 @@ object ExplicitImplicitTypes extends WartTraverser {
         tree match {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
-          case t: ValOrDefDef if t.mods.hasFlag(IMPLICIT) && !t.mods.hasFlag(PARAM) && !isSynthetic(u)(t) && !hasTypeAscription(t) =>
+          case t: ValOrDefDef if t.mods.hasFlag(IMPLICIT) && !t.mods.hasFlag(PARAM) && !t.mods.hasFlag(LOCAL) && !isSynthetic(u)(t) && !hasTypeAscription(t) =>
             u.error(tree.pos, "implicit definitions must have an explicit type ascription")
           case t => super.traverse(tree)
         }
