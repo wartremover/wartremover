@@ -1,5 +1,8 @@
 package org.brianmckenna.wartremover
 
+import java.nio.file.PathMatcher
+import java.nio.file.FileSystems
+import java.nio.file.Paths
 import tools.nsc.plugins.PluginComponent
 import tools.nsc.{Global, Phase}
 
@@ -14,7 +17,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
   private[this] var traversers: List[WartTraverser] = List.empty
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
-  private[this] var excludedFiles: List[String] = List.empty
+  private[this] var excludedFiles: List[PathMatcher] = List.empty
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -35,6 +38,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     val classPathEntries = filterOptions("cp", options).map(new URL(_))
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val mirror = reflect.runtime.universe.runtimeMirror(classLoader)
+    val fileSystem = FileSystems.getDefault
 
     def ts(p: String) = {
       val traverserNames = filterOptions(p, options)
@@ -43,7 +47,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
-    excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+    excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map ( f => fileSystem.getPathMatcher("glob:" + f ) )
   }
 
   object Traverser extends PluginComponent {
@@ -57,9 +61,10 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     override def newPhase(prev: Phase) = new StdPhase(prev) {
       override def apply(unit: CompilationUnit) = {
-        val isExcluded = excludedFiles contains unit.source.file.absolute.path
+        val path = Paths.get(unit.source.file.absolute.path)
+        val isIncluded = excludedFiles find (_.matches(path)) isEmpty
 
-        if (!isExcluded) {
+        if (isIncluded) {
           def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
             val universe: global.type = global
             def error(pos: Position, message: String) =
