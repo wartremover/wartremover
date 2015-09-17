@@ -14,6 +14,14 @@ class NonUnitStatementsTest extends FunSuite {
     assertResult(List("Statements must return Unit"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("Extending a class with multiple parameter lists doesn't fail") {
+    val result = WartTestTraverser(NonUnitStatements) {
+      class A(x: Int)(y: Int)(z: Int)
+      class B(x: Int)(y: Int)(z: Int) extends A(x)(y)(z)
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
   test("XML literals don't fail") {
     val result = WartTestTraverser(NonUnitStatements) {
       val a = 13
