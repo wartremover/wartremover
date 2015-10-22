@@ -69,3 +69,24 @@ You can make any wart into a macro, like so:
                   safe { null }
                          ^
 
+## Gradle Integration
+
+```
+buildscript {
+  dependencies {
+    classpath 'org.brianmckenna:wartremover_2.11:0.14'
+  }
+}
+
+final wartRemoverJarPath = rootProject.buildscript.configurations.getByName('classpath').filter { it.name.startsWith 'wartremover' }.singleFile.getAbsolutePath()
+
+configure(subprojects) {
+  //...
+  compileScala {
+    scalaCompileOptions.additionalParameters = [
+      "-feature","-unchecked","-deprecation","-Xfatal-warnings","-language:postfixOps",
+      "-Xplugin:" + wartRemoverJarPath, "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
+    ]
+  }
+  //...
+```
