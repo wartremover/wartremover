@@ -346,6 +346,60 @@ Mutation breaks equational reasoning.
 var x = 100
 ```
 
+### NumericRange for floating point numbers
+
+NumericRange is broken for float and double:
+That means, when using it (collection methods: map, foreach, zip), it depends on which method is used for constructing the new collections. You can go two paths on NumericRange:
+
+1) The "apply" path:   @see scala.collection.immutable.NumericRange.locationAfterN
+
+2) The "foreach" path: @see scala.collection.immutable.NumericRange.foreach
+
+The difference between these paths is that "foreach" accumulates values to obtain the current value (current += step), but "apply" will directly calculate the current value (start + (step * fromInt(n))). The apply path is more accurate. This means that the values on these path will diverge due to other rounding behavior.
+
+For example:
+
+```scala
+val range = 0D to 1D by (1 / 7D)
+```
+
+1) Apply path
+```scala
+range.iterator.toVector // uses apply in range.iterator in the end
+Vector(
+  0.0,
+  0.14285714285714285,
+  0.2857142857142857,
+  0.42857142857142855,
+  0.5714285714285714,
+  0.7142857142857142,
+  0.8571428571428571,
+  1.0
+)
+```
+
+2) Foreach path
+```scala
+range.toVector // uses foreach at CanBuildFrom respectively ++= in the end
+Vector(
+  0.0,
+  0.14285714285714285,
+  0.2857142857142857,
+  0.42857142857142855,
+  0.5714285714285714,
+  0.7142857142857142,
+  0.857142857142857,
+  0.9999999999999998
+)
+```
+
+As one can see the last two values differ and iterator/apply is more accurate.
+
+```scala
+// Won't compile
+1D to 8D by 0.5D
+```
+
 ## Writing Wart Rules
 
 A wart rule has to be an object which extends `WartTraverser`. The
