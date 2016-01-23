@@ -152,7 +152,7 @@ x.isInstanceOf[String]
 
 ### JavaConversions
 
-The standard library provides implicits conversions to and from Java types in `scala.util.JavaConversions`. This can make code difficult to understand and read about. The explicit conversions provided by `scala.collection.JavaConverters` instead.
+The standard library provides implicits conversions to and from Java types in `scala.collection.JavaConversions`. This can make code difficult to understand and read about. The explicit conversions provided by `scala.collection.JavaConverters` instead.
 
 ```scala
 // Won't compile: scala.collection.JavaConversions is disabled
