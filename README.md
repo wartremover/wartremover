@@ -335,6 +335,7 @@ Checks for the following warts:
 * Return
 * Serializable
 * Throw
+* TryPartial
 * Var
 
 ### Var
