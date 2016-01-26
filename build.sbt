@@ -100,6 +100,7 @@ lazy val sbtPlug: Project = Project(
          |final class Wart private[wartremover](val clazz: String)
          |object Wart {
          |  private[wartremover] val PluginVersion = "${version.value}"
+         |  private[wartremover] lazy val AllWarts = List(${warts mkString ", "})
          |  private[wartremover] lazy val UnsafeWarts = List(${unsafe mkString ", "})
          |  /** A fully-qualified class name of a custom Wart implementing `org.brianmckenna.wartremover.WartTraverser`. */
          |  def custom(clazz: String): Wart = new Wart(clazz)
