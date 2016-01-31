@@ -25,13 +25,23 @@ trait ForbidInference[T] extends WartTraverser {
         def error() = u.error(tree.pos, s"Inferred type containing ${tSymbol.name}")
 
         tree match {
-          // Ignore trees marked by SuppressWarnings
-          case t if hasWartAnnotation(u)(t) =>
+          case t if hasWartAnnotation(u)(t) =>      // Ignore trees marked by SuppressWarnings
+          case TypeApply(fun, args) =>
+            def evil(t: Type) = t contains tSymbol
+            def altEvil(t: reflect.internal.Types#Type) = evil(t.asInstanceOf[Type])
+            def paramtpes = fun.tpe.typeParams map (_.info.asInstanceOf[reflect.internal.Types#Type])
+            def warnable = !(paramtpes.map(_.bounds.lo).exists(_.dealiasWidenChain exists altEvil))
+            args foreach {
+              case tpt @ TypeTree() if wasInferred(u)(tpt) && warnable && evil(tpt.tpe) =>
+                tpt.tpe match {
+                  case ExistentialType(_, _) =>     // Ignore existential types, they supposedly contain "any"
+                  case _ => error()
+                }
+              case _ =>
+            }
           case tpt @ TypeTree() if wasInferred(u)(tpt) && tpt.tpe.contains(tSymbol) =>
             tpt.tpe match {
-              // Ignore existential types, they supposedly contain "any"
-              case ExistentialType(_, _) =>
-
+              case ExistentialType(_, _) =>         // Ignore existential types, they supposedly contain "any"
               case _ =>
                 error()
             }

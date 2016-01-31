@@ -23,4 +23,12 @@ class AnyTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+  test("Any can be inferred if it must be") {
+    val result = WartTestTraverser(Any) {
+      def f[A >: Any] = 42
+      f
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
 }
