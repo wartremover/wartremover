@@ -71,17 +71,42 @@ trait WartTraverser {
 
   def hasWartAnnotation(u: WartUniverse)(tree: u.universe.Tree) = {
     import u.universe._
-    tree match {
-      case t: ValOrDefDef => t.symbol.annotations.exists(isWartAnnotation(u))
-      case t: ImplDef => t.symbol.annotations.exists(isWartAnnotation(u))
-      case t => false
-    }
+    import WartTraverser._
+    ( u.noMacros && u.universe.isInstanceOf[Global] && {
+      val g = u.universe.asInstanceOf[Global]
+      val t = tree.asInstanceOf[g.Tree]
+      //t.attachments.contains[g.analyzer.MacroExpansionAttachment]
+      t.attachments.containsMacroExpansionAttachment
+    }) || (
+      tree match {
+        case t: ValOrDefDef => t.symbol.annotations.exists(isWartAnnotation(u))
+        case t: ImplDef => t.symbol.annotations.exists(isWartAnnotation(u))
+        case t => false
+      }
+    )
   }
 }
 
 object WartTraverser {
   def sumList(u: WartUniverse)(l: List[WartTraverser]): u.Traverser =
     l.reduceRight(_ compose _)(u)
+
+  // support scala 2.10
+  import scala.reflect.ClassTag
+  import scala.reflect.macros.Attachments
+  import scala.util.control.Exception.catching
+
+  private lazy val macroExpansionClassTag: Option[ClassTag[_]] =
+    classForName("scala.tools.nsc.typechecker.StdAttachments$MacroExpansionAttachment") orElse
+    classForName("scala.reflect.internal.StdAttachments$MacroExpansionAttachment") map (ClassTag(_))
+
+  private def classForName(name: String): Option[Class[_]] =
+    catching(classOf[ClassNotFoundException], classOf[SecurityException]) opt Class.forName(name)
+
+  implicit private class `reflect 2_10`(val attachments: Attachments) extends AnyVal {
+    def contains[A: ClassTag]: Boolean = attachments.get[A].nonEmpty
+    def containsMacroExpansionAttachment: Boolean = macroExpansionClassTag map (contains(_)) getOrElse false
+  }
 }
 
 trait WartUniverse {
@@ -90,4 +115,5 @@ trait WartUniverse {
   type TypeTag[T] = universe.TypeTag[T]
   def error(pos: universe.Position, message: String): Unit
   def warning(pos: universe.Position, message: String): Unit
+  def noMacros: Boolean = false
 }

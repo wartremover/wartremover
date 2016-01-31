@@ -7,6 +7,7 @@ package object wartremover {
   val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
   val wartremoverExcluded = settingKey[Seq[File]]("List of files to be excluded from all checks.")
   val wartremoverClasspaths = settingKey[Seq[String]]("List of classpaths for custom Warts")
+  val wartremoverNoMacros = settingKey[Boolean]("Exclude macro expansions from checks.")
 
   lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
     wartremoverErrors := Seq.empty,
@@ -20,7 +21,8 @@ package object wartremover {
     derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
     derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
     derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
-    derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
+    derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp")),
+    derive(scalacOptions += s"-P:wartremover:no-macros:${ wartremoverNoMacros.value }")
   ))
 
   // Workaround for typelevel/wartremover#123

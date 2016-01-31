@@ -15,6 +15,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   private[this] var traversers: List[WartTraverser] = List.empty
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
   private[this] var excludedFiles: List[String] = List.empty
+  private[this] var noMacros: Boolean = false
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -44,6 +45,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
     excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+    noMacros = filterOptions("no-macros", options) exists (_.toBoolean)
   }
 
   object Traverser extends PluginComponent {
@@ -66,6 +68,9 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
               if (onlyWarn) global.reporter.warning(pos, message)
               else global.reporter.error(pos, message)
             def warning(pos: Position, message: String) = global.reporter.warning(pos, message)
+
+            override def noMacros = Plugin.this.noMacros
+            //global.plugins.find(_.name == "wartremover") map { case p: Plugin => p.noMacros } getOrElse false
           }
 
           def go(ts: List[WartTraverser], onlyWarn: Boolean) =

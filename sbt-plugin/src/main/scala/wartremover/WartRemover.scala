@@ -10,6 +10,7 @@ object WartRemover extends sbt.AutoPlugin {
     val wartremoverWarnings = wartremover.wartremoverWarnings
     val wartremoverExcluded = wartremover.wartremoverExcluded
     val wartremoverClasspaths = wartremover.wartremoverClasspaths
+    val wartremoverNoMacros = wartremover.wartremoverNoMacros
     val Wart = wartremover.Wart
     val Warts = wartremover.Warts
   }
