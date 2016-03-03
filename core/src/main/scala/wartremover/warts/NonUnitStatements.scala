@@ -1,6 +1,8 @@
 package org.brianmckenna.wartremover
 package warts
 
+import scala.annotation.tailrec
+
 object NonUnitStatements extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
@@ -10,14 +12,21 @@ object NonUnitStatements extends WartTraverser {
     val IwName: TermName = "$iw"
     val NodeBufferAddName: TermName = NameTransformer.encode("&+")
 
+    @tailrec
+    def isClassConstructor(tree: Tree): Boolean = tree match {
+      case Select(_, nme.CONSTRUCTOR) => true
+      case Apply(t, _) => isClassConstructor(t)
+      case _ => false
+    }
+
     def isIgnoredStatement(tree: Tree) = tree match {
-      // Scala creates synthetic blocks with <init> calls on classes.
-      // The calls return Object so we need to ignore them.
-      case Apply(Select(_, nme.CONSTRUCTOR), _) => true
       // scala.xml.NodeBuffer#&+ returns NodeBuffer instead of Unit, so
       // val x = <x>5</x> desugars to a non-Unit statement; ignore.
       case Apply(Select(qual, NodeBufferAddName), _)
         if qual.symbol.typeSignature =:= typeOf[scala.xml.NodeBuffer] => true
+      // Scala creates synthetic blocks with <init> calls on classes.
+      // The calls return Object so we need to ignore them.
+      case t @ Apply(_, _) => isClassConstructor(t)
       // REPL needs this
       case Select(Select(Select(Ident(_), ReadName), IwName), IwName) => true
       case _ => false
