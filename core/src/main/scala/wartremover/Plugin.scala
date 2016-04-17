@@ -53,6 +53,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     override val runsAfter = List("typer")
 
+    override val runsBefore = List("patmat")
+
     val phaseName = "wartremover-traverser"
 
     override def newPhase(prev: Phase) = new StdPhase(prev) {
