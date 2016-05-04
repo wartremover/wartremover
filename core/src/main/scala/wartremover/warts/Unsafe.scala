@@ -14,6 +14,7 @@ object Unsafe extends WartTraverser {
     Null,
     OptionPartial,
     Product,
+    ProductOps,
     Return,
     Serializable,
     Throw,
