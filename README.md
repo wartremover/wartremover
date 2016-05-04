@@ -347,6 +347,18 @@ Mutation breaks equational reasoning.
 var x = 100
 ```
 
+### ProductOps
+
+`scala.Product` has:
+
+* `canEqual`,
+* `productArity`,
+* `productElement`,
+* `productIterator`, and
+* `productPrefix`, methods,
+
+all of which are based on a lack of parametricity, and none of which are particularly helpful abstractions. Furthermore, `productElement` is unsafe - it throws exceptions.
+
 ## Writing Wart Rules
 
 A wart rule has to be an object that extends `WartTraverser`. The
