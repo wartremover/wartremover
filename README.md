@@ -161,6 +161,20 @@ val scalaMap: Map[String, String] = Map()
 val javaMap: java.util.Map[String, String] = scalaMap
 ```
 
+### LeakingSealed
+
+Descendants of a sealed type must be final or sealed. Otherwise this type can be extended in another file through its descendant.
+
+```scala
+file 1:
+// Won't compile: Descendants of a sealed type must be final or sealed
+sealed trait t
+class c extends t
+
+file 2:
+class d extends c
+```
+
 ### ListOps
 
 `scala.collection.immutable.List` has:
