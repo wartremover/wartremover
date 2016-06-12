@@ -10,17 +10,14 @@ object Overloading extends WartTraverser {
         tree match {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
-          case t: ClassDef if isSynthetic(u)(t) =>
-          case t: ClassDef if t.symbol.info.decls.nonEmpty =>
-            val overloaded = t.symbol.info.members
-                .filterNot(_.annotations.exists(isWartAnnotation(u)))
-                .map(_.name.decodedName.toString)
-                .groupBy(identity)
-                .filter(_._2.size > 1)
-                .keys
-            t.symbol.info.decls
-                .filter(decl => overloaded.exists(_ == decl.name.decodedName.toString))
-                .foreach(delc => u.error(delc.pos, "Overloading is disabled"))
+          case t: DefDef if !isSynthetic(u)(t) =>
+            val owner = t.symbol.owner
+            if (owner.isClass && !owner.isSynthetic
+                && owner.typeSignature.declarations.nonEmpty
+                && owner.typeSignature.members
+                  .count(x => x.isMethod && !x.annotations.exists(isWartAnnotation(u)) && x.name == t.name) > 1) {
+              u.error(t.pos, "Overloading is disabled")
+            }
             super.traverse(tree)
           case _ =>
             super.traverse(tree)
