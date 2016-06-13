@@ -281,6 +281,17 @@ Scala inserts an implicit conversion from `Option` to `Iterable`. This can hide 
 `None`. The program should be refactored to use `scala.Option#fold` to
 explicitly handle both the `Some` and `None` cases.
 
+### Overloading
+
+Method overloading may lead to confusion and usually can be avoided.
+
+```scala
+// Won't compile: Overloading is disabled
+class c {
+  def equals(x: Int) = {}
+}
+```
+
 ### Product
 
 `Product` is a type common to many structures; it is the supertype of
