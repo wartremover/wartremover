@@ -361,6 +361,18 @@ Mutation breaks equational reasoning.
 var x = 100
 ```
 
+### While
+
+`while` loop usually indicates low-level code. If performance is not an issue, it can be replaced.
+
+```scala
+// Won't compile: while is disabled
+while(i < 10) {
+  i += 1
+  ...
+}
+```
+
 ## Writing Wart Rules
 
 A wart rule has to be an object that extends `WartTraverser`. The
