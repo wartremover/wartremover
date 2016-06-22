@@ -141,6 +141,15 @@ Scala's case classes provide a useful implementation of logicless data types. Ex
 case class Foo()
 ```
 
+### ImplicitConversion
+
+Implicit conversions weaken type safety and always can be replaced by explicit conversions.
+
+```scala
+// Won't compile: implicit conversion is disabled
+implicit def int2Array(i: Int) = Array.fill(i)("madness")
+```
+
 ### IsInstanceOf
 
 `isInstanceOf` violates parametricity. Refactor so that the type is established statically.
