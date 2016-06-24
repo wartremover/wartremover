@@ -1,8 +1,8 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
-import org.brianmckenna.wartremover.warts.TryPartial
+import org.wartremover.warts.TryPartial
 import scala.util.{Try, Success, Failure}
 
 class TryPartialTest extends FunSuite {
@@ -30,7 +30,7 @@ class TryPartialTest extends FunSuite {
   }
   test("TryPartial wart obeys SuppressWarnings") {
     val result = WartTestTraverser(TryPartial) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.TryPartial"))
+      @SuppressWarnings(Array("org.wartremover.warts.TryPartial"))
       val foo = {
         println(Success(1).get)
         println(Failure(new Error).get)

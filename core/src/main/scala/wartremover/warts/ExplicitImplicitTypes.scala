@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package warts
 
 import scala.util.matching.Regex

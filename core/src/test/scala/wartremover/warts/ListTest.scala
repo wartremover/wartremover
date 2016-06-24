@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.ListOps
+import org.wartremover.warts.ListOps
 
 class ListTest extends FunSuite {
   test("can't use List#head on List") {
@@ -64,7 +64,7 @@ class ListTest extends FunSuite {
 
   test("ListOps wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ListOps) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.ListOps"))
+      @SuppressWarnings(Array("org.wartremover.warts.ListOps"))
       val foo = {
         println(List(1).head)
         println(List().tail)

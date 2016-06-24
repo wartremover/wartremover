@@ -2,7 +2,7 @@ import ReleaseTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
 
 lazy val commonSettings = Seq(
-  organization := "org.brianmckenna",
+  organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
       url("http://www.apache.org/licenses/LICENSE-2.0.txt")
@@ -102,9 +102,9 @@ lazy val sbtPlug: Project = Project(
          |  private[wartremover] val PluginVersion = "${version.value}"
          |  private[wartremover] lazy val AllWarts = List(${warts mkString ", "})
          |  private[wartremover] lazy val UnsafeWarts = List(${unsafe mkString ", "})
-         |  /** A fully-qualified class name of a custom Wart implementing `org.brianmckenna.wartremover.WartTraverser`. */
+         |  /** A fully-qualified class name of a custom Wart implementing `org.wartremover.WartTraverser`. */
          |  def custom(clazz: String): Wart = new Wart(clazz)
-         |  private[this] def w(nm: String): Wart = new Wart(s"org.brianmckenna.wartremover.warts.$$nm")
+         |  private[this] def w(nm: String): Wart = new Wart(s"org.wartremover.warts.$$nm")
          |""".stripMargin +
         warts.map(w => s"""  val $w = w("${w}")""").mkString("\n") + "\n}\n"
     IO.write(file, content)

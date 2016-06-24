@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.NonUnitStatements
+import org.wartremover.warts.NonUnitStatements
 
 class NonUnitStatementsTest extends FunSuite {
   test("non-unit statements are disabled") {
@@ -32,7 +32,7 @@ class NonUnitStatementsTest extends FunSuite {
   }
   test("NonUnitStatements wart obeys SuppressWarnings") {
     val result = WartTestTraverser(NonUnitStatements) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.NonUnitStatements"))
+      @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
       val foo = {
         1
         2

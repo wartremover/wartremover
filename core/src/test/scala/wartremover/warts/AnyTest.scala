@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Any
+import org.wartremover.warts.Any
 
 class AnyTest extends FunSuite {
   test("Any can't be inferred") {
@@ -16,7 +16,7 @@ class AnyTest extends FunSuite {
   }
   test("Any wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Any"))
+      @SuppressWarnings(Array("org.wartremover.warts.Any"))
       val x = readf1("{0}")
       x
     }

@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.OptionPartial
+import org.wartremover.warts.OptionPartial
 
 class OptionPartialTest extends FunSuite {
   test("can't use Option#get on Some") {
@@ -30,7 +30,7 @@ class OptionPartialTest extends FunSuite {
   }
   test("OptionPartial wart obeys SuppressWarnings") {
     val result = WartTestTraverser(OptionPartial) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+      @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
       val foo = {
         println(Some(1).get)
         println(None.get)

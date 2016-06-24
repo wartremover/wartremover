@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Option2Iterable
+import org.wartremover.warts.Option2Iterable
 
 class Option2IterableTest extends FunSuite {
 
@@ -38,7 +38,7 @@ class Option2IterableTest extends FunSuite {
   }
   test("Option2Iterable wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Option2Iterable) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Option2Iterable"))
+      @SuppressWarnings(Array("org.wartremover.warts.Option2Iterable"))
       val foo = {
         println(Iterable(1).flatMap(Some(_)))
       }

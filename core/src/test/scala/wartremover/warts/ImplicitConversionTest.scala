@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.ImplicitConversion
+import org.wartremover.warts.ImplicitConversion
 
 class ImplicitConversionTest extends FunSuite {
   test("Implicit conversion is disabled") {
@@ -29,7 +29,7 @@ class ImplicitConversionTest extends FunSuite {
   test("ImplicitConversion wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ImplicitConversion) {
       class c {
-        @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.ImplicitConversion"))
+        @SuppressWarnings(Array("org.wartremover.warts.ImplicitConversion"))
         implicit def int2Array(i: Int): Array[String] = Array.fill(i)("?")
       }
     }

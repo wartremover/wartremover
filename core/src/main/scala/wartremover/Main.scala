@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 
 import tools.nsc.{Global, Settings}
 import tools.nsc.io.VirtualDirectory

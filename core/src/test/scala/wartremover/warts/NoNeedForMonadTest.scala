@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.NoNeedForMonad
+import org.wartremover.warts.NoNeedForMonad
 
 class NoNeedForMonadTest extends FunSuite {
   test("Report cases where Applicative is enough") {
@@ -83,7 +83,7 @@ class NoNeedForMonadTest extends FunSuite {
 
   test("NoNeedForMonad wart obeys SuppressWarnings") {
     val result = WartTestTraverser(NoNeedForMonad) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.NoNeedForMonad"))
+      @SuppressWarnings(Array("org.wartremover.warts.NoNeedForMonad"))
       val foo = {
         for {
           x <- List(1, 2, 3)

@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.LeakingSealed
+import org.wartremover.warts.LeakingSealed
 
 class LeakingSealedTest extends FunSuite {
   test("Descendants of a sealed type must be final or sealed") {
@@ -28,7 +28,7 @@ class LeakingSealedTest extends FunSuite {
   test("LeakingSealed wart obeys SuppressWarnings") {
     val result = WartTestTraverser(LeakingSealed) {
       sealed trait t
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.LeakingSealed"))
+      @SuppressWarnings(Array("org.wartremover.warts.LeakingSealed"))
       class c extends t
     }
     assertResult(List.empty, "result.errors")(result.errors)

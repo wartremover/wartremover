@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.{ Enumeration => EnumerationWart }
+import org.wartremover.warts.{ Enumeration => EnumerationWart }
 
 class EnumerationTest extends FunSuite {
   test("can't declare Enumeration classes") {
@@ -36,7 +36,7 @@ class EnumerationTest extends FunSuite {
   }
   test("Enumeration wart obeys SuppressWarnings") {
     val result = WartTestTraverser(EnumerationWart) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Enumeration"))
+      @SuppressWarnings(Array("org.wartremover.warts.Enumeration"))
       object Color extends Enumeration {
         val Red = Value
         val Blue = Value

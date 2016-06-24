@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.While
+import org.wartremover.warts.While
 
 class WhileTest extends FunSuite {
   test("while is disabled") {
@@ -28,7 +28,7 @@ class WhileTest extends FunSuite {
 
   test("while wart obeys SuppressWarnings") {
     val result = WartTestTraverser(While) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.While"))
+      @SuppressWarnings(Array("org.wartremover.warts.While"))
       def f() = {
         while (true) {
         }
