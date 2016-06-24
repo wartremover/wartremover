@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Overloading
+import org.wartremover.warts.Overloading
 
 class OverloadingTest extends FunSuite {
   test("Overloading is disabled") {
@@ -20,7 +20,7 @@ class OverloadingTest extends FunSuite {
 
   test("Overloading wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Overloading) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Overloading"))
+      @SuppressWarnings(Array("org.wartremover.warts.Overloading"))
       class c {
         def f(i: Int) = {}
         def f(s: String) = {}
@@ -35,7 +35,7 @@ class OverloadingTest extends FunSuite {
     val result = WartTestTraverser(Overloading) {
       class c {
         def f(i: Int) = {}
-        @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Overloading"))
+        @SuppressWarnings(Array("org.wartremover.warts.Overloading"))
         def f(s: String) = {}
       }
     }

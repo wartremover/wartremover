@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Any2StringAdd
+import org.wartremover.warts.Any2StringAdd
 
 class Any2StringAddTest extends FunSuite {
   test("disable any2stringadd") {
@@ -15,7 +15,7 @@ class Any2StringAddTest extends FunSuite {
   }
   test("any2stringadd wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any2StringAdd) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Any2StringAdd"))
+      @SuppressWarnings(Array("org.wartremover.warts.Any2StringAdd"))
       val foo = {} + "lol"
     }
     assertResult(List.empty, "result.errors")(result.errors)

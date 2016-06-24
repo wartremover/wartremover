@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.DefaultArguments
+import org.wartremover.warts.DefaultArguments
 
 class DefaultArgumentsTest extends FunSuite {
   test("Default arguments can't be used") {
@@ -15,7 +15,7 @@ class DefaultArgumentsTest extends FunSuite {
   }
   test("Default arguments wart obeys SuppressWarnings") {
     val result = WartTestTraverser(DefaultArguments) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.DefaultArguments"))
+      @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
       def x(y: Int = 4) = y
     }
     assertResult(List.empty, "result.errors")(result.errors)

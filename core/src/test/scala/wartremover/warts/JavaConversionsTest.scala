@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.JavaConversions
+import org.wartremover.warts.JavaConversions
 
 class JavaConversionsTest extends FunSuite {
    test("handle explicit method reference") {
@@ -27,7 +27,7 @@ class JavaConversionsTest extends FunSuite {
   }
   test("JavaConversions wart obeys SuppressWarnings") {
     val result = WartTestTraverser(JavaConversions) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.JavaConversions"))
+      @SuppressWarnings(Array("org.wartremover.warts.JavaConversions"))
       def ff[A](it: Iterable[A]) = collection.JavaConversions.asJavaCollection(it)
     }
     assertResult(List.empty, "result.errors")(result.errors)

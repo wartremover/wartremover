@@ -14,7 +14,7 @@ Compile the command-line tool via `sbt core/assembly` and then use the provided 
     
       ...
     
-    $ ./wartremover -traverser org.brianmckenna.wartremover.warts.Unsafe core/src/main/scala/wartremover/Plugin.scala
+    $ ./wartremover -traverser org.wartremover.warts.Unsafe core/src/main/scala/wartremover/Plugin.scala
     core/src/main/scala/wartremover/Plugin.scala:15: error: var is disabled
       private[this] var traversers: List[WartTraverser] = List.empty
                         ^
@@ -28,13 +28,13 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 addCompilerPlugin("org.brianmckenna" %% "wartremover" % "0.10")
 
-scalacOptions += "-P:wartremover:traverser:org.brianmckenna.wartremover.warts.Unsafe"
+scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
 
 By default, WartRemover generates compile-time errors. If you want to be warned only, use an `only-warn-traverser`:
 
 ```scala
-scalacOptions += "-P:wartremover:only-warn-traverser:org.brianmckenna.wartremover.warts.Unsafe"
+scalacOptions += "-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe"
 ```
 
 If you don't want to perform the checks in some file, you can use:
@@ -58,8 +58,8 @@ You can make any wart into a macro, like so:
     scala> import language.experimental.macros
     import language.experimental.macros
 
-    scala> import org.brianmckenna.wartremover.warts.Unsafe
-    import org.brianmckenna.wartremover.warts.Unsafe
+    scala> import org.wartremover.warts.Unsafe
+    import org.wartremover.warts.Unsafe
 
     scala> def safe(expr: Any) = macro Unsafe.asMacro
     safe: (expr: Any)Any

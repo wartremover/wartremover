@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.FinalCaseClass
+import org.wartremover.warts.FinalCaseClass
 
 class FinalCaseClassTest extends FunSuite {
   test("can't declare nonfinal case classes") {
@@ -38,7 +38,7 @@ class FinalCaseClassTest extends FunSuite {
   }
   test("FinalCaseClass wart obeys SuppressWarnings") {
     val result = WartTestTraverser(FinalCaseClass) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.FinalCaseClass"))
+      @SuppressWarnings(Array("org.wartremover.warts.FinalCaseClass"))
       case class Foo(i: Int)
     }
     assertResult(List.empty, "result.errors")(result.errors)

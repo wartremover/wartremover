@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Var
+import org.wartremover.warts.Var
 
 class VarTest extends FunSuite {
   test("can't use `var`") {
@@ -16,7 +16,7 @@ class VarTest extends FunSuite {
   }
   test("Var wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Var) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Var"))
+      @SuppressWarnings(Array("org.wartremover.warts.Var"))
       var x = 10
       x
     }

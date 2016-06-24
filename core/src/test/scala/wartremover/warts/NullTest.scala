@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Null
+import org.wartremover.warts.Null
 
 class NullTest extends FunSuite {
   test("can't use `null`") {
@@ -38,7 +38,7 @@ class NullTest extends FunSuite {
   }
   test("Null wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Null) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Null"))
+      @SuppressWarnings(Array("org.wartremover.warts.Null"))
       val foo = {
         println(null)
         val (a, b) = (1, null)
@@ -51,9 +51,9 @@ class NullTest extends FunSuite {
   }
   test("Null wart obeys SuppressWarnings in classes with default arguments") {
     val result = WartTestTraverser(Null) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Null"))
+      @SuppressWarnings(Array("org.wartremover.warts.Null"))
       class ClassWithArgs(val foo: String = null)
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Null"))
+      @SuppressWarnings(Array("org.wartremover.warts.Null"))
       case class CaseClassWithArgs(val foo: String = null)
     }
     assertResult(List.empty, "result.errors")(result.errors)

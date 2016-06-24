@@ -54,7 +54,7 @@ wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFil
 
 To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation:
 ```scala
-@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Var", "org.brianmckenna.wartremover.warts.Null"))
+@SuppressWarnings(Array("org.wartremover.warts.Var", "org.wartremover.warts.Null"))
 var foo = null
 ```
 
@@ -74,7 +74,7 @@ See also [other ways of using WartRemover](/OTHER-WAYS.md) for information on ho
 ## Warts
 
 Here is a list of built-in warts under the
-`org.brianmckenna.wartremover.warts` package.
+`org.wartremover.warts` package.
 
 ### Any
 
@@ -407,7 +407,7 @@ Most traversers will want a `super.traverse` call to be able to
 recursively continue.
 
 ```scala
-import org.brianmckenna.wartremover.{WartTraverser, WartUniverse}
+import org.wartremover.{WartTraverser, WartUniverse}
 
 object Unimplemented extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
