@@ -28,6 +28,10 @@ lazy val commonSettings = Seq(
         <name>Brian McKenna</name>
         <url>http://brianmckenna.org/</url>
       </developer>
+      <developer>
+        <name>Chris Neveu</name>
+        <url>http://chrisneveu.com</url>
+      </developer>
     </developers>
 )
 
