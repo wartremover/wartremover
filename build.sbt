@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
-  homepage := Some(url("https://github.com/puffnfresh/wartremover")),
+  homepage := Some(url("http://wartremover.org")),
   pomExtra :=
     <scm>
       <url>git@github.com:puffnfresh/wartremover.git</url>
