@@ -9,7 +9,7 @@ WartRemover is a flexible Scala code linting tool.
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.14")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.0.0")
 ```
 
 Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
