@@ -1,5 +1,6 @@
 import ReleaseTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
+import com.typesafe.sbt.pgp.PgpSettings.useGpg
 
 lazy val commonSettings = Seq(
   organization := "org.wartremover",
@@ -17,6 +18,7 @@ lazy val commonSettings = Seq(
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
   homepage := Some(url("http://wartremover.org")),
+  useGpg := true,
   pomExtra :=
     <scm>
       <url>git@github.com:puffnfresh/wartremover.git</url>
