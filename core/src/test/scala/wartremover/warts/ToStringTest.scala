@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.ToString
+import org.wartremover.warts.ToString
 
 class ToStringTest extends FunSuite {
   test("can't use automatic toString method") {
@@ -70,7 +70,7 @@ class ToStringTest extends FunSuite {
   test("ToString wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ToString) {
       case class Foo(i: Int)
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.ToString"))
+      @SuppressWarnings(Array("org.wartremover.warts.ToString"))
       val i = Foo(5).toString
     }
     assertResult(List.empty, "result.errors")(result.errors)

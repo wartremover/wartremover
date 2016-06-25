@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Return
+import org.wartremover.warts.Return
 
 class ReturnTest extends FunSuite {
   test("local return is disabled") {
@@ -22,9 +22,9 @@ class ReturnTest extends FunSuite {
   }
   test("Return wart is disabled") {
     val result = WartTestTraverser(Return) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Return"))
+      @SuppressWarnings(Array("org.wartremover.warts.Return"))
       def foo(n:Int): Int = return n + 1
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Return"))
+      @SuppressWarnings(Array("org.wartremover.warts.Return"))
       def bar(ns: List[Int]): Any = ns.map(n => return n + 1)
     }
     assertResult(List.empty, "result.errors")(result.errors)

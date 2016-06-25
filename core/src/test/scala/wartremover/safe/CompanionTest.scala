@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Unsafe
+import org.wartremover.warts.Unsafe
 
 class CompanionTest extends FunSuite {
   test("can use companion objects for case classes") {

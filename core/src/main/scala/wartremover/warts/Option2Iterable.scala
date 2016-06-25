@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package warts
 
 object Option2Iterable extends WartTraverser {
@@ -16,7 +16,7 @@ object Option2Iterable extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case Select(Select(This(pkg), obj), method)
             if pkg == scala && obj == option && method == option2Iterable =>
-            u.error(tree.pos, "Implicit conversion from Option to Iterable is disabled - use Option#toIterable instead")
+            u.error(tree.pos, "Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
           case _ =>
             super.traverse(tree)
         }

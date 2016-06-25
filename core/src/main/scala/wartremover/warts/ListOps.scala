@@ -1,10 +1,10 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package warts
 
 object ListOps extends WartTraverser {
 
   class Op(name: String, error: String) extends WartTraverser {
-    override lazy val className = "org.brianmckenna.wartremover.warts.ListOps"
+    override lazy val className = "org.wartremover.warts.ListOps"
 
     def apply(u: WartUniverse): u.Traverser = {
       import u.universe._

@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package warts
 
 object Serializable extends ForbidInference[Serializable] {

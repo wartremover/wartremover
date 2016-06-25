@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.MutableDataStructures
+import org.wartremover.warts.MutableDataStructures
 
 class MutableDataStructuresTest extends FunSuite {
   test("disable scala.collection.mutable._ when referenced") {
@@ -22,7 +22,7 @@ class MutableDataStructuresTest extends FunSuite {
   }
   test("MutableDataStructures wart obeys SuppressWarnings") {
     val result = WartTestTraverser(MutableDataStructures) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.MutableDataStructures"))
+      @SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
       var x = scala.collection.mutable.HashMap("key" -> "value")
     }
     assertResult(List.empty, "result.errors")(result.errors)

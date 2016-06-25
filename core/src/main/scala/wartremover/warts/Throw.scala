@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package warts
 
 object Throw extends WartTraverser {
@@ -11,6 +11,7 @@ object Throw extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case dd@DefDef(_, ProductElementName , _, _, _, _) if isSynthetic(u)(dd) =>
+          case t@u.universe.Throw(Apply(Select(New(exception), _), _)) if (exception.tpe <:< typeOf[scala.MatchError]) && isSynthetic(u)(t) =>
           case u.universe.Throw(_) =>
             u.error(tree.pos, "throw is disabled")
             super.traverse(tree)

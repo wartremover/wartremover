@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 
 import tools.nsc.Global
 import reflect.api.Universe

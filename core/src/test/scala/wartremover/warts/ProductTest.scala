@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.Product
+import org.wartremover.warts.Product
 
 class ProductTest extends FunSuite {
   test("Product can't be inferred") {
@@ -15,7 +15,7 @@ class ProductTest extends FunSuite {
   }
   test("Product wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Product) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Product"))
+      @SuppressWarnings(Array("org.wartremover.warts.Product"))
       val foo = List((1, 2, 3), (1, 2))
     }
     assertResult(List.empty, "result.errors")(result.errors)

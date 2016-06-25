@@ -1,8 +1,9 @@
 import ReleaseTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
+import com.typesafe.sbt.pgp.PgpSettings.useGpg
 
 lazy val commonSettings = Seq(
-  organization := "org.brianmckenna",
+  organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
       url("http://www.apache.org/licenses/LICENSE-2.0.txt")
@@ -16,7 +17,8 @@ lazy val commonSettings = Seq(
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
-  homepage := Some(url("https://github.com/puffnfresh/wartremover")),
+  homepage := Some(url("http://wartremover.org")),
+  useGpg := true,
   pomExtra :=
     <scm>
       <url>git@github.com:puffnfresh/wartremover.git</url>
@@ -28,6 +30,10 @@ lazy val commonSettings = Seq(
         <name>Brian McKenna</name>
         <url>http://brianmckenna.org/</url>
       </developer>
+      <developer>
+        <name>Chris Neveu</name>
+        <url>http://chrisneveu.com</url>
+      </developer>
     </developers>
 )
 
@@ -37,7 +43,7 @@ lazy val root = Project(
   aggregate = Seq(core)
 ).settings(commonSettings ++ Seq(
   publishArtifact := false,
-  crossScalaVersions := Seq("2.11.6", "2.10.5"),
+  crossScalaVersions := Seq("2.11.7", "2.10.6"),
   crossVersion := CrossVersion.binary,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
@@ -63,7 +69,7 @@ lazy val core = Project(
   aggregate = Seq(sbtPlug)
 ).settings(commonSettings ++ Seq(
   name := "wartremover",
-  scalaVersion := "2.11.6",
+  scalaVersion := "2.11.7",
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full),
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -102,9 +108,9 @@ lazy val sbtPlug: Project = Project(
          |  private[wartremover] val PluginVersion = "${version.value}"
          |  private[wartremover] lazy val AllWarts = List(${warts mkString ", "})
          |  private[wartremover] lazy val UnsafeWarts = List(${unsafe mkString ", "})
-         |  /** A fully-qualified class name of a custom Wart implementing `org.brianmckenna.wartremover.WartTraverser`. */
+         |  /** A fully-qualified class name of a custom Wart implementing `org.wartremover.WartTraverser`. */
          |  def custom(clazz: String): Wart = new Wart(clazz)
-         |  private[this] def w(nm: String): Wart = new Wart(s"org.brianmckenna.wartremover.warts.$$nm")
+         |  private[this] def w(nm: String): Wart = new Wart(s"org.wartremover.warts.$$nm")
          |""".stripMargin +
         warts.map(w => s"""  val $w = w("${w}")""").mkString("\n") + "\n}\n"
     IO.write(file, content)

@@ -1,4 +1,4 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import language.experimental.macros

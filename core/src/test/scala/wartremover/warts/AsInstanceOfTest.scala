@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.AsInstanceOf
+import org.wartremover.warts.AsInstanceOf
 
 class AsInstanceOfTest extends FunSuite {
   test("asInstanceOf is disabled") {
@@ -15,7 +15,7 @@ class AsInstanceOfTest extends FunSuite {
   }
   test("asInstanceOf wart obeys SuppressWarnings") {
     val result = WartTestTraverser(AsInstanceOf) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.AsInstanceOf"))
+      @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
       val foo = "abc".asInstanceOf[String]
     }
     assertResult(List.empty, "result.errors")(result.errors)

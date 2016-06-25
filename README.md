@@ -9,7 +9,7 @@ WartRemover is a flexible Scala code linting tool.
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.14")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.0.0")
 ```
 
 Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
@@ -46,15 +46,15 @@ wartremoverWarnings += Wart.Nothing
 wartremoverWarnings ++= Seq(Wart.Any, Wart.Serializable)
 ```
 
-To exclude a file from all checks:
+To exclude a file from all checks, use:
 
 ```scala
 wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
 ```
 
-To exclude a specific piece of code from one or more checks use the `SuppressWarnings` annotation:
+To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation:
 ```scala
-@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.Var", "org.brianmckenna.wartremover.warts.Null"))
+@SuppressWarnings(Array("org.wartremover.warts.Var", "org.wartremover.warts.Null"))
 var foo = null
 ```
 
@@ -74,12 +74,12 @@ See also [other ways of using WartRemover](/OTHER-WAYS.md) for information on ho
 ## Warts
 
 Here is a list of built-in warts under the
-`org.brianmckenna.wartremover.warts` package.
+`org.wartremover.warts` package.
 
 ### Any
 
-Any is the top type; it is the supertype of every other type. The
-Scala compiler loves to infer Any as a generic type but that is
+`Any` is the top type; it is the supertype of every other type. The
+Scala compiler loves to infer `Any` as a generic type, but that is
 almost always incorrect. Explicit type arguments should be used
 instead.
 
@@ -90,7 +90,7 @@ val any = List(1, true, "three")
 
 ### Any2StringAdd
 
-Scala has an implicit which converts anything to a `String` if the
+Scala has an implicit that converts anything to a `String` if the
 right hand side of `+` is a `String`.
 
 ```scala
@@ -126,11 +126,21 @@ the `Some` and `None` cases.
 
 ### Enumeration
 
-Scala's `Enumeration` can cause performance problems due to its reliance on reflection. Additionally the lack of exhaustive match checks and partial methods can lead to runtime errors. Instead of `Enumeration`, a `sealed abstract class` extended by `case object`s should be used instead.
+Scala's `Enumeration` can cause performance problems due to its reliance on reflection. Additionally, the lack of exhaustive match checks and partial methods can lead to runtime errors. Instead of `Enumeration`, a sealed abstract class extended by case objects should be used instead.
+
+### Equals
+
+Scala's `Any` type provides an `==` method which is not type-safe. Using this method allows obviously incorrect code like `5 == "5"` to compile. A better version which forbids equality checks across types (which always fail) is easily defined:
+```
+@SuppressWarnings(Array("org.wartremover.warts.Equals"))
+implicit final class AnyOps[A](self: A) {
+   def ===(other: A): Boolean = self == other
+}
+```
 
 ### ExplicitImplicitTypes
 
-Scala has trouble correctly resolving implicits when some of them lack explicit result types. To avoid this all implicits should have explicit type ascriptions.
+Scala has trouble correctly resolving implicits when some of them lack explicit result types. To avoid this, all implicits should have explicit type ascriptions.
 
 ### FinalCaseClass
 
@@ -141,9 +151,18 @@ Scala's case classes provide a useful implementation of logicless data types. Ex
 case class Foo()
 ```
 
+### ImplicitConversion
+
+Implicit conversions weaken type safety and always can be replaced by explicit conversions.
+
+```scala
+// Won't compile: implicit conversion is disabled
+implicit def int2Array(i: Int) = Array.fill(i)("madness")
+```
+
 ### IsInstanceOf
 
-`isInstanceOf` violates parametricity. Refactor so that the  type is established statically.
+`isInstanceOf` violates parametricity. Refactor so that the type is established statically.
 
 ```scala
 // Won't compile: isInstanceOf is disabled
@@ -152,13 +171,27 @@ x.isInstanceOf[String]
 
 ### JavaConversions
 
-The standard library provides implicits conversions to and from Java types in `scala.collection.JavaConversions`. This can make code difficult to understand and read about. The explicit conversions provided by `scala.collection.JavaConverters` instead.
+The standard library provides implicits conversions to and from Java types in `scala.collection.JavaConversions`. This can make code difficult to understand and read about. The explicit conversions provided by `scala.collection.JavaConverters` should be used instead.
 
 ```scala
 // Won't compile: scala.collection.JavaConversions is disabled
 import scala.collection.JavaConversions._
 val scalaMap: Map[String, String] = Map()
 val javaMap: java.util.Map[String, String] = scalaMap
+```
+
+### LeakingSealed
+
+Descendants of a sealed type must be final or sealed. Otherwise this type can be extended in another file through its descendant.
+
+```scala
+file 1:
+// Won't compile: Descendants of a sealed type must be final or sealed
+sealed trait t
+class c extends t
+
+file 2:
+class d extends c
 ```
 
 ### ListOps
@@ -236,8 +269,8 @@ false
 
 ### Nothing
 
-Nothing is a special bottom type; it is a subtype of every other
-type. The Scala compiler loves to infer Nothing as a generic type but
+`Nothing` is a special bottom type; it is a subtype of every other
+type. The Scala compiler loves to infer `Nothing` as a generic type but
 that is almost always incorrect. Explicit type arguments should be
 used instead.
 
@@ -267,11 +300,22 @@ Scala inserts an implicit conversion from `Option` to `Iterable`. This can hide 
 `None`. The program should be refactored to use `scala.Option#fold` to
 explicitly handle both the `Some` and `None` cases.
 
+### Overloading
+
+Method overloading may lead to confusion and usually can be avoided.
+
+```scala
+// Won't compile: Overloading is disabled
+class c {
+  def equals(x: Int) = {}
+}
+```
+
 ### Product
 
-Product is a type common to many structures; it is the supertype of
-case classes and tuples. The Scala compiler loves to infer Product as
-a generic type but that is almost always incorrect. Explicit type
+`Product` is a type common to many structures; it is the supertype of
+case classes and tuples. The Scala compiler loves to infer `Product` as
+a generic type, but that is almost always incorrect. Explicit type
 arguments should be used instead.
 
 ```scala
@@ -291,8 +335,8 @@ def foo(ns: List[Int]): Any = ns.map(n => return n + 1)
 
 ### Serializable
 
-Serializable is a type common to many structures. The Scala compiler
-loves to infer Serializable as a generic type but that is almost
+`Serializable` is a type common to many structures. The Scala compiler
+loves to infer `Serializable` as a generic type, but that is almost
 always incorrect. Explicit type arguments should be used instead.
 
 ```scala
@@ -307,7 +351,7 @@ values instead using `Either`.
 
 ### ToString
 
-Scala creates a `toString` method automatically for all classes. Since `toString` is based on the class name, any rename can potentially introduce bugs. This is especially pernicious for `case object`s. `toString` should be explicitly overridden wherever used.
+Scala creates a `toString` method automatically for all classes. Since `toString` is based on the class name, any rename can potentially introduce bugs. This is especially pernicious for case objects. `toString` should be explicitly overridden wherever used.
 ```scala
 case object Foo { override val toString = "Foo" }
 ```
@@ -347,13 +391,25 @@ Mutation breaks equational reasoning.
 var x = 100
 ```
 
+### While
+
+`while` loop usually indicates low-level code. If performance is not an issue, it can be replaced.
+
+```scala
+// Won't compile: while is disabled
+while(i < 10) {
+  i += 1
+  ...
+}
+```
+
 ## Writing Wart Rules
 
-A wart rule has to be an object which extends `WartTraverser`. The
+A wart rule has to be an object that extends `WartTraverser`. The
 object only needs an `apply` method which takes a `WartUniverse` and
 returns a `WartUniverse#universe#Traverser`.
 
-The `WartUniverse` has `error` and `warning` methods which both take
+The `WartUniverse` has `error` and `warning` methods, which both take
 `(WartUniverse#universe#Position, String)`. They are side-effecting
 methods for adding errors and warnings.
 
@@ -361,7 +417,7 @@ Most traversers will want a `super.traverse` call to be able to
 recursively continue.
 
 ```scala
-import org.brianmckenna.wartremover.{WartTraverser, WartUniverse}
+import org.wartremover.{WartTraverser, WartUniverse}
 
 object Unimplemented extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {

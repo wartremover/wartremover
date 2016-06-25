@@ -1,4 +1,4 @@
 <plugin>
   <name>wartremover</name>
-  <classname>org.brianmckenna.wartremover.Plugin</classname>
+  <classname>org.wartremover.Plugin</classname>
 </plugin>

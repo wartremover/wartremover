@@ -1,9 +1,9 @@
-package org.brianmckenna.wartremover
+package org.wartremover
 package test
 
 import org.scalatest.FunSuite
 
-import org.brianmckenna.wartremover.warts.EitherProjectionPartial
+import org.wartremover.warts.EitherProjectionPartial
 
 class EitherProjectionPartialTest extends FunSuite {
   test("can't use LeftProjection#get on Left") {
@@ -36,7 +36,7 @@ class EitherProjectionPartialTest extends FunSuite {
   }
   test("EitherProjectionPartial wart obeys SuppressWarnings") {
     val result = WartTestTraverser(EitherProjectionPartial) {
-      @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.EitherProjectionPartial"))
+      @SuppressWarnings(Array("org.wartremover.warts.EitherProjectionPartial"))
       val foo = {
         println(Left(1).left.get)
         println(Right(1).left.get)
