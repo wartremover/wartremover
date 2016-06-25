@@ -9,7 +9,7 @@ object ExplicitImplicitTypes extends WartTraverser {
     import u.universe.Flag._
 
     def hasTypeAscription(tree: ValOrDefDef) : Boolean =
-      new Regex("""(val|var|def)\s*""" + tree.name.decodedName.toString.trim + """(\[.*\])?(\(.*\))*\s*:""")
+      new Regex("""(val|var|def)\s*`?""" + tree.name.decodedName.toString.trim + """`?(\[.*\])?(\(.*\))*\s*:""")
         .findFirstIn(tree.pos.lineContent).nonEmpty
 
     new u.Traverser {

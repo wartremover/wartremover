@@ -85,6 +85,16 @@ class ExplicitImplicitTypesTest extends FunSuite {
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
+  test("can declare backticked implicit defs") {
+    val result = WartTestTraverser(ExplicitImplicitTypes) {
+      implicit def `foo`: Int = 5
+      implicit val `foobar`: String = "5"
+      implicit def `foo bar`: Long = 5L
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+
   test("ExplicitImplicitTypes wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes"))
