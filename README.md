@@ -128,6 +128,16 @@ the `Some` and `None` cases.
 
 Scala's `Enumeration` can cause performance problems due to its reliance on reflection. Additionally, the lack of exhaustive match checks and partial methods can lead to runtime errors. Instead of `Enumeration`, a sealed abstract class extended by case objects should be used instead.
 
+### Equals
+
+Scala's `Any` type provides an `==` method which is not type-safe. Using this method allows obviously incorrect code like `5 == "5"` to compile. A better version which forbids equality checks across types (which always fail) is easily defined:
+```
+@SuppressWarnings(Array("org.wartremover.warts.Equals"))
+implicit final class AnyOps[A](self: A) {
+   def ===(other: A): Boolean = self == other
+}
+```
+
 ### ExplicitImplicitTypes
 
 Scala has trouble correctly resolving implicits when some of them lack explicit result types. To avoid this, all implicits should have explicit type ascriptions.
