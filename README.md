@@ -151,6 +151,21 @@ Scala's case classes provide a useful implementation of logicless data types. Ex
 case class Foo()
 ```
 
+### FinalVal
+
+Value of a `final val` is inlined and can cause inconsistency during incremental compilation.
+
+```scala
+file 1:
+object c {
+  // Won't compile: final val is disabled
+  final val v = 1
+}
+
+file 2:
+println(c.v)
+```
+
 ### ImplicitConversion
 
 Implicit conversions weaken type safety and always can be replaced by explicit conversions.
