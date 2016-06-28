@@ -131,7 +131,7 @@ Scala's `Enumeration` can cause performance problems due to its reliance on refl
 ### Equals
 
 Scala's `Any` type provides an `==` method which is not type-safe. Using this method allows obviously incorrect code like `5 == "5"` to compile. A better version which forbids equality checks across types (which always fail) is easily defined:
-```
+```scala
 @SuppressWarnings(Array("org.wartremover.warts.Equals"))
 implicit final class AnyOps[A](self: A) {
    def ===(other: A): Boolean = self == other
