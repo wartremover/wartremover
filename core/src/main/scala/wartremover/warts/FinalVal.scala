@@ -12,7 +12,7 @@ object FinalVal extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case ValDef(mods, _, _, _) if mods.hasFlag(FINAL) && !mods.hasFlag(MUTABLE) && !isSynthetic(u)(tree) =>
-            u.error(tree.pos, "final val is disabled")
+            u.error(tree.pos, "final val is disabled - use non-final val or final def instead")
             super.traverse(tree)
           case _ =>
             super.traverse(tree)

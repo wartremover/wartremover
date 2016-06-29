@@ -12,7 +12,7 @@ class FinalValTest extends FunSuite {
         final val v = 1
       }
     }
-    assertResult(List("final val is disabled"), "result.errors")(result.errors)
+    assertResult(List("final val is disabled - use non-final val or final def instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
