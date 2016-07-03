@@ -10,7 +10,8 @@ object ImplicitConversion extends WartTraverser {
         tree match {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
-          case t: DefDef if t.symbol.isImplicit && t.symbol.isPublic && !isSynthetic(u)(t) =>
+          case t: DefDef
+            if t.symbol.isImplicit && t.symbol.isPublic && t.vparamss.flatten.exists(x => !x.symbol.isImplicit) && !isSynthetic(u)(t) =>
             u.error(tree.pos, "Implicit conversion is disabled")
             super.traverse(tree)
           case _ =>

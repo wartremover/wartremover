@@ -26,6 +26,16 @@ class ImplicitConversionTest extends FunSuite {
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
+  test("Implicit evidence constructor is enabled") {
+    val result = WartTestTraverser(ImplicitConversion) {
+      implicit def ordering[A]: Ordering[A] = ???
+      implicit def ordering2[A](implicit ev : Ordering[A]) : Ordering[A] = ???
+      implicit def ordering3[A : Ordering] : Ordering[A] = ???
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+
   test("ImplicitConversion wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ImplicitConversion) {
       class c {
