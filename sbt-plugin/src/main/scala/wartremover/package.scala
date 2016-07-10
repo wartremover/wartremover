@@ -6,7 +6,7 @@ package object wartremover {
   val wartremoverErrors = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation errors.")
   val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
   val wartremoverExcluded = taskKey[Seq[File]]("List of files to be excluded from all checks.")
-  val wartremoverClasspaths = settingKey[Seq[String]]("List of classpaths for custom Warts")
+  val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
 
   lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
     wartremoverErrors := Seq.empty,
