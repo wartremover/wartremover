@@ -153,7 +153,7 @@ case class Foo()
 
 ### FinalVal
 
-Value of a `final val` is inlined and can cause inconsistency during incremental compilation.
+Value of a `final val` is inlined and can cause inconsistency during incremental compilation (see [sbt/sbt/issues/1543 ](https://github.com/sbt/sbt/issues/1543)).
 
 ```scala
 file 1:
