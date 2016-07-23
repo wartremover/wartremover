@@ -12,6 +12,9 @@ object Null extends WartTraverser {
     ) // cannot do `map rootMirror.staticClass` here because then:
       //   scala.ScalaReflectionException: object scala.xml.Elem in compiler mirror not found.
 
+    val optionSymbol = rootMirror.staticClass("scala.Option")
+    val OrNull: TermName = "orNull"
+
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
@@ -40,6 +43,11 @@ object Null extends WartTraverser {
           case Literal(Constant(null)) =>
             u.error(tree.pos, "null is disabled")
             super.traverse(tree)
+
+          // Option.orNull (which returns null) is disabled.
+          case Select(left, OrNull) if left.tpe.baseType(optionSymbol) != NoType =>
+            u.error(tree.pos, "Option#orNull is disabled")
+
           // Scala pattern matching outputs synthetic null.asInstanceOf[X]
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
           // TODO: This ignores a lot
