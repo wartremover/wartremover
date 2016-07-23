@@ -8,6 +8,7 @@ object Equals extends WartTraverser {
     import u.universe._
 
     val Equals: TermName = NameTransformer.encode("==")
+    val NotEquals: TermName = NameTransformer.encode("!=")
 
     new Traverser {
       override def traverse(tree: Tree) = {
@@ -19,6 +20,9 @@ object Equals extends WartTraverser {
 
           case Apply(Select(lhs, Equals), _) =>
             u.error(tree.pos, s"== is disabled - use === or equivalent instead")
+
+          case Apply(Select(lhs, NotEquals), _) =>
+            u.error(tree.pos, s"!= is disabled - use =/= or equivalent instead")
 
           case _ => super.traverse(tree)
 

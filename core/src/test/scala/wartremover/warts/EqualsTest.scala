@@ -6,29 +6,32 @@ import org.scalatest.FunSuite
 import org.wartremover.warts.Equals
 
 class EqualsTest extends FunSuite {
-  test("can't use == method on primitives") {
+  test("can't use == or != method on primitives") {
     val result = WartTestTraverser(Equals) {
       val s = "foo"
       val i = 5
       i == s
+      i != s
     }
-    assertResult(List("== is disabled - use === or equivalent instead"), "result.errors")(result.errors)
+    assertResult(List("== is disabled - use === or equivalent instead", "!= is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("can't use == on classes") {
+  test("can't use == or != on classes") {
     val result = WartTestTraverser(Equals) {
       class Foo(i: Int)
 		new Foo(5) == new Foo(4)
+		new Foo(5) != new Foo(4)
     }
-    assertResult(List("== is disabled - use === or equivalent instead"), "result.errors")(result.errors)
+    assertResult(List("== is disabled - use === or equivalent instead", "!= is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
-  test("can't use == on case classes") {
+  test("can't use == or != on case classes") {
     val result = WartTestTraverser(Equals) {
       case class Foo(i: Int)
 		Foo(5) == Foo(4)
+		Foo(5) != Foo(4)
     }
-    assertResult(List("== is disabled - use === or equivalent instead"), "result.errors")(result.errors)
+    assertResult(List("== is disabled - use === or equivalent instead", "!= is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("Equals wart obeys SuppressWarnings") {
@@ -36,6 +39,8 @@ class EqualsTest extends FunSuite {
       case class Foo(i: Int)
       @SuppressWarnings(Array("org.wartremover.warts.Equals"))
       val i = Foo(5) == Foo(4)
+      @SuppressWarnings(Array("org.wartremover.warts.Equals"))
+      val j = Foo(5) != Foo(4)
     }
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
