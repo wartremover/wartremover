@@ -9,7 +9,7 @@ WartRemover is a flexible Scala code linting tool.
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.0.1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.1.0")
 ```
 
 Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
@@ -149,6 +149,21 @@ Scala's case classes provide a useful implementation of logicless data types. Ex
 ```scala
 // Won't compile: case classes must be final
 case class Foo()
+```
+
+### FinalVal
+
+Value of a `final val` is inlined and can cause inconsistency during incremental compilation (see [sbt/sbt/issues/1543 ](https://github.com/sbt/sbt/issues/1543)).
+
+```scala
+file 1:
+object c {
+  // Won't compile: final val is disabled
+  final val v = 1
+}
+
+file 2:
+println(c.v)
 ```
 
 ### ImplicitConversion

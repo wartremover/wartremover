@@ -3,6 +3,7 @@ package org.wartremover
 import tools.nsc.Global
 import reflect.api.Universe
 import reflect.macros.Context
+import scala.util.matching.Regex
 import scala.util.Try
 
 trait WartTraverser {
@@ -54,6 +55,10 @@ trait WartTraverser {
       t.symbol.isSynthetic
     else
       false
+
+  def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef) : Boolean =
+    new Regex("""(val|var|def)\s*`?""" + tree.name.decodedName.toString.trim + """`?(\[.*\])?(\(.*\))*\s*:""")
+        .findFirstIn(tree.pos.lineContent).nonEmpty
 
   def wasInferred(u: WartUniverse)(t: u.universe.TypeTree): Boolean =
     t.original == null
