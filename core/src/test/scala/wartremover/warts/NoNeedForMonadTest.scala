@@ -108,4 +108,13 @@ class NoNeedForMonadTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+
+  test("should not cause MatchError") {
+    WartTestTraverser(NoNeedForMonad) {
+      for {
+        a <- List(1)
+        b = a
+      } yield b
+    }
+  }
 }

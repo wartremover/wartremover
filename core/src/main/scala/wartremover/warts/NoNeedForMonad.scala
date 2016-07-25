@@ -11,13 +11,16 @@ object NoNeedForMonad extends WartTraverser {
     import u.universe._
 
     def processForComprehension(tree: Tree, enums: List[Tree], body: Tree): Unit = {
-      val bindings = enums.flatMap { case fq"$lhs <- $rhs" =>
-        lhs match {
-          case Bind(name, _) => List((Ident(name): Tree, rhs))
-          case Apply(_, bindings: List[Tree]) => bindings.map {
-            case Bind(name, _) => (Ident(name): Tree, rhs)
+      val bindings = enums.flatMap {
+        case fq"$lhs <- $rhs" =>
+          lhs match {
+            case Bind(name, _) => List((Ident(name): Tree, rhs))
+            case Apply(_, bindings: List[Tree]) => bindings.map {
+              case Bind(name, _) => (Ident(name): Tree, rhs)
+            }
           }
-        }
+        case _ =>
+          Nil
       }.toMap
 
       val names = bindings.keys
