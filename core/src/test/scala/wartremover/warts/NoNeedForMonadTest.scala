@@ -108,4 +108,17 @@ class NoNeedForMonadTest extends FunSuite {
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
+
+  test("Handles if") {
+    val result = WartTestTraverser(NoNeedForMonad) {
+      for {
+        i1 <- Option(1)
+        i2 <- Option(1)
+        if i1 == 1
+      } yield i1
+    }
+
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List(NoNeedForMonad.message), "result.warnings")(result.warnings)
+  }
 }
