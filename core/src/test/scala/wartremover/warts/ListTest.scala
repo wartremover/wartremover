@@ -75,8 +75,8 @@ class ListTest extends FunSuite {
         println(List.empty[Int].reduceRight(_ + _))
       }
     }
-    expectResult(List.empty, "result.errors")(result.errors)
-    expectResult(List.empty, "result.warnings")(result.warnings)
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
 }
