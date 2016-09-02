@@ -12,6 +12,8 @@ Add the following to your `project/plugins.sbt`:
 addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.1.1")
 ```
 
+**NOTE**: `sbt-wartremover` requires sbt version 0.13.5+.
+
 Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
 
 ```scala
