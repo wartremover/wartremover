@@ -51,6 +51,36 @@ To use your custom `WartTraverser`, you'll need to provide a classpath where it 
 scalacOptions += "-P:wartremover:cp:someUrl"
 ```
 
+## Apache Maven
+
+You can use WartRemove in Maven by employing it as a compilerPlugin to scala-maven-plugin:
+
+```xml
+<build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <compilerPlugins>
+                        <compilerPlugin>
+                            <groupId>org.wartremover</groupId>
+                            <artifactId>wartremover_2.11</artifactId>
+                            <version>1.1.1</version>
+                        </compilerPlugin>
+                    </compilerPlugins>
+                    <args>
+                        <arg>-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe</arg>
+                    </args>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>  
+```
+
+See the notes on the compiler plugin above for options to pass as `<arg>`s.
+
 ## Macros
 
 You can make any wart into a macro, like so:
