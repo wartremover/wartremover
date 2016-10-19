@@ -53,7 +53,7 @@ scalacOptions += "-P:wartremover:cp:someUrl"
 
 ## Apache Maven
 
-You can use WartRemove in Maven by employing it as a compilerPlugin to scala-maven-plugin:
+You can use WartRemover in Maven by employing it as a compilerPlugin to scala-maven-plugin:
 
 ```xml
 <build>
