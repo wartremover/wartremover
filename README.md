@@ -68,7 +68,7 @@ wartremoverClasspaths += "some-url"
 wartremoverErrors += Wart.custom("org.your.custom.WartTraverser")
 ```
 
-See also [other ways of using WartRemover](/OTHER-WAYS.md) for information on how to use it as a command-line tool, a macro or a compiler plugin, while providing all the `scalac` options manually.
+See also [other ways of using WartRemover](/OTHER-WAYS.md) for information on how to use it as a command-line tool, in Maven builds, and as a macro or a compiler plugin, while providing all the `scalac` options manually.
 
 * Note - the WartRemover SBT plugin sets scalac options - make sure you're not overwriting those by having a `scalacOptions := ...` setting in your SBT settings. Use `scalacOptions ++= ...` instead.
 
