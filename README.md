@@ -361,6 +361,15 @@ always incorrect. Explicit type arguments should be used instead.
 val any = List((1, 2, 3), (1, 2))
 ```
 
+### SymbolicName
+
+As a general rule, symbolic names have two valid use-cases: domain-specific languages, logically mathematical operations. Otherwise they can be replaced by normal names.
+
+```scala
+// Won't compile: Symbolic name is disabled
+def :+:(): Unit = {}
+```
+
 ### Throw
 
 `throw` implies partiality. Encode exceptions/errors as return
