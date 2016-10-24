@@ -118,6 +118,19 @@ Scala allows methods to have default arguments, which make it hard to use method
 def x(y: Int = 0)
 ```
 
+### DiscardedFutures
+
+Refactoring to an asynchronous style often introduces discarded
+Futures, leading to race conditions that are hard to track down.
+
+```scala
+// Won't compile: Discarded Future
+def foo: Option[Int] = {
+  Future(1)
+  None
+}
+```
+
 ### EitherProjectionPartial
 
 `scala.util.Either.LeftProjection` and `scala.util.Either.RightProjection`
@@ -364,7 +377,7 @@ val any = List((1, 2, 3), (1, 2))
 ### Throw
 
 `throw` implies partiality. Encode exceptions/errors as return
-values instead using `Either`. 
+values instead using `Either`.
 
 ### ToString
 
