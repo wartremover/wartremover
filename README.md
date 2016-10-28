@@ -199,15 +199,15 @@ val javaMap: java.util.Map[String, String] = scalaMap
 
 ### LeakingSealed
 
-Descendants of a sealed type must be final or sealed. Otherwise this type can be extended in another file through its descendant.
+`sealed` modifier restricts inheritance only for direct descendants. This rule disables indirect inheritance as well.
 
 ```scala
 file 1:
-// Won't compile: Descendants of a sealed type must be final or sealed
 sealed trait t
 class c extends t
 
 file 2:
+// Won't compile: Descendants of a sealed parent must be located in the parent's file
 class d extends c
 ```
 

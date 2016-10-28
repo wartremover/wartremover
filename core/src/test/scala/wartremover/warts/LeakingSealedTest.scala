@@ -2,35 +2,19 @@ package org.wartremover
 package test
 
 import org.scalatest.FunSuite
-
 import org.wartremover.warts.LeakingSealed
 
 class LeakingSealedTest extends FunSuite {
-  test("Descendants of a sealed type must be final or sealed") {
-    val result = WartTestTraverser(LeakingSealed) {
-      sealed trait t
-      class c extends t
-    }
-    assertResult(List("Descendants of a sealed type must be final or sealed"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
-  }
+  test("Descendants of a sealed parent must be located in the parent's file") {
+    val result = WartTestTraverser.applyToFiles(LeakingSealed)(List("LeakingSealed/A.scala", "LeakingSealed/B.scala"))
 
-  test("Final or sealed descendants of a sealed type are allowed") {
-    val result = WartTestTraverser(LeakingSealed) {
-      sealed trait t
-      final class c extends t
-      sealed trait tt extends t
-    }
-    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List("Descendants of a sealed parent must be located in the parent's file"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
   test("LeakingSealed wart obeys SuppressWarnings") {
-    val result = WartTestTraverser(LeakingSealed) {
-      sealed trait t
-      @SuppressWarnings(Array("org.wartremover.warts.LeakingSealed"))
-      class c extends t
-    }
+    val result = WartTestTraverser.applyToFiles(LeakingSealed)(List("LeakingSealed/A.scala", "LeakingSealed/C.scala"))
+
     assertResult(List.empty, "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
