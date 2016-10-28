@@ -2,7 +2,9 @@ package org.wartremover
 package test
 
 import language.experimental.macros
+import reflect.internal.util.Position
 import reflect.macros.Context
+import tools.nsc.reporters.Reporter
 
 object WartTestTraverser {
   case class Result(errors: List[String], warnings: List[String])
@@ -25,5 +27,18 @@ object WartTestTraverser {
     traverser(MacroTestUniverse).traverse(a.tree)
 
     c.Expr(q"WartTestTraverser.Result(List(..${errors.toList}), List(..${warnings.toList}))")
+  }
+
+  def applyToFiles(t: WartTraverser)(paths: List[String]): Result = {
+    var errors = List[String]()
+    var warnings = List[String]()
+    Main.compile(Main.WartArgs(List(t.className), paths.map("core/src/test/resources/" + _)), Some(new Reporter {
+      override protected def info0(pos: Position, msg: String, severity: Severity, force: Boolean) = severity match {
+        case ERROR => errors ::= msg
+        case WARNING => warnings ::= msg
+        case _ =>
+      }
+    }))
+    Result(errors, warnings)
   }
 }
