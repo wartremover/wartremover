@@ -2,6 +2,7 @@ package org.wartremover
 
 import tools.nsc.{Global, Settings}
 import tools.nsc.io.VirtualDirectory
+import tools.nsc.reporters.{ConsoleReporter, Reporter}
 
 object Main {
   case class WartArgs(traversers: List[String], names: List[String]) {
@@ -19,14 +20,14 @@ object Main {
     case Nil => processed
   }
 
-  def compile(args: WartArgs) = {
+  def compile(args: WartArgs, reporter: Option[Reporter] = None) = {
     val settings = new Settings()
     val virtualDirectory = new VirtualDirectory("(memory)", None)
     settings.outputDirs.setSingleOutput(virtualDirectory)
-    settings.usejavacp.value = true
+    settings.embeddedDefaults(getClass.getClassLoader)
     settings.pluginOptions.value = args.traversers.map("wartremover:traverser:" ++ _)
 
-    val global = new Global(settings) {
+    val global = new Global(settings, reporter.getOrElse(new ConsoleReporter(settings))) {
       override protected def loadRoughPluginsList() = List(new Plugin(this))
     }
     val run = new global.Run()
