@@ -96,9 +96,11 @@ Scala has an implicit that converts anything to a `String` if the
 right hand side of `+` is a `String`.
 
 ```scala
-// Won't compile: Scala inserted an any2stringadd call
+// Won't compile: Implicit conversion to string is disabled
 println({} + "test")
 ```
+
+Reverse case (`string + any`) is also disabled.
 
 ### AsInstanceOf
 
