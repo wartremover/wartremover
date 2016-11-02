@@ -12,18 +12,28 @@ class FinalCaseClassTest extends FunSuite with ResultAssertions {
     }
     assertError(result)("case classes must be final")
   }
+
   test("can declare final case classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       final case class Foo(i: Int)
     }
     assertEmpty(result)
   }
+
+  test("can declare nonfinal sealed case classes") {
+    val result = WartTestTraverser(FinalCaseClass) {
+      sealed case class Foo(i: Int)
+    }
+    assertEmpty(result)
+  }
+
   test("can declare nonfinal regular classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       class Foo(i: Int)
     }
     assertEmpty(result)
   }
+
   test("can declare nonfinal case classes inside other classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       class Outer {
@@ -32,6 +42,7 @@ class FinalCaseClassTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+
   test("FinalCaseClass wart obeys SuppressWarnings") {
     val result = WartTestTraverser(FinalCaseClass) {
       @SuppressWarnings(Array("org.wartremover.warts.FinalCaseClass"))

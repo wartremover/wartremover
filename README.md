@@ -140,7 +140,7 @@ Scala has trouble correctly resolving implicits when some of them lack explicit 
 
 ### FinalCaseClass
 
-Scala's case classes provide a useful implementation of logicless data types. Extending a case class can break this functionality in surprising ways. This can be avoided by always making them final.
+Scala's case classes provide a useful implementation of logicless data types. Extending a case class can break this functionality in surprising ways. This can be avoided by always making them final or sealed.
 
 ```scala
 // Won't compile: case classes must be final
