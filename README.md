@@ -213,7 +213,7 @@ class d extends c
 
 ### ListOps
 
-`scala.collection.immutable.List` has:
+`scala.collection.Traversable` has:
 
 * `head`,
 * `tail`,
@@ -223,17 +223,17 @@ class d extends c
 * `reduceLeft` and
 * `reduceRight` methods,
 
-all of which will throw if the list is empty. The program should be refactored to use:
+all of which will throw if the collection is empty. The program should be refactored to use:
 
-* `List#headOption`,
-* `List#drop(1)`,
-* `List#dropRight(1)`,
-* `List#lastOption`,
-* `List#reduceOption` or `List#fold`,
-* `List#reduceLeftOption` or `List#foldLeft` and
-* `List#reduceRightOption` or `List#foldRight` respectively,
+* `headOption`,
+* `drop(1)`,
+* `dropRight(1)`,
+* `lastOption`,
+* `reduceOption` or `fold`,
+* `reduceLeftOption` or `foldLeft` and
+* `reduceRightOption` or `foldRight` respectively,
 
-to explicitly handle both the populated and empty `List`.
+to explicitly handle empty collections.
 
 ### MutableDataStructures
 
