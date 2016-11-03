@@ -20,7 +20,7 @@ class UnsafeTest extends FunSuite {
     assertResult(
       Set("Inferred type containing Any",
            "Inferred type containing Any",
-           "Scala inserted an any2stringadd call",
+           "Implicit conversion to string is disabled",
            "LeftProjection#get is disabled - use LeftProjection#toOption instead",
            "RightProjection#get is disabled - use RightProjection#toOption instead",
            "LeftProjection#get is disabled - use LeftProjection#toOption instead",
