@@ -213,27 +213,7 @@ class d extends c
 
 ### ListOps
 
-`scala.collection.Traversable` has:
-
-* `head`,
-* `tail`,
-* `init`,
-* `last`,
-* `reduce`,
-* `reduceLeft` and
-* `reduceRight` methods,
-
-all of which will throw if the collection is empty. The program should be refactored to use:
-
-* `headOption`,
-* `drop(1)`,
-* `dropRight(1)`,
-* `lastOption`,
-* `reduceOption` or `fold`,
-* `reduceLeftOption` or `foldLeft` and
-* `reduceRightOption` or `foldRight` respectively,
-
-to explicitly handle empty collections.
+Deprecated, use **TraversableOps**.
 
 ### MutableDataStructures
 
@@ -372,6 +352,30 @@ Scala creates a `toString` method automatically for all classes. Since `toString
 ```scala
 case object Foo { override val toString = "Foo" }
 ```
+
+### TraversableOps
+
+`scala.collection.Traversable` has:
+
+* `head`,
+* `tail`,
+* `init`,
+* `last`,
+* `reduce`,
+* `reduceLeft` and
+* `reduceRight` methods,
+
+all of which will throw if the collection is empty. The program should be refactored to use:
+
+* `headOption`,
+* `drop(1)`,
+* `dropRight(1)`,
+* `lastOption`,
+* `reduceOption` or `fold`,
+* `reduceLeftOption` or `foldLeft` and
+* `reduceRightOption` or `foldRight` respectively,
+
+to explicitly handle empty collections.
 
 ### TryPartial
 

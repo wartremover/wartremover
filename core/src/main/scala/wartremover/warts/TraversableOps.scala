@@ -1,16 +1,15 @@
 package org.wartremover
 package warts
 
-@deprecated("Use TraversableOps.")
-object ListOps extends WartTraverser {
+object TraversableOps extends WartTraverser {
 
   class Op(name: String, error: String) extends WartTraverser {
-    override lazy val className = "org.wartremover.warts.ListOps"
+    override lazy val className = "org.wartremover.warts.TraversableOps"
 
     def apply(u: WartUniverse): u.Traverser = {
       import u.universe._
 
-      val symbol = rootMirror.staticClass("scala.collection.immutable.List")
+      val symbol = rootMirror.staticClass("scala.collection.Traversable")
       val Name: TermName = name
       new u.Traverser {
         override def traverse(tree: Tree): Unit = {
