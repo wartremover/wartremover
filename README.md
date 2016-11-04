@@ -401,6 +401,19 @@ Checks for the following warts:
 * TryPartial
 * Var
 
+### UnsafeInheritance
+
+Overriding method implementation can break parent's contract.
+```scala
+trait T {
+  // Won't compile: Method must be final or abstract
+  def positive = 1
+}
+class C extends T {
+  override def positive = -1
+}
+```
+
 ### Var
 
 Mutation breaks equational reasoning.
