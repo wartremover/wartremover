@@ -85,6 +85,12 @@ See the notes on the compiler plugin above for options to pass as `<arg>`s.
 
 You can make any wart into a macro, like so:
 
+`build.sbt`
+
+    libraryDependencies += "org.wartremover" % "wartremover_2.11" % "1.0.1"
+    
+`sbt console`
+
     scala> import language.experimental.macros
     import language.experimental.macros
 
