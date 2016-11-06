@@ -92,15 +92,7 @@ val any = List(1, true, "three")
 
 ### Any2StringAdd
 
-Scala has an implicit that converts anything to a `String` if the
-right hand side of `+` is a `String`.
-
-```scala
-// Won't compile: Implicit conversion to string is disabled
-println({} + "test")
-```
-
-Reverse case (`string + any`) is also disabled.
+Deprecated, use **StringPlusAny**.
 
 ### AsInstanceOf
 
@@ -341,6 +333,16 @@ always incorrect. Explicit type arguments should be used instead.
 ```scala
 // Won't compile: Inferred type containing Serializable
 val any = List((1, 2, 3), (1, 2))
+```
+
+### StringPlusAny
+
+Scala's `String` interface provides a `+` method that converts the operand to a `String` via its `toString` method. As mentioned in the documentation for the `ToString` wart, this method is unreliable and brittle.
+
+```scala
+// Won't compile: Implicit conversion to string is disabled
+"foo" + {}
+{} + "bar"
 ```
 
 ### Throw
