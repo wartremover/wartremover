@@ -26,7 +26,7 @@ Add the following to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-addCompilerPlugin("org.wartremover" %% "wartremover" % "1.1.1")
+addCompilerPlugin("org.wartremover" %% "wartremover" % "1.2.0")
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
@@ -67,7 +67,7 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
                         <compilerPlugin>
                             <groupId>org.wartremover</groupId>
                             <artifactId>wartremover_2.11</artifactId>
-                            <version>1.1.1</version>
+                            <version>1.2.0</version>
                         </compilerPlugin>
                     </compilerPlugins>
                     <args>
