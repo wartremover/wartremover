@@ -1,6 +1,7 @@
 package org.wartremover
 package warts
 
+@deprecated("Use StringPlusAny", "Wartremover 1.1.2")
 object Any2StringAdd extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
