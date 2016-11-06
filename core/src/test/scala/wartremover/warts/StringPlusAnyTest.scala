@@ -11,15 +11,39 @@ class StringPlusAnyTest extends FunSuite {
       {} + "lol"
       1 + "lol"
       "lol" + 1
+      "" + (if (true) 5 else "")
     }
-    assertResult(List.fill(3)("Implicit conversion to string is disabled"), "result.errors")(result.errors)
+    assertResult(List.fill(4)("Implicit conversion to string is disabled"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("other plus usages are allowed") {
+  test("Non-string + usage is allowed") {
     val result = WartTestTraverser(StringPlusAny) {
       1 + 1
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+
+  test("string literal concatenation is allowed") {
+    val result = WartTestTraverser(StringPlusAny) {
       "a" + "b"
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+
+  test("concatenating strings with if statements is allowed.") {
+    val result = WartTestTraverser(StringPlusAny) {
+      "" + (if (true) "" else "")
+      (if (true) "" else "") + ""
+    }
+    assertResult(List.empty, "result.errors")(result.errors)
+    assertResult(List.empty, "result.warnings")(result.warnings)
+  }
+
+  test("custom-defined + is allowed") {
+    val result = WartTestTraverser(StringPlusAny) {
       class C { def +(s: String) = s }
       new C + "a"
     }
