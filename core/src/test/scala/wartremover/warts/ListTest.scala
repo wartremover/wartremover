@@ -2,62 +2,63 @@ package org.wartremover
 package test
 
 import org.scalatest.FunSuite
+
 import org.wartremover.warts.ListOps
 
 class ListTest extends FunSuite {
-  test("can't use head") {
+  test("can't use List#head on List") {
     val result = WartTestTraverser(ListOps) {
       println(List(1).head)
     }
-    assertResult(List("head is disabled - use headOption instead"), "result.errors")(result.errors)
+    assertResult(List("List#head is disabled - use List#headOption instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("can't use tail") {
+  test("can't use List#tail on List") {
     val result = WartTestTraverser(ListOps) {
       println(List().tail)
     }
-    assertResult(List("tail is disabled - use drop(1) instead"), "result.errors")(result.errors)
+    assertResult(List("List#tail is disabled - use List#drop(1) instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("can't use init") {
+  test("can't use List#init on List") {
     val result = WartTestTraverser(ListOps) {
       println(List().init)
     }
-    assertResult(List("init is disabled - use dropRight(1) instead"), "result.errors")(result.errors)
+    assertResult(List("List#init is disabled - use List#dropRight(1) instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("can't use last") {
+  test("can't use List#last on List") {
     val result = WartTestTraverser(ListOps) {
       println(List().last)
     }
-    assertResult(List("last is disabled - use lastOption instead"), "result.errors")(result.errors)
+    assertResult(List("List#last is disabled - use List#lastOption instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("can't use reduce") {
+  test("can't use List#reduce on List") {
     val result = WartTestTraverser(ListOps) {
       println(List.empty[Int].reduce(_ + _))
     }
-    assertResult(List("reduce is disabled - use reduceOption or fold instead"), "result.errors")(result.errors)
+    assertResult(List("List#reduce is disabled - use List#reduceOption or List#fold instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("can't use reduceLeft") {
+  test("can't use List#reduceLeft on List") {
     val result = WartTestTraverser(ListOps) {
       println(List.empty[Int].reduceLeft(_ + _))
     }
-    assertResult(List("reduceLeft is disabled - use reduceLeftOption or foldLeft instead"), "result.errors")(result.errors)
+    assertResult(List("List#reduceLeft is disabled - use List#reduceLeftOption or List#foldLeft instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
-  test("can't use reduceRight") {
+  test("can't use List#reduceRight on List") {
     val result = WartTestTraverser(ListOps) {
       println(List.empty[Int].reduceRight(_ + _))
     }
-    assertResult(List("reduceRight is disabled - use reduceRightOption or foldRight instead"), "result.errors")(result.errors)
+    assertResult(List("List#reduceRight is disabled - use List#reduceRightOption or List#foldRight instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 
