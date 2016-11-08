@@ -24,6 +24,7 @@ object Main {
     val settings = new Settings()
     val virtualDirectory = new VirtualDirectory("(memory)", None)
     settings.outputDirs.setSingleOutput(virtualDirectory)
+    settings.usejavacp.value = true
     settings.embeddedDefaults(getClass.getClassLoader)
     settings.pluginOptions.value = args.traversers.map("wartremover:traverser:" ++ _)
 
