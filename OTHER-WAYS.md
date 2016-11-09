@@ -26,7 +26,7 @@ Add the following to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-addCompilerPlugin("org.wartremover" %% "wartremover" % "1.2.0")
+addCompilerPlugin("org.wartremover" %% "wartremover" % "1.2.1")
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
