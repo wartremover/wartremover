@@ -5,20 +5,18 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Product
 
-class ProductTest extends FunSuite {
+class ProductTest extends FunSuite with ResultAssertions {
   test("Product can't be inferred") {
     val result = WartTestTraverser(Product) {
       List((1, 2, 3), (1, 2))
     }
-    assertResult(List("Inferred type containing Product"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Inferred type containing Product")
   }
   test("Product wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Product) {
       @SuppressWarnings(Array("org.wartremover.warts.Product"))
       val foo = List((1, 2, 3), (1, 2))
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

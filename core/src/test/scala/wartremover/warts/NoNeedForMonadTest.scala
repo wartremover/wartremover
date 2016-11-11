@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.NoNeedForMonad
 
-class NoNeedForMonadTest extends FunSuite {
+class NoNeedForMonadTest extends FunSuite with ResultAssertions {
   test("Report cases where Applicative is enough") {
     val withWarnings = WartTestTraverser(NoNeedForMonad) {
       for {
@@ -24,11 +24,9 @@ class NoNeedForMonadTest extends FunSuite {
       Option(1).flatMap(i => Option(i + 1).map(j => i + j))
     }
 
-    assertResult(List.empty, "result.errors")(withWarnings.errors)
-    assertResult(List(NoNeedForMonad.message, NoNeedForMonad.message), "result.warnings")(withWarnings.warnings)
+    assertWarnings(withWarnings)(NoNeedForMonad.message, 2)
 
-    assertResult(List.empty, "result.errors")(noWarnings.errors)
-    assertResult(List.empty, "result.warnings")(noWarnings.warnings)
+    assertEmpty(noWarnings)
   }
 
   test("Work properly with function literals, eta-expanded functions, objects with apply methods") {
@@ -61,11 +59,9 @@ class NoNeedForMonadTest extends FunSuite {
     }
 
 
-    assertResult(List.empty, "result.errors")(etaExpanded.errors)
-    assertResult(List(NoNeedForMonad.message), "result.warnings")(etaExpanded.warnings)
+    assertWarnings(etaExpanded)(NoNeedForMonad.message, 1)
 
-    assertResult(List.empty, "result.errors")(extendsFunction.errors)
-    assertResult(List.empty, "result.errors")(extendsFunction.warnings)
+    assertEmpty(extendsFunction)
   }
 
   test("Handles unapply in for-comprehension") {
@@ -76,9 +72,7 @@ class NoNeedForMonadTest extends FunSuite {
       } yield x + y * z
     }
 
-    assertResult(List.empty, "result.errors")(noWarnings.errors)
-    assertResult(List.empty, "result.warnings")(noWarnings.warnings)
-
+    assertEmpty(noWarnings)
   }
 
   test("NoNeedForMonad wart obeys SuppressWarnings") {
@@ -94,8 +88,7 @@ class NoNeedForMonadTest extends FunSuite {
       }
     }
 
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("Does not produce false positives in one-level flatMaps") {
@@ -105,8 +98,7 @@ class NoNeedForMonadTest extends FunSuite {
       groups flatMap (_.singles)
     }
 
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("should not cause MatchError") {

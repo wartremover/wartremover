@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.{ Enumeration => EnumerationWart }
 
-class EnumerationTest extends FunSuite {
+class EnumerationTest extends FunSuite with ResultAssertions {
   test("can't declare Enumeration classes") {
     val result = WartTestTraverser(EnumerationWart) {
       class Color extends Enumeration {
@@ -13,8 +13,7 @@ class EnumerationTest extends FunSuite {
         val Blue = Value
       }
     }
-    assertResult(List("Enumeration is disabled - use case objects instead"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Enumeration is disabled - use case objects instead")
   }
   test("can't declare Enumeration objects") {
     val result = WartTestTraverser(EnumerationWart) {
@@ -23,16 +22,14 @@ class EnumerationTest extends FunSuite {
         val Blue = Value
       }
     }
-    assertResult(List("Enumeration is disabled - use case objects instead"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Enumeration is disabled - use case objects instead")
   }
   test("can use user-defined Enumeration traits") {
     val result = WartTestTraverser(EnumerationWart) {
       trait Enumeration
       object Foo extends Enumeration
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
   test("Enumeration wart obeys SuppressWarnings") {
     val result = WartTestTraverser(EnumerationWart) {
@@ -42,7 +39,6 @@ class EnumerationTest extends FunSuite {
         val Blue = Value
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

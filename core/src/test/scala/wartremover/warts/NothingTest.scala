@@ -5,14 +5,13 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Nothing
 
-class NothingTest extends FunSuite {
+class NothingTest extends FunSuite with ResultAssertions {
   test("Nothing can't be inferred") {
     val result = WartTestTraverser(Nothing) {
       val x = ???
       x
     }
-    assertResult(List("Inferred type containing Nothing"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Inferred type containing Nothing")
   }
   test("Nothing wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Nothing) {
@@ -20,7 +19,6 @@ class NothingTest extends FunSuite {
       val x = ???
       x
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

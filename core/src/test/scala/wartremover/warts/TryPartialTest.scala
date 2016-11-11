@@ -5,28 +5,25 @@ import org.scalatest.FunSuite
 import org.wartremover.warts.TryPartial
 import scala.util.{Try, Success, Failure}
 
-class TryPartialTest extends FunSuite {
+class TryPartialTest extends FunSuite with ResultAssertions {
   test("can't use Try#get on Success") {
     val result = WartTestTraverser(TryPartial) {
       println(Success(1).get)
     }
-    assertResult(List("Try#get is disabled"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Try#get is disabled")
   }
   test("can't use Try#get on Failure") {
     val result = WartTestTraverser(TryPartial) {
       println(Failure(new Error).get)
     }
-    assertResult(List("Try#get is disabled"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Try#get is disabled")
   }
   test("doesn't detect other `get` methods") {
     val result = WartTestTraverser(TryPartial) {
       case class A(get: Int)
       println(A(1).get)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
   test("TryPartial wart obeys SuppressWarnings") {
     val result = WartTestTraverser(TryPartial) {
@@ -36,7 +33,6 @@ class TryPartialTest extends FunSuite {
         println(Failure(new Error).get)
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }
