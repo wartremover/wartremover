@@ -5,15 +5,14 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.ImplicitConversion
 
-class ImplicitConversionTest extends FunSuite {
+class ImplicitConversionTest extends FunSuite with ResultAssertions {
   test("Implicit conversion is disabled") {
     val result = WartTestTraverser(ImplicitConversion) {
       class c {
         implicit def int2Array(i: Int): Array[String] = Array.fill(i)("?")
       }
     }
-    assertResult(List("Implicit conversion is disabled"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Implicit conversion is disabled")
   }
 
   test("Non-public implicit conversion is enabled") {
@@ -22,8 +21,7 @@ class ImplicitConversionTest extends FunSuite {
         protected implicit def int2Array(i: Int): Array[String] = Array.fill(i)("?")
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("Implicit evidence constructor is enabled") {
@@ -32,8 +30,7 @@ class ImplicitConversionTest extends FunSuite {
       implicit def ordering2[A](implicit ev : Ordering[A]) : Ordering[A] = ???
       implicit def ordering3[A : Ordering] : Ordering[A] = ???
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("ImplicitConversion wart obeys SuppressWarnings") {
@@ -43,7 +40,6 @@ class ImplicitConversionTest extends FunSuite {
         implicit def int2Array(i: Int): Array[String] = Array.fill(i)("?")
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

@@ -5,14 +5,13 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
 
-class CompanionTest extends FunSuite {
+class CompanionTest extends FunSuite with ResultAssertions {
   test("can use companion objects for case classes") {
     val result = WartTestTraverser(Unsafe) {
       case class Foo(n: Int)
       object Foo
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
   test("can use companion objects for type aliases") {
     val result = WartTestTraverser(Unsafe) {
@@ -20,7 +19,6 @@ class CompanionTest extends FunSuite {
       type T1 = String
       object T1 extends T[Unit]
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

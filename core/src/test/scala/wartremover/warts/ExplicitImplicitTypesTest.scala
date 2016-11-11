@@ -5,13 +5,12 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.ExplicitImplicitTypes
 
-class ExplicitImplicitTypesTest extends FunSuite {
+class ExplicitImplicitTypesTest extends FunSuite with ResultAssertions {
   test("can't declare implicit vals without a type ascription") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       implicit val foo = 5
     }
-    assertResult(List("implicit definitions must have an explicit type ascription"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("implicit definitions must have an explicit type ascription")
   }
 
   test("can't declare implicit defs without a type ascription") {
@@ -21,12 +20,7 @@ class ExplicitImplicitTypesTest extends FunSuite {
       implicit def baz(i: Int) = 5
       implicit def qux[I](i: I) = 5
     }
-    assertResult(List(
-      "implicit definitions must have an explicit type ascription",
-      "implicit definitions must have an explicit type ascription",
-      "implicit definitions must have an explicit type ascription",
-      "implicit definitions must have an explicit type ascription"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertErrors(result)("implicit definitions must have an explicit type ascription", 4)
   }
 
   test("can declare implicit classes") {
@@ -35,8 +29,7 @@ class ExplicitImplicitTypesTest extends FunSuite {
         def bar = 2
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("can declare implicit vals with a type ascription") {
@@ -44,8 +37,7 @@ class ExplicitImplicitTypesTest extends FunSuite {
       implicit val foo: Int = 5
       implicit var bar: Int = 5
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("can't declare implicit defs with a type ascription") {
@@ -55,8 +47,7 @@ class ExplicitImplicitTypesTest extends FunSuite {
       implicit def baz(i: Int): Int = 5
       implicit def qux[I](i: I): Int = 5
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("can declare implicit arguments") {
@@ -65,24 +56,21 @@ class ExplicitImplicitTypesTest extends FunSuite {
         i
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("can declare non-implicit vals") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       val foo = 5
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("can declare non-implicit defs") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       def foo = 5
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("can declare backticked implicit defs") {
@@ -91,8 +79,7 @@ class ExplicitImplicitTypesTest extends FunSuite {
       implicit val `foobar`: String = "5"
       implicit def `foo bar`: Long = 5L
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("ExplicitImplicitTypes wart obeys SuppressWarnings") {
@@ -103,7 +90,6 @@ class ExplicitImplicitTypesTest extends FunSuite {
       @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes"))
       implicit def bar = 5
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

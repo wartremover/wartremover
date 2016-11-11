@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Equals
 
-class EqualsTest extends FunSuite {
+class EqualsTest extends FunSuite with ResultAssertions {
   test("can't use == or != method on primitives") {
     val result = WartTestTraverser(Equals) {
       val s = "foo"
@@ -42,7 +42,6 @@ class EqualsTest extends FunSuite {
       @SuppressWarnings(Array("org.wartremover.warts.Equals"))
       val j = Foo(5) != Foo(4)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

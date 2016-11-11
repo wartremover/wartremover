@@ -5,14 +5,13 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Any
 
-class AnyTest extends FunSuite {
+class AnyTest extends FunSuite with ResultAssertions {
   test("Any can't be inferred") {
     val result = WartTestTraverser(Any) {
       val x = readf1("{0}")
       x
     }
-    assertResult(List("Inferred type containing Any"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Inferred type containing Any")
   }
   test("Any wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any) {
@@ -20,7 +19,6 @@ class AnyTest extends FunSuite {
       val x = readf1("{0}")
       x
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Overloading
 
-class OverloadingTest extends FunSuite {
+class OverloadingTest extends FunSuite with ResultAssertions {
   test("Overloading is disabled") {
     val result = WartTestTraverser(Overloading) {
       class c {
@@ -14,8 +14,7 @@ class OverloadingTest extends FunSuite {
         def wait(s: String) = {}
       }
     }
-    assertResult(List.fill(3)("Overloading is disabled"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertErrors(result)("Overloading is disabled", 3)
   }
 
   test("Overloading wart obeys SuppressWarnings") {
@@ -27,8 +26,7 @@ class OverloadingTest extends FunSuite {
         def wait(s: String) = {}
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("Overloading wart obeys SuppressWarnings on defs") {
@@ -39,7 +37,6 @@ class OverloadingTest extends FunSuite {
         def f(s: String) = {}
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }
