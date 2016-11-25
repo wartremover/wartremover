@@ -43,7 +43,6 @@ lazy val root = Project(
   aggregate = Seq(core)
 ).settings(commonSettings ++ Seq(
   publishArtifact := false,
-  crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.0"),
   crossVersion := CrossVersion.binary,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
@@ -69,7 +68,7 @@ lazy val core = Project(
   aggregate = Seq(sbtPlug)
 ).settings(commonSettings ++ Seq(
   name := "wartremover",
-  scalaVersion := "2.11.8",
+  scalaVersion := (crossScalaVersions in ThisBuild).value.head,
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
