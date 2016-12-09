@@ -18,7 +18,6 @@ object SomeApply extends WartTraverser {
             if pkg == scala && obj == some && method == app =>
             u.error(tree.pos, "Some.apply is disabled - use Option.apply instead")
           case v =>
-            println(v)
             super.traverse(tree)
         }
       }
