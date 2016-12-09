@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
 import org.wartremover.warts.Unsafe
 
 class UnsafeTest extends FunSuite {
-  test("can't use `null`, `var`, non-unit statements, Option#get, LeftProjection#get, RightProjection#get, or any2stringadd") {
+  test("can't use `null`, `var`, non-unit statements, Option#get, LeftProjection#get, RightProjection#get, any2stringadd, or Some.apply") {
     val result = WartTestTraverser(Unsafe) {
       val x = List(1, true, "three")
       var u = {} + "Hello!"
@@ -28,7 +28,8 @@ class UnsafeTest extends FunSuite {
            "Statements must return Unit",
            "null is disabled",
            "Option#get is disabled - use Option#fold instead",
-           "var is disabled"), "result.errors")(result.errors.toSet)
+           "var is disabled",
+           "Some.apply is disabled - use Option.apply instead"), "result.errors")(result.errors.toSet)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }
