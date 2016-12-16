@@ -38,9 +38,16 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("inserting into a Set is allowed") {
+    val result = WartTestTraverser(StringPlusAny) {
+      Set("") + ""
+    }
+    assertEmpty(result)
+  }
+
   test("custom-defined + is allowed") {
     val result = WartTestTraverser(StringPlusAny) {
-      class C { def +(s: String) = s }
+      class C { def +(s: String) = this }
       new C + "a"
     }
     assertEmpty(result)
