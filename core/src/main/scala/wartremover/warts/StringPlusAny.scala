@@ -6,6 +6,8 @@ object StringPlusAny extends WartTraverser {
     import u.universe._
 
     val Plus: TermName = "$plus"
+    val PredefName: TermName = "Predef"
+    val Any2StringAddName: TermName = "any2stringadd"
 
     def isString(t: Tree) = t.tpe <:< typeOf[String]
 
@@ -22,7 +24,18 @@ object StringPlusAny extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
 
-          case t @ Apply(Select(lhs, Plus), List(rhs)) if isString(t) && (isString(lhs) ^ isStringExpression(rhs))
+          case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>
+            u.error(tree.pos, "Implicit conversion to string is disabled")
+            super.traverse(tree)
+          case TypeApply(Select(Select(_, PredefName), Any2StringAddName), _) =>
+            u.error(tree.pos, "Implicit conversion to string is disabled")
+            super.traverse(tree)
+
+          case Apply(Select(Literal(Constant(c)), Plus), _) if !c.isInstanceOf[String] =>
+            u.error(tree.pos, "Implicit conversion to string is disabled")
+            super.traverse(tree)
+
+          case t @ Apply(Select(lhs, Plus), List(rhs)) if isString(lhs) && !isStringExpression(rhs)
               && !isSynthetic(u)(t) =>
             u.error(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
