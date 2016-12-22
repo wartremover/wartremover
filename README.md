@@ -279,6 +279,7 @@ type safety.
 ```scala
 // Won't compile: null is disabled
 val s: String = null
+var s2: String = _
 ```
 
 ### Option2Iterable

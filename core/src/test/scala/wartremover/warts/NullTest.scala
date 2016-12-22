@@ -12,6 +12,24 @@ class NullTest extends FunSuite with ResultAssertions {
     }
     assertError(result)("null is disabled")
   }
+
+  test("reference field placeholder is disabled") {
+    val result = WartTestTraverser(Null) {
+      class c {
+        var s: String = _
+      }
+    }
+    assertError(result)("null is disabled")
+
+    val resultPrimitive = WartTestTraverser(Null) {
+      class c {
+        var i: Int = _
+        var u: Unit = _
+      }
+    }
+    assertEmpty(resultPrimitive)
+  }
+
   test("can't use null in patterns") {
     val result = WartTestTraverser(Null) {
       val (a, b) = (1, null)
@@ -19,6 +37,7 @@ class NullTest extends FunSuite with ResultAssertions {
     }
     assertError(result)("null is disabled")
   }
+
   test("can't use null in default arguments") {
     val result = WartTestTraverser(Null) {
       class ClassWithArgs(val foo: String = null)
@@ -26,18 +45,21 @@ class NullTest extends FunSuite with ResultAssertions {
     }
     assertErrors(result)("null is disabled", 2)
   }
+
   test("can't use null inside of Map#partition") {
     val result = WartTestTraverser(Null) {
       Map(1 -> "one", 2 -> "two").partition { case (k, v) => null.asInstanceOf[Boolean] }
     }
     assertError(result)("null is disabled")
   }
+
   test("can't use `Option#orNull`") {
     val result = WartTestTraverser(Null) {
       println(None.orNull)
     }
     assertError(result)("Option#orNull is disabled")
   }
+
   test("Null wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Null) {
       @SuppressWarnings(Array("org.wartremover.warts.Null"))
@@ -51,6 +73,7 @@ class NullTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+
   test("Null wart obeys SuppressWarnings in classes with default arguments") {
     val result = WartTestTraverser(Null) {
       @SuppressWarnings(Array("org.wartremover.warts.Null"))

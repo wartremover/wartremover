@@ -56,6 +56,16 @@ trait WartTraverser {
     else
       false
 
+  def isPrimitive(u: WartUniverse)(t: u.universe.Type): Boolean =
+    t <:< u.universe.typeOf[Boolean] ||
+    t <:< u.universe.typeOf[Byte] ||
+    t <:< u.universe.typeOf[Short] ||
+    t <:< u.universe.typeOf[Char] ||
+    t <:< u.universe.typeOf[Int] ||
+    t <:< u.universe.typeOf[Long] ||
+    t <:< u.universe.typeOf[Float] ||
+    t <:< u.universe.typeOf[Double]
+
   def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef) : Boolean =
     new Regex("""(val|var|def)\s*`?""" + tree.name.decodedName.toString.trim + """`?(\[.*\])?(\(.*\))*\s*:""")
         .findFirstIn(tree.pos.lineContent).nonEmpty
