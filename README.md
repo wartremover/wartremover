@@ -315,6 +315,17 @@ arguments should be used instead.
 val any = List((1, 2, 3), (1, 2))
 ```
 
+### PublicInference
+
+Type inference of public members can expose extra type information, that can break encapsulation.
+
+```scala
+class c {
+  // Won't compile: Public member must have an explicit type ascription
+  def f() = new c with t
+}
+```
+
 ### Return
 
 `return` breaks referential transparency. Refactor to terminate computations in a safe way.
