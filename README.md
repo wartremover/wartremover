@@ -171,6 +171,13 @@ Implicit conversions weaken type safety and always can be replaced by explicit c
 implicit def int2Array(i: Int) = Array.fill(i)("madness")
 ```
 
+### ImplicitParameter
+
+```scala
+// Won't compile: Implicit parameters are disabled
+def f()(implicit s: String) = ()
+```
+
 ### IsInstanceOf
 
 `isInstanceOf` violates parametricity. Refactor so that the type is established statically.
