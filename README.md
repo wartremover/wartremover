@@ -173,9 +173,15 @@ implicit def int2Array(i: Int) = Array.fill(i)("madness")
 
 ### ImplicitParameter
 
+Implicit parameters aas configuration often lead to confusing interfaces and can result in surprising inconsistencies.
+
 ```scala
 // Won't compile: Implicit parameters are disabled
 def f()(implicit s: String) = ()
+
+// Still compiles
+def f[A: Ordering](a: A, other: A) = ...
+def f(a: A, other: A)(implicit ordering: Ordering[A]) = ...
 ```
 
 ### IsInstanceOf
