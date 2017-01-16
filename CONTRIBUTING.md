@@ -10,6 +10,7 @@
 - Include a description of what the wart does.
 - Indicate how the wart preserves correctness.
 - Confirm that the code works with JRE7 and JRE8.
+- Warts should be universal and limited to the language and standard library (see [wartremover-contrib](https://github.com/wartremover/wartremover-contrib) for warts that check libraries).
 - Link to any relevant issues.
 
 # If your pull request adds new functionality
