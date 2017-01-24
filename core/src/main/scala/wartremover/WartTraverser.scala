@@ -66,9 +66,16 @@ trait WartTraverser {
     t <:< u.universe.typeOf[Float] ||
     t <:< u.universe.typeOf[Double]
 
-  def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef) : Boolean =
-    new Regex("""(val|var|def)\s*`?""" + tree.name.decodedName.toString.trim + """`?(\[.*\])?(\(.*\))*\s*:""")
+  def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef) : Boolean = {
+    // Correctly handle setters
+    val name = {
+      val n = tree.name.decodedName.toString.trim
+      if(n.endsWith("_=")) s"${n.dropRight(2)}(_=)?"
+      else n
+    }
+    new Regex("""(val|var|def)\s*`?""" + name + """`?(\[.*\])?(\(.*\))*\s*:""")
         .findFirstIn(tree.pos.lineContent).nonEmpty
+  }
 
   def wasInferred(u: WartUniverse)(t: u.universe.TypeTree): Boolean =
     t.original == null
