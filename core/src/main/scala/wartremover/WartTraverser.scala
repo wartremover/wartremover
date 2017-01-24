@@ -94,7 +94,10 @@ trait WartTraverser {
   def hasWartAnnotation(u: WartUniverse)(tree: u.universe.Tree) = {
     import u.universe._
     tree match {
-      case t: ValOrDefDef => t.symbol.annotations.exists(isWartAnnotation(u))
+      case t: ValOrDefDef =>
+        t.symbol.annotations.exists(isWartAnnotation(u)) ||
+        (t.symbol != null && t.symbol.isTerm && t.symbol.asTerm.isAccessor &&
+          t.symbol.asTerm.accessed.annotations.exists(isWartAnnotation(u)))
       case t: ImplDef => t.symbol.annotations.exists(isWartAnnotation(u))
       case t => false
     }
