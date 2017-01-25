@@ -44,6 +44,7 @@ lazy val root = Project(
 ).settings(commonSettings ++ Seq(
   publishArtifact := false,
   crossVersion := CrossVersion.binary,
+  crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.0"),
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
