@@ -11,15 +11,7 @@ object ToString extends WartTraverser {
 
     def notOverridden(t: Type): Boolean = {
       val toString = t.member(ToString)
-      !(t <:< typeOf[Boolean]) &&
-        !(t <:< typeOf[Byte]) &&
-        !(t <:< typeOf[Char]) &&
-        !(t <:< typeOf[Double]) &&
-        !(t <:< typeOf[Float]) &&
-        !(t <:< typeOf[Int]) &&
-        !(t <:< typeOf[Long]) &&
-        !(t <:< typeOf[Short]) &&
-        !(t <:< typeOf[String]) &&
+      !isPrimitive(u)(t) && !(t <:< typeOf[String]) &&
         (toString.fullName == "scala.Any.toString" ||
           toString.fullName == "scala.AnyRef.toString" ||
           toString.fullName == "java.lang.Object.toString" ||

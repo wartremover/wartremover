@@ -56,9 +56,26 @@ trait WartTraverser {
     else
       false
 
-  def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef) : Boolean =
-    new Regex("""(val|var|def)\s*`?""" + tree.name.decodedName.toString.trim + """`?(\[.*\])?(\(.*\))*\s*:""")
+  def isPrimitive(u: WartUniverse)(t: u.universe.Type): Boolean =
+    t <:< u.universe.typeOf[Boolean] ||
+    t <:< u.universe.typeOf[Byte] ||
+    t <:< u.universe.typeOf[Short] ||
+    t <:< u.universe.typeOf[Char] ||
+    t <:< u.universe.typeOf[Int] ||
+    t <:< u.universe.typeOf[Long] ||
+    t <:< u.universe.typeOf[Float] ||
+    t <:< u.universe.typeOf[Double]
+
+  def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef) : Boolean = {
+    // Correctly handle setters
+    val name = {
+      val n = tree.name.decodedName.toString.trim
+      if(n.endsWith("_=")) s"${n.dropRight(2)}(_=)?"
+      else n
+    }
+    new Regex("""(val|var|def)\s*`?""" + name + """`?(\[.*\])?(\(.*\))*\s*:""")
         .findFirstIn(tree.pos.lineContent).nonEmpty
+  }
 
   def wasInferred(u: WartUniverse)(t: u.universe.TypeTree): Boolean =
     t.original == null
@@ -77,7 +94,10 @@ trait WartTraverser {
   def hasWartAnnotation(u: WartUniverse)(tree: u.universe.Tree) = {
     import u.universe._
     tree match {
-      case t: ValOrDefDef => t.symbol.annotations.exists(isWartAnnotation(u))
+      case t: ValOrDefDef =>
+        t.symbol.annotations.exists(isWartAnnotation(u)) ||
+        (t.symbol != null && t.symbol.isTerm && t.symbol.asTerm.isAccessor &&
+          t.symbol.asTerm.accessed.annotations.exists(isWartAnnotation(u)))
       case t: ImplDef => t.symbol.annotations.exists(isWartAnnotation(u))
       case t => false
     }

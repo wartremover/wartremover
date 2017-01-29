@@ -5,20 +5,18 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
 
-class CaseClassTest extends FunSuite {
+class CaseClassTest extends FunSuite with ResultAssertions {
   test("case classes still work") {
     val result = WartTestTraverser(Unsafe) {
       case class A(a: Int)
       case class B[X](a: X)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
   test("vararg case classes still work") {
     val result = WartTestTraverser(Unsafe) {
       case class A(a: Int*)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

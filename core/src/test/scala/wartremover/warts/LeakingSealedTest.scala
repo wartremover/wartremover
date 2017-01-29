@@ -5,14 +5,13 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.LeakingSealed
 
-class LeakingSealedTest extends FunSuite {
+class LeakingSealedTest extends FunSuite with ResultAssertions {
   test("Descendants of a sealed type must be final or sealed") {
     val result = WartTestTraverser(LeakingSealed) {
       sealed trait t
       class c extends t
     }
-    assertResult(List("Descendants of a sealed type must be final or sealed"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("Descendants of a sealed type must be final or sealed")
   }
 
   test("Final or sealed descendants of a sealed type are allowed") {
@@ -21,8 +20,7 @@ class LeakingSealedTest extends FunSuite {
       final class c extends t
       sealed trait tt extends t
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 
   test("LeakingSealed wart obeys SuppressWarnings") {
@@ -31,7 +29,6 @@ class LeakingSealedTest extends FunSuite {
       @SuppressWarnings(Array("org.wartremover.warts.LeakingSealed"))
       class c extends t
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

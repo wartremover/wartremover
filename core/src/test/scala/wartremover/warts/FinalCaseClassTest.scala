@@ -5,43 +5,49 @@ import org.scalatest.FunSuite
 
 import org.wartremover.warts.FinalCaseClass
 
-class FinalCaseClassTest extends FunSuite {
+class FinalCaseClassTest extends FunSuite with ResultAssertions {
   test("can't declare nonfinal case classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       case class Foo(i: Int)
     }
-    assertResult(List("case classes must be final"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result)("case classes must be final")
   }
+
   test("can declare final case classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       final case class Foo(i: Int)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
+
+  test("can declare nonfinal sealed case classes") {
+    val result = WartTestTraverser(FinalCaseClass) {
+      sealed case class Foo(i: Int)
+    }
+    assertEmpty(result)
+  }
+
   test("can declare nonfinal regular classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       class Foo(i: Int)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
+
   test("can declare nonfinal case classes inside other classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       class Outer {
         case class Foo(i: Int)
       }
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
+
   test("FinalCaseClass wart obeys SuppressWarnings") {
     val result = WartTestTraverser(FinalCaseClass) {
       @SuppressWarnings(Array("org.wartremover.warts.FinalCaseClass"))
       case class Foo(i: Int)
     }
-    assertResult(List.empty, "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertEmpty(result)
   }
 }

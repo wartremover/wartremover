@@ -9,7 +9,7 @@ WartRemover is a flexible Scala code linting tool.
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.2.1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.3.0")
 ```
 
 **NOTE**: `sbt-wartremover` requires sbt version 0.13.5+.
@@ -140,7 +140,7 @@ Scala has trouble correctly resolving implicits when some of them lack explicit 
 
 ### FinalCaseClass
 
-Scala's case classes provide a useful implementation of logicless data types. Extending a case class can break this functionality in surprising ways. This can be avoided by always making them final.
+Scala's case classes provide a useful implementation of logicless data types. Extending a case class can break this functionality in surprising ways. This can be avoided by always making them final or sealed.
 
 ```scala
 // Won't compile: case classes must be final
@@ -169,6 +169,19 @@ Implicit conversions weaken type safety and always can be replaced by explicit c
 ```scala
 // Won't compile: implicit conversion is disabled
 implicit def int2Array(i: Int) = Array.fill(i)("madness")
+```
+
+### ImplicitParameter
+
+Implicit parameters aas configuration often lead to confusing interfaces and can result in surprising inconsistencies.
+
+```scala
+// Won't compile: Implicit parameters are disabled
+def f()(implicit s: String) = ()
+
+// Still compiles
+def f[A: Ordering](a: A, other: A) = ...
+def f(a: A, other: A)(implicit ordering: Ordering[A]) = ...
 ```
 
 ### IsInstanceOf
@@ -221,30 +234,7 @@ val mutList = ListBuffer()
 
 ### NoNeedForMonad
 
-Sometimes an additional power of `Monad` is not needed, and
-`Applicative` is enough. This issues a warning in such cases
-(not an error, since using a `Monad` instance might still be a conscious decision)
-
-```scala
-scala> for {
-     | x <- List(1,2,3)
-     | y <- List(2,3,4)
-     | } yield x * y
-<console>:19: warning: No need for Monad here (Applicative should suffice).
- > "If the extra power provided by Monad isn’t needed, it’s usually a good idea to use Applicative instead."
- Typeclassopedia (http://www.haskell.org/haskellwiki/Typeclassopedia)
- Apart from a cleaner code, using Applicatives instead of Monads can in general case result in a more parallel code.
- For more context, please refer to the aforementioned Typeclassopedia, http://comonad.com/reader/2012/abstracting-with-applicatives/, or http://www.serpentine.com/blog/2008/02/06/the-basics-of-applicative-functors-put-to-practical-work/
-              x <- List(1,2,3)
-                ^
-res0: List[Int] = List(2, 3, 4, 4, 6, 8, 6, 9, 12)
-
-scala> for {
-     | x <- List(1,2,3)
-     | y <- x to 3
-     | } yield x * y
-res1: List[Int] = List(1, 2, 3, 4, 6, 9)
-```
+Deprecated, this has been moved to [wartremover-contrib](https://github.com/wartremover/wartremover-contrib).
 
 ### NonUnitStatements
 
@@ -279,6 +269,7 @@ type safety.
 ```scala
 // Won't compile: null is disabled
 val s: String = null
+var s2: String = _
 ```
 
 ### Option2Iterable
@@ -312,6 +303,17 @@ arguments should be used instead.
 ```scala
 // Won't compile: Inferred type containing Product
 val any = List((1, 2, 3), (1, 2))
+```
+
+### PublicInference
+
+Type inference of public members can expose extra type information, that can break encapsulation.
+
+```scala
+class c {
+  // Won't compile: Public member must have an explicit type ascription
+  def f() = new c with t
+}
 ```
 
 ### Return
