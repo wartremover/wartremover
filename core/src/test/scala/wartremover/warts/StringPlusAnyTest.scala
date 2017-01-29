@@ -58,6 +58,13 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+ 
+  test("Concatenation of a string with a block containing an if-statement is allowed.") {
+    val result = WartTestTraverser(StringPlusAny) {
+      "" + { val x = ""; if (true) x else x }
+    }
+    assertEmpty(result)
+  }
 
   test("StringPlusAny wart obeys SuppressWarnings") {
     val result = WartTestTraverser(StringPlusAny) {
