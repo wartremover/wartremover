@@ -73,4 +73,8 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+  
+  test("adding Float values is allowed") {
+      1f + 1f
+  }
 }
