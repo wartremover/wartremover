@@ -13,7 +13,7 @@ object TryPartial extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
-            u.error(tree.pos, "Try#get is disabled")
+            error(u)(tree.pos, "Try#get is disabled")
           case LabelDef(_, _, rhs) if isSynthetic(u)(tree)=>
           case _ =>
             super.traverse(tree)

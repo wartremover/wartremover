@@ -12,7 +12,7 @@ object ImplicitConversion extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case t: DefDef
             if t.symbol.isImplicit && t.symbol.isPublic && t.vparamss.flatten.exists(x => !x.symbol.isImplicit) && !isSynthetic(u)(t) =>
-            u.error(tree.pos, "Implicit conversion is disabled")
+            error(u)(tree.pos, "Implicit conversion is disabled")
             super.traverse(tree)
           case _ =>
             super.traverse(tree)

@@ -25,19 +25,19 @@ object StringPlusAny extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
 
           case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>
-            u.error(tree.pos, "Implicit conversion to string is disabled")
+            error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
           case TypeApply(Select(Select(_, PredefName), Any2StringAddName), _) =>
-            u.error(tree.pos, "Implicit conversion to string is disabled")
+            error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
           case Apply(Select(Literal(Constant(c)), Plus), _) if !c.isInstanceOf[String] =>
-            u.error(tree.pos, "Implicit conversion to string is disabled")
+            error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
           case t @ Apply(Select(lhs, Plus), List(rhs)) if isString(lhs) && !isStringExpression(rhs)
               && !isSynthetic(u)(t) =>
-            u.error(tree.pos, "Implicit conversion to string is disabled")
+            error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
           case _ => super.traverse(tree)

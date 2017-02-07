@@ -32,7 +32,7 @@ object ImplicitParameter extends WartTraverser {
               x.symbol.isImplicit && !x.symbol.isSynthetic && !isImplicitParamTypeInTparams(x, tsymbols)
             }
           } =>
-            u.error(tree.pos, "Implicit parameters are disabled")
+            error(u)(tree.pos, "Implicit parameters are disabled")
 
           case _ =>
             super.traverse(tree)

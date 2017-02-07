@@ -16,7 +16,7 @@ object Option2Iterable extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case Select(Select(This(pkg), obj), method)
             if pkg == scala && obj == option && method == option2Iterable =>
-            u.error(tree.pos, "Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+            error(u)(tree.pos, "Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
           case _ =>
             super.traverse(tree)
         }

@@ -36,7 +36,7 @@ object AsInstanceOf extends WartTraverser {
           // Otherwise it's verboten (except synthetic exprs and macro expansions)
           case Select(e, AsInstanceOfName) if !isSynthetic(u)(e)
               && tree.pos.lineContent.contains(AsInstanceOfName.toString) =>
-            u.error(tree.pos, "asInstanceOf is disabled")
+            error(u)(tree.pos, "asInstanceOf is disabled")
 
           case _ => super.traverse(tree)
 

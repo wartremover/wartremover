@@ -36,7 +36,7 @@ object NonUnitStatements extends WartTraverser {
       statements.foreach { stat =>
         val unitLike = stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
         if (!unitLike)
-          u.error(stat.pos, "Statements must return Unit")
+          error(u)(stat.pos, "Statements must return Unit")
       }
     }
 

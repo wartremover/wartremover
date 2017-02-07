@@ -20,7 +20,7 @@ object IsInstanceOf extends WartTraverser {
 
           // Otherwise nope, for non-synthetic receivers
           case Select(id, IsInstanceOfName) if !isSynthetic(u)(id) =>
-            u.error(tree.pos, "isInstanceOf is disabled")
+            error(u)(tree.pos, "isInstanceOf is disabled")
 
           case _ => super.traverse(tree)
 

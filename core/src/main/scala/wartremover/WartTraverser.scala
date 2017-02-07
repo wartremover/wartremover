@@ -4,12 +4,12 @@ import tools.nsc.Global
 import reflect.api.Universe
 import reflect.macros.Context
 import scala.util.matching.Regex
-import scala.util.Try
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
 
   lazy val className = this.getClass.getName.stripSuffix("$")
+  lazy val wartName = className.substring(className.lastIndexOf('.') + 1)
 
   def asMacro(c: Context)(expr: c.Expr[Any]): c.Expr[Any] = {
     import c.universe._
@@ -102,6 +102,10 @@ trait WartTraverser {
       case t => false
     }
   }
+
+  def error(u: WartUniverse)(pos: u.universe.Position, message: String): Unit = u.error(pos, message, wartName)
+
+  def warning(u: WartUniverse)(pos: u.universe.Position, message: String): Unit = u.warning(pos, message, wartName)
 }
 
 object WartTraverser {
@@ -113,6 +117,10 @@ trait WartUniverse {
   val universe: Universe
   type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
-  def error(pos: universe.Position, message: String): Unit
-  def warning(pos: universe.Position, message: String): Unit
+  protected def error(pos: universe.Position, message: String): Unit
+  protected def warning(pos: universe.Position, message: String): Unit
+  def error(pos: universe.Position, message: String, wartName: String): Unit =
+    error(pos, s"[wartremover:$wartName] $message")
+  def warning(pos: universe.Position, message: String, wartName: String): Unit =
+    warning(pos, s"[wartremover:$wartName] $message")
 }

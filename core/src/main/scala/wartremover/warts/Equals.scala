@@ -19,10 +19,10 @@ object Equals extends WartTraverser {
           case _ if isSynthetic(u)(tree) =>
 
           case Apply(Select(lhs, Equals), _) =>
-            u.error(tree.pos, s"== is disabled - use === or equivalent instead")
+            error(u)(tree.pos, "== is disabled - use === or equivalent instead")
 
           case Apply(Select(lhs, NotEquals), _) =>
-            u.error(tree.pos, s"!= is disabled - use =/= or equivalent instead")
+            error(u)(tree.pos, "!= is disabled - use =/= or equivalent instead")
 
           case _ => super.traverse(tree)
 

@@ -13,7 +13,7 @@ object FinalVal extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case t @ ValDef(mods, _, _, _)
             if mods.hasFlag(FINAL) && !mods.hasFlag(MUTABLE) && !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) =>
-            u.error(tree.pos, "final val is disabled - use non-final val or final def or add type ascription")
+            error(u)(tree.pos, "final val is disabled - use non-final val or final def or add type ascription")
             super.traverse(tree)
           case _ =>
             super.traverse(tree)

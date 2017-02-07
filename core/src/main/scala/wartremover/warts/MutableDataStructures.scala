@@ -13,7 +13,7 @@ object MutableDataStructures extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case Select(tpt, _) if tpt.tpe.contains(mutablePackage) && tpt.tpe.termSymbol.isPackage =>
-            u.error(tree.pos, "scala.collection.mutable package is disabled")
+            error(u)(tree.pos, "scala.collection.mutable package is disabled")
             super.traverse(tree)
           case _ => super.traverse(tree)
         }
