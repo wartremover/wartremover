@@ -111,10 +111,10 @@ object WartTraverser {
 
 abstract class WartUniverse(t: WartTraverser) {
   val universe: Universe
-  private[this] lazy val messagePrefix = s"[wartremover:${t.className}] "
+  private[this] lazy val messagePrefix = s"[${t.className}] "
   type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
   def error(pos: universe.Position, message: String): Unit
   def warning(pos: universe.Position, message: String): Unit
-  protected def decorateMessage(message: String): String = s"${messagePrefix}message"
+  protected def decorateMessage(message: String): String = s"$messagePrefix$message"
 }
