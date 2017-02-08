@@ -18,10 +18,10 @@ object WartTestTraverser {
     var errors = collection.mutable.ListBuffer[String]()
     var warnings = collection.mutable.ListBuffer[String]()
 
-    object MacroTestUniverse extends WartUniverse {
+    object MacroTestUniverse extends WartUniverse(traverser) {
       val universe: c.universe.type = c.universe
-      def error(pos: universe.Position, message: String) = errors += message
-      def warning(pos: universe.Position, message: String) = warnings += message
+      def error(pos: universe.Position, message: String) = errors += decorateMessage(message)
+      def warning(pos: universe.Position, message: String) = warnings += decorateMessage(message)
     }
 
     traverser(MacroTestUniverse).traverse(a.tree)

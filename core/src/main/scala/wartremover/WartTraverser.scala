@@ -14,10 +14,10 @@ trait WartTraverser {
   def asMacro(c: Context)(expr: c.Expr[Any]): c.Expr[Any] = {
     import c.universe._
 
-    object MacroUniverse extends WartUniverse {
+    object MacroUniverse extends WartUniverse(WartTraverser.this) {
       val universe: c.universe.type = c.universe
-      def error(pos: universe.Position, message: String) = c.error(pos, message)
-      def warning(pos: universe.Position, message: String) = c.warning(pos, message)
+      def error(pos: universe.Position, message: String) = c.error(pos, decorateMessage(message))
+      def warning(pos: universe.Position, message: String) = c.warning(pos, decorateMessage(message))
       val excludes: List[String] = List.empty // TODO: find a sensible way to initialize this field with useful data
     }
 
@@ -109,10 +109,12 @@ object WartTraverser {
     l.reduceRight(_ compose _)(u)
 }
 
-trait WartUniverse {
+abstract class WartUniverse(t: WartTraverser) {
   val universe: Universe
+  private[this] lazy val messagePrefix = s"[wartremover:${t.className}] "
   type Traverser = universe.Traverser
   type TypeTag[T] = universe.TypeTag[T]
   def error(pos: universe.Position, message: String): Unit
   def warning(pos: universe.Position, message: String): Unit
+  protected def decorateMessage(message: String): String = s"${messagePrefix}message"
 }
