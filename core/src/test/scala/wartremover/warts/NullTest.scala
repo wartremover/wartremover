@@ -60,6 +60,16 @@ class NullTest extends FunSuite with ResultAssertions {
     assertError(result)("Option#orNull is disabled")
   }
 
+  test("can use null in conditions") {
+    val result = WartTestTraverser(Null) {
+      null == ""
+      null != ""
+      "" == null
+      "" != null
+    }
+    assertEmpty(result)
+  }
+
   test("Null wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Null) {
       @SuppressWarnings(Array("org.wartremover.warts.Null"))
