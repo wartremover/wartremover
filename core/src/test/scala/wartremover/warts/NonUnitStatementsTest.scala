@@ -11,7 +11,7 @@ class NonUnitStatementsTest extends FunSuite with ResultAssertions {
       1
       2
     }
-    assertError(result)("Statements must return Unit")
+    assertError(result)("[org.wartremover.warts.NonUnitStatements] Statements must return Unit")
   }
   test("Extending a class with multiple parameter lists doesn't fail") {
     val result = WartTestTraverser(NonUnitStatements) {

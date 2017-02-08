@@ -12,7 +12,7 @@ class ImplicitParameterTest extends FunSuite with ResultAssertions {
 
       def f2[A]()(implicit a: A) = ()
     }
-    assertErrors(result)("Implicit parameters are disabled", 2)
+    assertErrors(result)("[org.wartremover.warts.ImplicitParameter] Implicit parameters are disabled", 2)
   }
 
   test("Context bounds are enabled") {

@@ -12,7 +12,7 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
         def f() = ()
       }
     }
-    assertErrors(result)("Public member must have an explicit type ascription", 2)
+    assertErrors(result)("[org.wartremover.warts.PublicInference] Public member must have an explicit type ascription", 2)
   }
 
   test("Public members with explicit types are enabled") {

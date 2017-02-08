@@ -11,7 +11,7 @@ class AnyTest extends FunSuite with ResultAssertions {
       val x = readf1("{0}")
       x
     }
-    assertError(result)("Inferred type containing Any")
+    assertError(result)("[org.wartremover.warts.Any] Inferred type containing Any")
   }
   test("Any wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any) {

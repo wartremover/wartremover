@@ -18,17 +18,17 @@ class UnsafeTest extends FunSuite {
       println(null)
     }
     assertResult(
-      Set("Inferred type containing Any",
-           "Inferred type containing Any",
-           "Scala inserted an any2stringadd call",
-           "LeftProjection#get is disabled - use LeftProjection#toOption instead",
-           "RightProjection#get is disabled - use RightProjection#toOption instead",
-           "LeftProjection#get is disabled - use LeftProjection#toOption instead",
-           "RightProjection#get is disabled - use RightProjection#toOption instead",
-           "Statements must return Unit",
-           "null is disabled",
-           "Option#get is disabled - use Option#fold instead",
-           "var is disabled"), "result.errors")(result.errors.toSet)
+      Set("[org.wartremover.warts.Unsafe] Inferred type containing Any",
+           "[org.wartremover.warts.Unsafe] Inferred type containing Any",
+           "[org.wartremover.warts.Unsafe] Scala inserted an any2stringadd call",
+           "[org.wartremover.warts.Unsafe] LeftProjection#get is disabled - use LeftProjection#toOption instead",
+           "[org.wartremover.warts.Unsafe] RightProjection#get is disabled - use RightProjection#toOption instead",
+           "[org.wartremover.warts.Unsafe] LeftProjection#get is disabled - use LeftProjection#toOption instead",
+           "[org.wartremover.warts.Unsafe] RightProjection#get is disabled - use RightProjection#toOption instead",
+           "[org.wartremover.warts.Unsafe] Statements must return Unit",
+           "[org.wartremover.warts.Unsafe] null is disabled",
+           "[org.wartremover.warts.Unsafe] Option#get is disabled - use Option#fold instead",
+           "[org.wartremover.warts.Unsafe] var is disabled"), "result.errors")(result.errors.toSet)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

@@ -10,7 +10,7 @@ class FinalCaseClassTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(FinalCaseClass) {
       case class Foo(i: Int)
     }
-    assertError(result)("case classes must be final")
+    assertError(result)("[org.wartremover.warts.FinalCaseClass] case classes must be final")
   }
 
   test("can declare final case classes") {

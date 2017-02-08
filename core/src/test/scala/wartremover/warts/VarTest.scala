@@ -11,7 +11,7 @@ class VarTest extends FunSuite with ResultAssertions {
       var x = 10
       x
     }
-    assertError(result)("var is disabled")
+    assertError(result)("[org.wartremover.warts.Var] var is disabled")
   }
   test("Var wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Var) {

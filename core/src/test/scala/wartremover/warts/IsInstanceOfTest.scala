@@ -10,7 +10,7 @@ class IsInstanceOfTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(IsInstanceOf) {
       "abc".isInstanceOf[String]
     }
-    assertError(result)("isInstanceOf is disabled")
+    assertError(result)("[org.wartremover.warts.IsInstanceOf] isInstanceOf is disabled")
   }
   test("isInstanceOf wart obeys SuppressWarnings") {
     val result = WartTestTraverser(IsInstanceOf) {

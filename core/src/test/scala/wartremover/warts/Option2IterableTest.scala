@@ -11,19 +11,19 @@ class Option2IterableTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Option2Iterable) {
       println(Iterable(1).flatMap(Some(_)))
     }
-    assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    assertError(result)("[org.wartremover.warts.Option2Iterable] Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
   }
   test("can't use Option.option2Iterable with None") {
     val result = WartTestTraverser(Option2Iterable) {
       println(Iterable(1).flatMap(_ => None))
     }
-    assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    assertError(result)("[org.wartremover.warts.Option2Iterable] Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
   }
   test("can't use Option.option2Iterable when zipping Options") {
     val result = WartTestTraverser(Option2Iterable) {
       println(Option(1) zip Option(2))
     }
-    assertErrors(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead", 2)
+    assertErrors(result)("[org.wartremover.warts.Option2Iterable] Implicit conversion from Option to Iterable is disabled - use Option#toList instead", 2)
   }
   test("doesn't detect user defined option2Iterable functions") {
     def option2Iterable[A](o: Option[A]): Iterable[A] = o.toIterable

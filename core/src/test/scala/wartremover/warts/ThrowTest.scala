@@ -10,14 +10,14 @@ class ThrowTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Throw) {
       def foo(n: Int): Int = throw new IllegalArgumentException("bar")
     }
-    assertError(result)("throw is disabled")
+    assertError(result)("[org.wartremover.warts.Throw] throw is disabled")
   }
 
   test("throw is disabled for non-synthetic MatchErrors") {
     val result = WartTestTraverser(Throw) {
       def foo(n: Int): Int = throw new MatchError("bar")
     }
-    assertError(result)("throw is disabled")
+    assertError(result)("[org.wartremover.warts.Throw] throw is disabled")
   }
 
   test("throw is allowed in synthetic Product.productElement") {

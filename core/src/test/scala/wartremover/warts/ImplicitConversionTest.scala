@@ -12,7 +12,7 @@ class ImplicitConversionTest extends FunSuite with ResultAssertions {
         implicit def int2Array(i: Int): Array[String] = Array.fill(i)("?")
       }
     }
-    assertError(result)("Implicit conversion is disabled")
+    assertError(result)("[org.wartremover.warts.ImplicitConversion] Implicit conversion is disabled")
   }
 
   test("Non-public implicit conversion is enabled") {

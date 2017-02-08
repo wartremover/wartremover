@@ -14,7 +14,7 @@ class OverloadingTest extends FunSuite with ResultAssertions {
         def wait(s: String) = {}
       }
     }
-    assertErrors(result)("Overloading is disabled", 3)
+    assertErrors(result)("[org.wartremover.warts.Overloading] Overloading is disabled", 3)
   }
 
   test("Overloading wart obeys SuppressWarnings") {

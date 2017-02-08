@@ -12,7 +12,7 @@ class WhileTest extends FunSuite with ResultAssertions {
         println()
       }
     }
-    assertError(result)("while is disabled")
+    assertError(result)("[org.wartremover.warts.While] while is disabled")
   }
 
   test("do while is disabled") {
@@ -21,7 +21,7 @@ class WhileTest extends FunSuite with ResultAssertions {
         println()
       } while (true)
     }
-    assertError(result)("while is disabled")
+    assertError(result)("[org.wartremover.warts.While] while is disabled")
   }
 
   test("while wart obeys SuppressWarnings") {
