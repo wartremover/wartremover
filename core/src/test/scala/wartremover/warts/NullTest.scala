@@ -66,6 +66,10 @@ class NullTest extends FunSuite with ResultAssertions {
       null != ""
       "" == null
       "" != null
+      null eq ""
+      null ne ""
+      "" eq null
+      "" ne null
     }
     assertEmpty(result)
   }
