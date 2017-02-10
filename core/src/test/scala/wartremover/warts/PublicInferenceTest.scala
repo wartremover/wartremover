@@ -35,6 +35,57 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("Explicitly typed multiline should work correctly") {
+    val result = WartTestTraverser(PublicInference) {
+      val a:
+        Int = 1
+    }
+    assertEmpty(result)
+  }
+
+  test("Multiline should work correctly even if not explicitly typed") {
+    val result = WartTestTraverser(PublicInference) {
+      val a
+        = 1
+    }
+    assertEmpty(result)
+  }
+
+  test("Multiline def should also work") {
+    val res = WartTestTraverser(PublicInference) {
+      object X {
+        def f(
+               a: Int
+             ): Int = 1
+      }
+    }
+    assertEmpty(res)
+  }
+
+  test("Even a very complex example should pass") {
+    val result = WartTestTraverser(PublicInference) {
+      class A {
+        val a_val = 2
+        var a_var = 2
+        implicit val b_val = 2
+        implicit var b_var = 2
+        val c_var: Int = 3
+        var c_val: Int = 3
+
+        def a() = {
+          val a_val = 2
+          var a_var = 2
+          println {
+            val k_val = 2
+            var k_var = 2
+            k_val + k_var
+          }
+        }
+      }
+    }
+    assertErrors(result)("Public member must have an explicit type ascription", 8)
+  }
+
   test("Members of non-public classes are ignored") {
     val result = WartTestTraverser(PublicInference) {
       object o {
