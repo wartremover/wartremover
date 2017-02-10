@@ -65,14 +65,14 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
   test("Even a very complex example should pass") {
     val result = WartTestTraverser(PublicInference) {
       class A {
-        val a_val = 2
-        var a_var = 2
-        implicit val b_val = 2
-        implicit var b_var = 2
+        val a_val = 2 // fails #1
+        var a_var = 2 // fails #2
+        implicit val b_val = 2 // fails #3
+        implicit var b_var = 2 // fails #4
         val c_var: Int = 3
         var c_val: Int = 3
 
-        def a() = {
+        def a() = { // fails #5
           val a_val = 2
           var a_var = 2
           println {
@@ -83,7 +83,7 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
         }
       }
     }
-    assertErrors(result)("Public member must have an explicit type ascription", 8)
+    assertErrors(result)("Public member must have an explicit type ascription", 5)
   }
 
   test("Members of non-public classes are ignored") {
