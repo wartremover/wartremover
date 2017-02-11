@@ -65,17 +65,17 @@ object Null extends WartTraverser {
             super.traverse(t)
 
           case Literal(Constant(null)) =>
-            u.error(tree.pos, "null is disabled")
+            error(u)(tree.pos, "null is disabled")
             super.traverse(tree)
 
           //var s: String = _
           case ValDef(mods, name, t, _)
             if mods.hasFlag(Flag.DEFAULTINIT) && !isPrimitive(u)(t.tpe) && !(t.tpe <:< typeOf[Unit]) =>
-            u.error(tree.pos, "null is disabled")
+            error(u)(tree.pos, "null is disabled")
 
           // Option.orNull (which returns null) is disabled.
           case Select(left, OrNull) if left.tpe.baseType(optionSymbol) != NoType =>
-            u.error(tree.pos, "Option#orNull is disabled")
+            error(u)(tree.pos, "Option#orNull is disabled")
 
           // Scala pattern matching outputs synthetic null.asInstanceOf[X]
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>

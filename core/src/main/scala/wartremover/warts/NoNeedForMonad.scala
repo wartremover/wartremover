@@ -31,7 +31,7 @@ object NoNeedForMonad extends WartTraverser {
       }
 
       if(bindings.size > 1 && !result) {
-        u.warning(tree.pos, message)
+        warning(u)(tree.pos, message)
       }
     }
 
@@ -71,7 +71,7 @@ object NoNeedForMonad extends WartTraverser {
         }
 
         if (results.forall(identity))
-          u.warning(tree.pos, message)
+          warning(u)(tree.pos, message)
       }
     }
 

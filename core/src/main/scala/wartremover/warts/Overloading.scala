@@ -16,7 +16,7 @@ object Overloading extends WartTraverser {
                 && owner.typeSignature.declarations.nonEmpty
                 && owner.typeSignature.members
                   .count(x => x.isMethod && !x.annotations.exists(isWartAnnotation(u)) && x.name == t.name) > 1) {
-              u.error(t.pos, "Overloading is disabled")
+              error(u)(t.pos, "Overloading is disabled")
             }
             super.traverse(tree)
           case _ =>

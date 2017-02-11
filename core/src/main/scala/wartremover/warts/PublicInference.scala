@@ -18,7 +18,7 @@ object PublicInference extends WartTraverser {
               !(t.symbol.isTerm && (t.symbol.asTerm.isParamAccessor ||
                 t.symbol.asTerm.isCaseAccessor)) &&
               !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) =>
-            u.error(tree.pos, "Public member must have an explicit type ascription")
+            error(u)(tree.pos, "Public member must have an explicit type ascription")
 
           case _ =>
             super.traverse(tree)

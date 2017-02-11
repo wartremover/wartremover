@@ -10,7 +10,7 @@ object Return extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case u.universe.Return(_) =>
-            u.error(tree.pos, "return is disabled")
+            error(u)(tree.pos, "return is disabled")
           case _ => super.traverse(tree)
         }
       }

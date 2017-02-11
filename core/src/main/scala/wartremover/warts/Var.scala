@@ -46,7 +46,7 @@ object Var extends WartTraverser {
           case ValDef(mods, _, tpt, _) if allowedTypes.contains(tpt.tpe.typeSymbol.fullName) =>
 
           case ValDef(mods, _, tpt, _) if mods.hasFlag(Flag.MUTABLE) =>
-            u.error(tree.pos, "var is disabled")
+            error(u)(tree.pos, "var is disabled")
             super.traverse(tree)
           case _ =>
             super.traverse(tree)

@@ -13,7 +13,7 @@ object Enumeration extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case t: ImplDef if t.symbol.typeSignature.baseClasses.contains(enumeration) =>
-            u.error(tree.pos, "Enumeration is disabled - use case objects instead")
+            error(u)(tree.pos, "Enumeration is disabled - use case objects instead")
           case t => super.traverse(tree)
         }
       }

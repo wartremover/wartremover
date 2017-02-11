@@ -15,7 +15,7 @@ object DefaultArguments extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case d@DefDef(_, _, _, vs, _, _) if !isSynthetic(u)(d) && vs.find(containsDef).isDefined =>
-            u.error(tree.pos, "Function has default arguments")
+            error(u)(tree.pos, "Function has default arguments")
           case _ =>
             super.traverse(tree)
         }
