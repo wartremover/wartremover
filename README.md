@@ -232,10 +232,6 @@ import scala.collection.mutable.ListBuffer
 val mutList = ListBuffer()
 ```
 
-### NoNeedForMonad
-
-Deprecated, this has been moved to [wartremover-contrib](https://github.com/wartremover/wartremover-contrib).
-
 ### NonUnitStatements
 
 Scala allows statements to return any type. Statements should only
