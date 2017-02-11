@@ -40,7 +40,7 @@ class ExplicitImplicitTypesTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
-  test("can't declare implicit defs with a type ascription") {
+  test("can declare implicit defs with a type ascription") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       implicit def foo: Int = 5
       implicit def bar[A]: Int = 5

@@ -12,7 +12,7 @@ object PublicInference extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
 
-          case t: ValOrDefDef if t.symbol.isPublic &&
+          case t: ValOrDefDef if isPublic(u)(t) &&
               t.symbol.owner.isClass && t.symbol.owner.isPublic &&
               !(t.symbol.isMethod && t.symbol.asMethod.isConstructor) &&
               !(t.symbol.isTerm && (t.symbol.asTerm.isParamAccessor ||
