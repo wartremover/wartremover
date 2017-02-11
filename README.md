@@ -218,10 +218,6 @@ file 2:
 class d extends c
 ```
 
-### ListOps
-
-Deprecated, use **TraversableOps**.
-
 ### MutableDataStructures
 
 The standard library provides mutable collections. Mutation breaks equational reasoning.
@@ -394,7 +390,6 @@ Checks for the following warts:
 * AsInstanceOf
 * EitherProjectionPartial
 * IsInstanceOf
-* ListOps
 * NonUnitStatements
 * Null
 * OptionPartial
@@ -402,6 +397,7 @@ Checks for the following warts:
 * Return
 * Serializable
 * Throw
+* TraversableOps
 * TryPartial
 * Var
 
