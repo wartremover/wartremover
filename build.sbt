@@ -70,6 +70,7 @@ lazy val core = Project(
 ).settings(commonSettings ++ Seq(
   name := "wartremover",
   scalaVersion := (crossScalaVersions in ThisBuild).value.head,
+  fork in Test := true,
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {

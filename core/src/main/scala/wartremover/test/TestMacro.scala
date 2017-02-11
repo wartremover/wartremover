@@ -30,22 +30,19 @@ object WartTestTraverser {
   }
 
   /**
-   * Example:
-   * <pre>{@code
+   * Example: {{{
    * val result = WartTestTraverser.applyToFiles(Return)(
-   *   "return/A.scala",
-   *   "return/B.scala"
-   * )
-   * }</pre>
-   *
+   *   "src/test/resources/A.scala",
+   *   "src/test/resources/B.scala"
+   * )}}}
    * @param t traverser to test
-   * @param paths test source files located in {@code core/src/test/resources/}
+   * @param paths test source files
    * @return result of applying {@code t} to files at {@code paths}
    */
   def applyToFiles(t: WartTraverser)(paths: String*): Result = {
     var errors = List[String]()
     var warnings = List[String]()
-    Main.compile(Main.WartArgs(List(t.className), paths.map("core/src/test/resources/" + _).toList), Some(new Reporter {
+    Main.compile(Main.WartArgs(List(t.className), paths.toList), Some(new Reporter {
       override protected def info0(pos: Position, msg: String, severity: Severity, force: Boolean) = severity match {
         case ERROR => errors ::= msg
         case WARNING => warnings ::= msg
