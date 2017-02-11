@@ -1,12 +1,18 @@
 package org.wartremover
 package warts
 
+import scala.reflect.NameTransformer
+
 object Null extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
     val UnapplyName: TermName = "unapply"
     val UnapplySeqName: TermName = "unapplySeq"
+    val Equals: TermName = NameTransformer.encode("==")
+    val NotEquals: TermName = NameTransformer.encode("!=")
+    val Eq: TermName = NameTransformer.encode("eq")
+    val Ne: TermName = NameTransformer.encode("ne")
     val xmlSymbols = List(
       "scala.xml.Elem", "scala.xml.NamespaceBinding"
     ) // cannot do `map rootMirror.staticClass` here because then:
@@ -40,6 +46,24 @@ object Null extends WartTraverser {
             } foreach { stat =>
               traverse(stat)
             }
+
+          //Ignore null == _, null != _
+          case Select(Literal(Constant(null)), Equals) =>
+          case Select(Literal(Constant(null)), NotEquals) =>
+          //Ignore _ == null, _ != null
+          case Apply(Select(t, Equals), List(Literal(Constant(null)))) =>
+            super.traverse(t)
+          case Apply(Select(t, NotEquals), List(Literal(Constant(null)))) =>
+            super.traverse(t)
+          //Ignore null eq _, null ne _
+          case Select(Literal(Constant(null)), Eq) =>
+          case Select(Literal(Constant(null)), Ne) =>
+          //Ignore _ eq null, _ ne null
+          case Apply(Select(t, Eq), List(Literal(Constant(null)))) =>
+            super.traverse(t)
+          case Apply(Select(t, Ne), List(Literal(Constant(null)))) =>
+            super.traverse(t)
+
           case Literal(Constant(null)) =>
             u.error(tree.pos, "null is disabled")
             super.traverse(tree)
