@@ -4,7 +4,6 @@ package warts
 object Unsafe extends WartTraverser {
   val safeTraversers = List(
     Any,
-    Any2StringAdd,
     AsInstanceOf,
     DefaultArguments,
     EitherProjectionPartial,
@@ -16,6 +15,7 @@ object Unsafe extends WartTraverser {
     Product,
     Return,
     Serializable,
+	 StringPlusAny,
     Throw,
     TryPartial,
     Var

@@ -90,10 +90,6 @@ instead.
 val any = List(1, true, "three")
 ```
 
-### Any2StringAdd
-
-Deprecated, use **StringPlusAny**.
-
 ### AsInstanceOf
 
 `asInstanceOf` is unsafe in isolation and violates parametricity when guarded by `isInstanceOf`. Refactor so that the desired type is proven statically.
@@ -386,7 +382,6 @@ explicitly handle both the `Success` and `Failure` cases.
 Checks for the following warts:
 
 * Any
-* Any2StringAdd
 * AsInstanceOf
 * EitherProjectionPartial
 * IsInstanceOf
@@ -396,6 +391,7 @@ Checks for the following warts:
 * Product
 * Return
 * Serializable
+* StringPlusAny
 * Throw
 * TraversableOps
 * TryPartial

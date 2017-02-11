@@ -19,12 +19,12 @@ class UnsafeTest extends FunSuite {
     }
     assertResult(
       Set("[wartremover:Any] Inferred type containing Any",
-           "[wartremover:Any2StringAdd] Scala inserted an any2stringadd call",
            "[wartremover:EitherProjectionPartial] LeftProjection#get is disabled - use LeftProjection#toOption instead",
            "[wartremover:EitherProjectionPartial] RightProjection#get is disabled - use RightProjection#toOption instead",
            "[wartremover:NonUnitStatements] Statements must return Unit",
            "[wartremover:Null] null is disabled",
            "[wartremover:OptionPartial] Option#get is disabled - use Option#fold instead",
+           "[wartremover:StringPlusAny] Implicit conversion to string is disabled",
            "[wartremover:Var] var is disabled"), "result.errors")(result.errors.toSet)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
