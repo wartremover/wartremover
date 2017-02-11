@@ -29,6 +29,13 @@ class ImplicitParameterTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("Defs without parameters don't lead to a crash") {
+    val result = WartTestTraverser(ImplicitParameter) {
+      def f = ()
+    }
+    assertEmpty(result)
+  }
+
   test("ImplicitParameter wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ImplicitParameter) {
       @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
