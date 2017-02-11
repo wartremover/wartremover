@@ -9,12 +9,13 @@ object StringPlusAny extends WartTraverser {
     val PredefName: TermName = "Predef"
     val Any2StringAddName: TermName = "any2stringadd"
 
-    def isString(t: Tree) = t.tpe <:< typeOf[String]
+    def isString(t: Tree): Boolean = t.tpe <:< typeOf[String]
 
-    def isStringExpression(t: Tree) = t match {
+    def isStringExpression(t: Tree): Boolean = t match {
       //workaround: type of some expressions is inferred to Any during wart search since Scala 2.11
       //this check doesn't cover all possible cases
-      case If(_, thn, els) => isString(thn) && isString(els)
+      case Block(_, expr) => isStringExpression(expr)
+      case If(_, thn, els) => isStringExpression(thn) && isStringExpression(els)
       case _ => isString(t)
     }
 
@@ -31,7 +32,8 @@ object StringPlusAny extends WartTraverser {
             u.error(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
-          case Apply(Select(Literal(Constant(c)), Plus), _) if !c.isInstanceOf[String] =>
+          case Apply(Select(lhs, Plus), List(rhs))
+              if isPrimitive(u)(lhs.tpe) && isStringExpression(rhs) =>
             u.error(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
