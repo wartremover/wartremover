@@ -32,8 +32,6 @@ object StringPlusAny extends WartTraverser {
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
-          case Apply(Select(Literal(Constant(c)), Plus), _) if !c.isInstanceOf[String] =>
-            error(u)(tree.pos, "Implicit conversion to string is disabled")
           case Apply(Select(lhs, Plus), List(rhs))
               if isPrimitive(u)(lhs.tpe) && isStringExpression(rhs) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
