@@ -1,4 +1,69 @@
-# Other ways of using WartRemover
+---
+layout: page
+title: "Installation & Setup"
+category: doc
+date: 2017-02-11 0:00:00
+order: 0
+---
+
+Add the following to your `project/plugins.sbt`:
+
+```scala
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.0.1")
+```
+
+**NOTE**: `sbt-wartremover` requires sbt version 0.13.5+.
+
+Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
+
+```scala
+wartremoverErrors ++= Warts.unsafe
+```
+
+To turn on *all* available errors (some have false positives), use:
+
+```scala
+wartremoverErrors ++= Warts.all
+```
+
+Similarly, to just issue warnings instead of errors for all built-in warts, you can use:
+
+```scala
+wartremoverWarnings ++= Warts.all    // or Warts.unsafe
+```
+
+You can also use scopes, e.g. to turn on all warts only for compilation (and not for the tests nor the `sbt console`), use:
+
+```scala
+wartremoverErrors in (Compile, compile) ++= Warts.all
+```
+
+To choose warts more selectively, use any of the following:
+
+```scala
+wartremoverErrors ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable)
+
+wartremoverWarnings += Wart.Nothing
+
+wartremoverWarnings ++= Seq(Wart.Any, Wart.Serializable)
+```
+
+## Suppressing Errors & Warnings
+
+To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation:
+
+```scala
+@SuppressWarnings(Array("org.wartremover.warts.Var", "org.wartremover.warts.Null"))
+var foo = null
+```
+
+To exclude a file from all checks, use `wartremoverExcluded` in your `build.sbt` file:
+
+```scala
+wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
+```
+
+## Other ways of using WartRemover
 
 Apart from [using the sbt plugin](/README.md) to set it up for your project, WartRemover can also be used in the following ways:
 
@@ -6,7 +71,7 @@ Apart from [using the sbt plugin](/README.md) to set it up for your project, War
 * as a compiler plugin with *manually* provided `scalac` options,
 * to derive macros.
 
-## Command-line
+### Command-line
 
 Compile the command-line tool via `sbt core/assembly` and then use the provided `wartremover` shell script:
 
@@ -19,7 +84,7 @@ Compile the command-line tool via `sbt core/assembly` and then use the provided 
       private[this] var traversers: List[WartTraverser] = List.empty
                         ^
 
-## Compiler plugin (manually)
+### Compiler plugin (manually)
 
 Add the following to `build.sbt`:
 
@@ -51,7 +116,7 @@ To use your custom `WartTraverser`, you'll need to provide a classpath where it 
 scalacOptions += "-P:wartremover:cp:someUrl"
 ```
 
-## Apache Maven
+### Apache Maven
 
 You can use WartRemover in Maven by employing it as a compilerPlugin to scala-maven-plugin:
 
@@ -81,7 +146,7 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
 
 See the notes on the compiler plugin above for options to pass as `<arg>`s.
 
-## Macros
+### Macros
 
 You can make any wart into a macro, like so:
 
@@ -98,4 +163,3 @@ You can make any wart into a macro, like so:
     <console>:10: error: null is disabled
                   safe { null }
                          ^
-
