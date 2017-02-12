@@ -24,7 +24,7 @@ class NoNeedForMonadTest extends FunSuite with ResultAssertions {
       Option(1).flatMap(i => Option(i + 1).map(j => i + j))
     }
 
-    assertWarnings(withWarnings)(NoNeedForMonad.message, 2)
+    assertWarnings(withWarnings)("[wartremover:NoNeedForMonad] " + NoNeedForMonad.message, 2)
 
     assertEmpty(noWarnings)
   }
@@ -59,7 +59,7 @@ class NoNeedForMonadTest extends FunSuite with ResultAssertions {
     }
 
 
-    assertWarnings(etaExpanded)(NoNeedForMonad.message, 1)
+    assertWarnings(etaExpanded)("[wartremover:NoNeedForMonad] " + NoNeedForMonad.message, 1)
 
     assertEmpty(extendsFunction)
   }

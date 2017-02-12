@@ -13,7 +13,7 @@ object OptionPartial extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
-            u.error(tree.pos, "Option#get is disabled - use Option#fold instead")
+            error(u)(tree.pos, "Option#get is disabled - use Option#fold instead")
           // TODO: This ignores a lot
           case LabelDef(_, _, rhs) if isSynthetic(u)(tree)=>
           case _ =>

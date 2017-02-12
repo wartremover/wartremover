@@ -36,7 +36,7 @@ object ImplicitParameter extends WartTraverser {
 
             paramss.lastOption.fold(false)(_.exists(isManualImplicit))
           } =>
-            u.error(tree.pos, "Implicit parameters are disabled")
+            error(u)(tree.pos, "Implicit parameters are disabled")
 
           case _ =>
             super.traverse(tree)

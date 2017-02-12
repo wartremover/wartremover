@@ -4,18 +4,18 @@ package warts
 object Unsafe extends WartTraverser {
   val safeTraversers = List(
     Any,
-    Any2StringAdd,
     AsInstanceOf,
     DefaultArguments,
     EitherProjectionPartial,
     IsInstanceOf,
-    ListOps,
+    TraversableOps,
     NonUnitStatements,
     Null,
     OptionPartial,
     Product,
     Return,
     Serializable,
+	 StringPlusAny,
     Throw,
     TryPartial,
     Var
