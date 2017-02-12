@@ -16,9 +16,11 @@ trait WartTraverser {
 
     object MacroUniverse extends WartUniverse {
       val universe: c.universe.type = c.universe
-      def error(pos: universe.Position, message: String) = c.error(pos, message)
-      def warning(pos: universe.Position, message: String) = c.warning(pos, message)
+      def error(pos: universe.Position, message: String) = c.error(pos, decorateMessage(message))
+      def warning(pos: universe.Position, message: String) = c.warning(pos, decorateMessage(message))
       val excludes: List[String] = List.empty // TODO: find a sensible way to initialize this field with useful data
+      
+      private[this] def decorateMessage(message: String): String = s"[wartremover:$className] message"
     }
 
     apply(MacroUniverse).traverse(expr.tree)
