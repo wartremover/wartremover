@@ -83,6 +83,10 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
   }
 
   test("adding Float values is allowed") {
+    val result = WartTestTraverser(StringPlusAny) {
       1f + 1f
+    }
+    assertEmpty(result)
   }
 }
+
