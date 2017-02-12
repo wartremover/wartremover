@@ -13,7 +13,7 @@ class EnumerationTest extends FunSuite with ResultAssertions {
         val Blue = Value
       }
     }
-    assertError(result)("Enumeration is disabled - use case objects instead")
+    assertError(result)("[org.wartremover.warts.Enumeration] Enumeration is disabled - use case objects instead")
   }
   test("can't declare Enumeration objects") {
     val result = WartTestTraverser(EnumerationWart) {
@@ -22,7 +22,7 @@ class EnumerationTest extends FunSuite with ResultAssertions {
         val Blue = Value
       }
     }
-    assertError(result)("Enumeration is disabled - use case objects instead")
+    assertError(result)("[org.wartremover.warts.Enumeration] Enumeration is disabled - use case objects instead")
   }
   test("can use user-defined Enumeration traits") {
     val result = WartTestTraverser(EnumerationWart) {

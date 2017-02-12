@@ -10,49 +10,49 @@ class TraversableOpsTest extends FunSuite with ResultAssertions {
       val result = WartTestTraverser(TraversableOps) {
         println(x.head)
       }
-      assertError(result)("head is disabled - use headOption instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] head is disabled - use headOption instead")
     }
 
     test(s"can't use $name#tail") {
       val result = WartTestTraverser(TraversableOps) {
         println(x.tail)
       }
-      assertError(result)("tail is disabled - use drop(1) instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] tail is disabled - use drop(1) instead")
     }
 
     test(s"can't use $name#init") {
       val result = WartTestTraverser(TraversableOps) {
         println(x.init)
       }
-      assertError(result)("init is disabled - use dropRight(1) instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] init is disabled - use dropRight(1) instead")
     }
 
     test(s"can't use $name#last") {
       val result = WartTestTraverser(TraversableOps) {
         println(x.last)
       }
-      assertError(result)("last is disabled - use lastOption instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] last is disabled - use lastOption instead")
     }
 
     test(s"can't use $name#reduce") {
       val result = WartTestTraverser(TraversableOps) {
         println(x.reduce(_.hashCode + _.hashCode))
       }
-      assertError(result)("reduce is disabled - use reduceOption or fold instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] reduce is disabled - use reduceOption or fold instead")
     }
 
     test(s"can't use $name#reduceLeft") {
       val result = WartTestTraverser(TraversableOps) {
         println(x.reduceLeft(_.hashCode + _.hashCode))
       }
-      assertError(result)("reduceLeft is disabled - use reduceLeftOption or foldLeft instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] reduceLeft is disabled - use reduceLeftOption or foldLeft instead")
     }
 
     test(s"can't use $name#reduceRight") {
       val result = WartTestTraverser(TraversableOps) {
         println(x.reduceRight(_.hashCode + _.hashCode))
       }
-      assertError(result)("reduceRight is disabled - use reduceRightOption or foldRight instead")
+      assertError(result)("[org.wartremover.warts.TraversableOps] reduceRight is disabled - use reduceRightOption or foldRight instead")
     }
   }
 

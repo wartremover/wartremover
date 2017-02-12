@@ -10,13 +10,13 @@ class OptionPartialTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(OptionPartial) {
       println(Some(1).get)
     }
-    assertError(result)("Option#get is disabled - use Option#fold instead")
+    assertError(result)("[org.wartremover.warts.OptionPartial] Option#get is disabled - use Option#fold instead")
   }
   test("can't use Option#get on None") {
     val result = WartTestTraverser(OptionPartial) {
       println(None.get)
     }
-    assertError(result)("Option#get is disabled - use Option#fold instead")
+    assertError(result)("[org.wartremover.warts.OptionPartial] Option#get is disabled - use Option#fold instead")
   }
   test("doesn't detect other `get` methods") {
     val result = WartTestTraverser(OptionPartial) {

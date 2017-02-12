@@ -10,7 +10,7 @@ class DefaultArgumentsTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(DefaultArguments) {
       def x(y: Int = 4) = y
     }
-    assertError(result)("Function has default arguments")
+    assertError(result)("[org.wartremover.warts.DefaultArguments] Function has default arguments")
   }
   test("Default arguments wart obeys SuppressWarnings") {
     val result = WartTestTraverser(DefaultArguments) {

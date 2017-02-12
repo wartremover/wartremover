@@ -11,7 +11,7 @@ class NothingTest extends FunSuite with ResultAssertions {
       val x = ???
       x
     }
-    assertError(result)("Inferred type containing Nothing")
+    assertError(result)("[org.wartremover.warts.Nothing] Inferred type containing Nothing")
   }
   test("Nothing wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Nothing) {

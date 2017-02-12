@@ -10,7 +10,7 @@ class MutableDataStructuresTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(MutableDataStructures) {
       var x = scala.collection.mutable.HashMap("key" -> "value")
     }
-    assertError(result)("scala.collection.mutable package is disabled")
+    assertError(result)("[org.wartremover.warts.MutableDataStructures] scala.collection.mutable package is disabled")
   }
   test("ignore immutable collections") {
     val result = WartTestTraverser(MutableDataStructures) {

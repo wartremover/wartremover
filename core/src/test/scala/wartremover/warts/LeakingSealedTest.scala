@@ -11,7 +11,7 @@ class LeakingSealedTest extends FunSuite with ResultAssertions {
       sealed trait t
       class c extends t
     }
-    assertError(result)("Descendants of a sealed type must be final or sealed")
+    assertError(result)("[org.wartremover.warts.LeakingSealed] Descendants of a sealed type must be final or sealed")
   }
 
   test("Final or sealed descendants of a sealed type are allowed") {

@@ -12,27 +12,27 @@ class ToStringTest extends FunSuite with ResultAssertions {
       val foo: Foo = new Foo(5)
 		foo.toString
     }
-    assertError(result)("class Foo does not override toString and automatic toString is disabled")
+    assertError(result)("[org.wartremover.warts.ToString] class Foo does not override toString and automatic toString is disabled")
   }
   test("can't use automatic toString method of TypeRefs") {
     val result = WartTestTraverser(ToString) {
       def foo[A](a: A): String = a.toString
     }
-    assertError(result)("class Any does not override toString and automatic toString is disabled")
+    assertError(result)("[org.wartremover.warts.ToString] class Any does not override toString and automatic toString is disabled")
   }
   test("can't use generated toString method of case classes") {
     val result = WartTestTraverser(ToString) {
       case class Foo(i: Int)
 		Foo(5).toString
     }
-    assertError(result)("class Foo does not override toString and automatic toString is disabled")
+    assertError(result)("[org.wartremover.warts.ToString] class Foo does not override toString and automatic toString is disabled")
   }
   test("can't use generated toString method of case objects") {
     val result = WartTestTraverser(ToString) {
       case object Foo
 		Foo.toString
     }
-    assertError(result)("object Foo does not override toString and automatic toString is disabled")
+    assertError(result)("[org.wartremover.warts.ToString] object Foo does not override toString and automatic toString is disabled")
   }
   test("can use overridden toString method") {
     val result = WartTestTraverser(ToString) {

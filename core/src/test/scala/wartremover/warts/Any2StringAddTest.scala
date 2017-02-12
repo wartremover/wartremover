@@ -10,7 +10,7 @@ class Any2StringAddTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Any2StringAdd) {
       {} + "lol"
     }
-    assertError(result)("Scala inserted an any2stringadd call")
+    assertError(result)(s"[org.wartremover.warts.Any2StringAdd] Scala inserted an any2stringadd call")
   }
   test("any2stringadd wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any2StringAdd) {

@@ -10,13 +10,13 @@ class TryPartialTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(TryPartial) {
       println(Success(1).get)
     }
-    assertError(result)("Try#get is disabled")
+    assertError(result)("[org.wartremover.warts.TryPartial] Try#get is disabled")
   }
   test("can't use Try#get on Failure") {
     val result = WartTestTraverser(TryPartial) {
       println(Failure(new Error).get)
     }
-    assertError(result)("Try#get is disabled")
+    assertError(result)("[org.wartremover.warts.TryPartial] Try#get is disabled")
   }
   test("doesn't detect other `get` methods") {
     val result = WartTestTraverser(TryPartial) {

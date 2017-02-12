@@ -12,7 +12,7 @@ class FinalValTest extends FunSuite with ResultAssertions {
         final val v = 1
       }
     }
-    assertError(result)("final val is disabled - use non-final val or final def or add type ascription")
+    assertError(result)("[org.wartremover.warts.FinalVal] final val is disabled - use non-final val or final def or add type ascription")
   }
 
   test("final val alternatives are enabled") {

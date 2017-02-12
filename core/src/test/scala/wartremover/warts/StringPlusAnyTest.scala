@@ -12,14 +12,14 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
       "lol" + 1
       "" + (if (true) 5 else "")
     }
-    assertErrors(result)("Implicit conversion to string is disabled", 3)
+    assertErrors(result)("[org.wartremover.warts.StringPlusAny] Implicit conversion to string is disabled", 3)
   }
 
   test("Primitive conversion to string is disabled") {
     val result = WartTestTraverser(StringPlusAny) {
       1 + "lol"
     }
-    assertError(result)("Implicit conversion to string is disabled")
+    assertError(result)("[org.wartremover.warts.StringPlusAny] Implicit conversion to string is disabled")
   }
 
   test("Non-string + usage is allowed") {

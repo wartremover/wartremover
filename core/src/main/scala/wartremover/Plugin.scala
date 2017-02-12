@@ -62,16 +62,16 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
         val isExcluded = excludedFiles contains unit.source.file.absolute.path
 
         if (!isExcluded) {
-          def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
+          def wartUniverse(t: WartTraverser, onlyWarn: Boolean) = new WartUniverse(t) {
             val universe: global.type = global
             def error(pos: Position, message: String) =
-              if (onlyWarn) global.reporter.warning(pos, message)
-              else global.reporter.error(pos, message)
-            def warning(pos: Position, message: String) = global.reporter.warning(pos, message)
+              if (onlyWarn) global.reporter.warning(pos, decorateMessage(message))
+              else global.reporter.error(pos, decorateMessage(message))
+            def warning(pos: Position, message: String) = global.reporter.warning(pos, decorateMessage(message))
           }
 
           def go(ts: List[WartTraverser], onlyWarn: Boolean) =
-            ts.foreach(_(wartUniverse(onlyWarn)).traverse(unit.body))
+            ts.foreach(t => t(wartUniverse(t, onlyWarn)).traverse(unit.body))
 
           go(traversers, onlyWarn = false)
           go(onlyWarnTraversers, onlyWarn = true)

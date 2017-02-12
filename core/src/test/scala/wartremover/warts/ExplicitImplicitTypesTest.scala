@@ -10,7 +10,7 @@ class ExplicitImplicitTypesTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       implicit val foo = 5
     }
-    assertError(result)("implicit definitions must have an explicit type ascription")
+    assertError(result)("[org.wartremover.warts.ExplicitImplicitTypes] implicit definitions must have an explicit type ascription")
   }
 
   test("can't declare implicit defs without a type ascription") {
@@ -20,7 +20,7 @@ class ExplicitImplicitTypesTest extends FunSuite with ResultAssertions {
       implicit def baz(i: Int) = 5
       implicit def qux[I](i: I) = 5
     }
-    assertErrors(result)("implicit definitions must have an explicit type ascription", 4)
+    assertErrors(result)("[org.wartremover.warts.ExplicitImplicitTypes] implicit definitions must have an explicit type ascription", 4)
   }
 
   test("can declare implicit classes") {

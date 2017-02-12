@@ -13,7 +13,7 @@ class EqualsTest extends FunSuite with ResultAssertions {
       i == s
       i != s
     }
-    assertResult(List("== is disabled - use === or equivalent instead", "!= is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
+    assertResult(List("[org.wartremover.warts.Equals] == is disabled - use === or equivalent instead", "[org.wartremover.warts.Equals] != is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use == or != on classes") {
@@ -22,7 +22,7 @@ class EqualsTest extends FunSuite with ResultAssertions {
 		new Foo(5) == new Foo(4)
 		new Foo(5) != new Foo(4)
     }
-    assertResult(List("== is disabled - use === or equivalent instead", "!= is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
+    assertResult(List("[org.wartremover.warts.Equals] == is disabled - use === or equivalent instead", "[org.wartremover.warts.Equals] != is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("can't use == or != on case classes") {
@@ -31,7 +31,7 @@ class EqualsTest extends FunSuite with ResultAssertions {
 		Foo(5) == Foo(4)
 		Foo(5) != Foo(4)
     }
-    assertResult(List("== is disabled - use === or equivalent instead", "!= is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
+    assertResult(List("[org.wartremover.warts.Equals] == is disabled - use === or equivalent instead", "[org.wartremover.warts.Equals] != is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
   test("Equals wart obeys SuppressWarnings") {

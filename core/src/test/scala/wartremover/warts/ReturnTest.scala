@@ -10,13 +10,13 @@ class ReturnTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Return) {
       def foo(n:Int): Int = return n + 1
     }
-    assertError(result)("return is disabled")
+    assertError(result)("[org.wartremover.warts.Return] return is disabled")
   }
   test("nonlocal return is disabled") {
     val result = WartTestTraverser(Return) {
       def foo(ns: List[Int]): Any = ns.map(n => return n + 1)
     }
-    assertError(result)("return is disabled")
+    assertError(result)("[org.wartremover.warts.Return] return is disabled")
   }
   test("Return wart is disabled") {
     val result = WartTestTraverser(Return) {
