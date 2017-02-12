@@ -6,7 +6,7 @@ WartRemover is a flexible Scala code linting tool.
 
 ## Documentation
 
-Documentation for Wartremover is available [here](https://www.wartremover.org).
+Documentation for Wartremover is available [here](http://www.wartremover.org).
 
 ## Reporting Issues
 
