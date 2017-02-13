@@ -57,3 +57,6 @@ redcarpet:
         'tables',
         'hardwrap'
     ]
+
+kramdown:
+  auto_ids: true
