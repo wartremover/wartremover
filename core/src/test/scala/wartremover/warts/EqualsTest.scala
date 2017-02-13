@@ -50,4 +50,27 @@ class EqualsTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+
+  test("Equals should work in synthetic lambdas") {
+    val result = WartTestTraverser(Equals) {
+      Seq(1, 2, 3).exists(_ == 1)
+      Seq(1, 2, 3).exists(n => n != 1)
+    }
+    assertResult(List(
+      "[wartremover:Equals] == is disabled - use === or equivalent instead",
+      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"),
+      "result.errors")(result.errors)
+  }
+
+  test("Equals should work in explicit lambdas") {
+    val result = WartTestTraverser(Equals) {
+      Seq(1, 2, 3).exists(new Function1[Int, Boolean] { def apply(i: Int): Boolean = i == 1 })
+      Seq(1, 2, 3).exists(new Function1[Int, Boolean] { def apply(i: Int): Boolean = i != 1 })
+    }
+    assertResult(List(
+      "[wartremover:Equals] == is disabled - use === or equivalent instead",
+      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"),
+      "result.errors")(result.errors)
+  }
+
 }
