@@ -9,7 +9,7 @@ order: 0
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.0.1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.0.2")
 ```
 
 **NOTE**: `sbt-wartremover` requires sbt version 0.13.5+.
@@ -91,7 +91,7 @@ Add the following to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("releases")
 
-addCompilerPlugin("org.wartremover" %% "wartremover" % "2.0.1")
+addCompilerPlugin("org.wartremover" %% "wartremover" % "2.0.2")
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
