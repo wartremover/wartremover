@@ -15,6 +15,18 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
     assertErrors(result)("Public member must have an explicit type ascription", 2)
   }
 
+  test("Inherited public members without type ascription are allowed") {
+    val result = WartTestTraverser(PublicInference) {
+      trait t {
+        def m(): Unit
+      }
+      class c extends t {
+        def m() = {}
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("Public members with explicit types are enabled") {
     val result = WartTestTraverser(PublicInference) {
       class c {
