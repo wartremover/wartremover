@@ -14,9 +14,10 @@ object PublicInference extends WartTraverser {
 
           case t: ValOrDefDef if isPublic(u)(t) &&
               t.symbol.owner.isClass && t.symbol.owner.isPublic &&
-              !(t.symbol.isMethod && t.symbol.asMethod.isConstructor) &&
+              !(t.symbol.isMethod && (t.symbol.asMethod.isConstructor ||
+                  t.symbol.asMethod.allOverriddenSymbols.nonEmpty)) &&
               !(t.symbol.isTerm && (t.symbol.asTerm.isParamAccessor ||
-                t.symbol.asTerm.isCaseAccessor)) &&
+                  t.symbol.asTerm.isCaseAccessor)) &&
               !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) =>
             error(u)(tree.pos, "Public member must have an explicit type ascription")
 
