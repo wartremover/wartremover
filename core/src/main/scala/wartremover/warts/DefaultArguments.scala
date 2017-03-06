@@ -6,16 +6,18 @@ object DefaultArguments extends WartTraverser {
     import u.universe._
     import u.universe.Flag._
 
-    def containsDef(v : List[ValDef]) =
-      v.find(_.mods.hasFlag(DEFAULTPARAM)).isDefined
+    object DefaultParam {
+      def unapply(vparamss: List[List[ValDef]]): Option[ValDef] =
+        vparamss.flatMap(_.find(_.mods.hasFlag(DEFAULTPARAM))).headOption
+    }
 
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
-          case d@DefDef(_, _, _, vs, _, _) if !isSynthetic(u)(d) && vs.find(containsDef).isDefined =>
-            error(u)(tree.pos, "Function has default arguments")
+          case d@DefDef(_, _, _, DefaultParam(param), _, _) if !isSynthetic(u)(d) =>
+            error(u)(param.pos, "Function has default arguments")
           case _ =>
             super.traverse(tree)
         }
