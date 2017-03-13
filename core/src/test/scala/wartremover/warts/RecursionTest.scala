@@ -37,4 +37,12 @@ class RecursionTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+
+  test("Recursion wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(Recursion) {
+      @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
+      def foo(x: Int): Int = foo(x)
+    }
+    assertEmpty(result)
+  }
 }
