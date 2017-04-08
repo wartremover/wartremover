@@ -28,6 +28,7 @@ object StringPlusAny extends WartTraverser {
           case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
+            
           case TypeApply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
@@ -37,8 +38,8 @@ object StringPlusAny extends WartTraverser {
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
-          case t @ Apply(Select(lhs, Plus), List(rhs)) if isString(lhs) && !isStringExpression(rhs)
-              && !isSynthetic(u)(t) =>
+          case t @ Apply(Select(lhs, Plus), List(rhs))
+              if isString(lhs) && !isStringExpression(rhs) && !isSynthetic(u)(t) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
