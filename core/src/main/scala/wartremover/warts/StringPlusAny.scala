@@ -8,6 +8,7 @@ object StringPlusAny extends WartTraverser {
     val Plus: TermName = "$plus"
     val PredefName: TermName = "Predef"
     val Any2StringAddName: TermName = "any2stringadd"
+    val StringCanBuildFromName: TermName = "StringCanBuildFrom"
 
     def isString(t: Tree): Boolean = t.tpe <:< typeOf[String]
 
@@ -16,6 +17,7 @@ object StringPlusAny extends WartTraverser {
       //this check doesn't cover all possible cases
       case Block(_, expr) => isStringExpression(expr)
       case If(_, thn, els) => isStringExpression(thn) && isStringExpression(els)
+      case Apply(_, List(Select(Select(_, PredefName), StringCanBuildFromName))) => true
       case _ => isString(t)
     }
 
@@ -28,6 +30,7 @@ object StringPlusAny extends WartTraverser {
           case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
+            
           case TypeApply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
@@ -37,8 +40,8 @@ object StringPlusAny extends WartTraverser {
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
-          case t @ Apply(Select(lhs, Plus), List(rhs)) if isString(lhs) && !isStringExpression(rhs)
-              && !isSynthetic(u)(t) =>
+          case t @ Apply(Select(lhs, Plus), List(rhs))
+              if isString(lhs) && !isStringExpression(rhs) && !isSynthetic(u)(t) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
