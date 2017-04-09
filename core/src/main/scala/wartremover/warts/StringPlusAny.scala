@@ -8,6 +8,8 @@ object StringPlusAny extends WartTraverser {
     val Plus: TermName = "$plus"
     val PredefName: TermName = "Predef"
     val Any2StringAddName: TermName = "any2stringadd"
+    val ScalaName = TermName("scala")
+    val StringCanBuildFromName: TermName = "StringCanBuildFrom"
 
     def isString(t: Tree): Boolean = t.tpe <:< typeOf[String]
 
@@ -16,6 +18,7 @@ object StringPlusAny extends WartTraverser {
       //this check doesn't cover all possible cases
       case Block(_, expr) => isStringExpression(expr)
       case If(_, thn, els) => isStringExpression(thn) && isStringExpression(els)
+      case Apply(_, List(Select(Select(Ident(ScalaName), PredefName), StringCanBuildFromName))) => true
       case _ => isString(t)
     }
 
