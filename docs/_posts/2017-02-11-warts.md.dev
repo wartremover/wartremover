@@ -9,6 +9,14 @@ order: 1
 Here is a list of built-in warts under the
 `org.wartremover.warts` package.
 
+### ArrayEquals
+
+Unlike other collections `==` on arrays and iterators checks reference equality:
+```scala
+List(1) == List(1) //true
+Array(1) == Array(1) //false, won't compile: == is disabled, use sameElements instead
+```
+
 ### Any
 
 `Any` is the top type; it is the supertype of every other type. The
