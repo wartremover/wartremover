@@ -61,6 +61,8 @@ implicit final class AnyOps[A](self: A) {
 }
 ```
 
+`equals`, `eq`, `ne` are disabled as well.
+
 ### ExplicitImplicitTypes
 
 Scala has trouble correctly resolving implicits when some of them lack explicit result types. To avoid this, all implicits should have explicit type ascriptions.
