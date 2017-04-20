@@ -7,39 +7,70 @@ import org.wartremover.warts.Equals
 
 class EqualsTest extends FunSuite with ResultAssertions {
   test("can't use == or != method on primitives") {
-    val result = WartTestTraverser(Equals) {
-      val s = "foo"
-      val i = 5
-      i == s
-      i != s
+    val result1 = WartTestTraverser(Equals) {
+      5 == "foo"
     }
-    assertResult(List(
-      "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result1)("== is disabled - use === or equivalent instead")
+
+    val result2 = WartTestTraverser(Equals) {
+      5 != "foo"
+    }
+    assertError(result2)("!= is disabled - use =/= or equivalent instead")
   }
+
   test("can't use == or != on classes") {
-    val result = WartTestTraverser(Equals) {
-      class Foo(i: Int)
-		new Foo(5) == new Foo(4)
-		new Foo(5) != new Foo(4)
+    class Foo(i: Int)
+
+    val result1 = WartTestTraverser(Equals) {
+      new Foo(5) == new Foo(4)
     }
-    assertResult(List(
-      "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result1)("== is disabled - use === or equivalent instead")
+
+    val result2 = WartTestTraverser(Equals) {
+      new Foo(5) != new Foo(4)
+    }
+    assertError(result2)("!= is disabled - use =/= or equivalent instead")
   }
+
   test("can't use == or != on case classes") {
-    val result = WartTestTraverser(Equals) {
-      case class Foo(i: Int)
-		Foo(5) == Foo(4)
-		Foo(5) != Foo(4)
+    case class Foo(i: Int)
+
+    val result1 = WartTestTraverser(Equals) {
+  		Foo(5) == Foo(4)
     }
-    assertResult(List(
-      "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"), "result.errors")(result.errors)
-    assertResult(List.empty, "result.warnings")(result.warnings)
+    assertError(result1)("== is disabled - use === or equivalent instead")
+
+    val result2 = WartTestTraverser(Equals) {
+      Foo(5) != Foo(4)
+    }
+    assertError(result2)("!= is disabled - use =/= or equivalent instead")
   }
+
+  test("can't use equals") {
+    class Foo(i: Int)
+
+    val result = WartTestTraverser(Equals) {
+      new Foo(5).equals(new Foo(4))
+
+      5.equals("foo")
+    }
+    assertErrors(result)("equals is disabled - use === or equivalent instead", 2)
+  }
+
+  test("can't use eq or ne") {
+    class Foo(i: Int)
+
+    val result1 = WartTestTraverser(Equals) {
+      new Foo(5) eq new Foo(4)
+    }
+    assertError(result1)("eq is disabled - use === or equivalent instead")
+
+    val result2 = WartTestTraverser(Equals) {
+      new Foo(5) ne new Foo(4)
+    }
+    assertError(result2)("ne is disabled - use =/= or equivalent instead")
+  }
+
   test("Equals wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Equals) {
       case class Foo(i: Int)
