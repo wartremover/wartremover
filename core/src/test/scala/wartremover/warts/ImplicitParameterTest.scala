@@ -22,6 +22,15 @@ class ImplicitParameterTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("Parent context bounds are enabled") {
+    val result = WartTestTraverser(ImplicitParameter) {
+      class C[F] {
+        def f[A](a: A)(implicit F: List[F]) = {}
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("Desugared context bounds are enabled") {
     val result = WartTestTraverser(ImplicitParameter) {
       def f[A, B](implicit ev: Either[A, _], ev2: Either[_, Seq[B]]) = ()
