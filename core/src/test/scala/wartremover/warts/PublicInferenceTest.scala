@@ -117,6 +117,13 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("PublicInference should work with partial functions") {
+    val result = WartTestTraverser(PublicInference) {
+      Seq(1).collect { case 1 => 1 }
+    }
+    assertEmpty(result)
+  }
+
   test("PublicInference wart obeys SuppressWarnings") {
     val result = WartTestTraverser(PublicInference) {
       @SuppressWarnings(Array("org.wartremover.warts.PublicInference"))
