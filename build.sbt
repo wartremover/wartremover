@@ -94,6 +94,7 @@ lazy val sbtPlug: Project = Project(
 ).settings(commonSettings ++ Seq(
   sbtPlugin := true,
   name := "sbt-wartremover",
+  crossSbtVersions := Vector("0.13.15", "1.0.0-M5"),
   sourceGenerators in Compile <+= Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
