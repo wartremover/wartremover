@@ -14,7 +14,6 @@ package object wartremover {
     wartremoverExcluded := Seq.empty,
     wartremoverClasspaths := Seq.empty,
 
-    resolvers += Resolver.sonatypeRepo("releases"),
     addCompilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion)
   ) ++ inScope(This)(Seq(
     derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
