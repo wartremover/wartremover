@@ -85,7 +85,8 @@ lazy val core = Project(
     "org.scalatest" %% "scalatest" % "3.0.0" % "test"
   ),
   // a hack (?) to make `compile` and `+compile` tasks etc. behave sanely
-  aggregate := CrossVersion.partialVersion((scalaVersion in Global).value) == Some((2, 10))
+  aggregate := CrossVersion.partialVersion((scalaVersion in Global).value) == Some((2, 10)),
+  assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 ): _*)
 
 lazy val sbtPlug: Project = Project(
