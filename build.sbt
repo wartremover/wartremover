@@ -21,8 +21,8 @@ lazy val commonSettings = Seq(
   useGpg := true,
   pomExtra :=
     <scm>
-      <url>git@github.com:puffnfresh/wartremover.git</url>
-      <connection>scm:git:git@github.com:puffnfresh/wartremover.git</connection>
+      <url>git@github.com:wartremover/wartremover.git</url>
+      <connection>scm:git:git@github.com:wartremover/wartremover.git</connection>
     </scm>
     <developers>
       <developer>
