@@ -10,9 +10,9 @@ lazy val commonSettings = Seq(
   ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  publishTo <<= version { (v: String) =>
+  publishTo := {
     val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
+    if (version.value.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at nexus + "content/repositories/snapshots")
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
@@ -96,7 +96,7 @@ lazy val sbtPlug: Project = Project(
   sbtPlugin := true,
   name := "sbt-wartremover",
   crossSbtVersions := Vector("0.13.15", "1.0.0-M5"),
-  sourceGenerators in Compile <+= Def.task {
+  sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
     val wartsDir = core.base / "src" / "main" / "scala" / "wartremover" / "warts"
