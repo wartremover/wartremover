@@ -15,7 +15,7 @@ object ArrayEquals extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case Apply(Select(array, Equals), _)
-            if (array.tpe <:< typeOf[Array[_]] || array.tpe <:< typeOf[Iterator[_]]) && !isSynthetic(u)(tree) =>
+            if (array.tpe.typeSymbol.fullName == "scala.Array" || array.tpe <:< typeOf[Iterator[Any]]) && !isSynthetic(u)(tree) =>
             error(u)(tree.pos, "== is disabled, use sameElements instead")
             super.traverse(tree)
           case _ =>
