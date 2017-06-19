@@ -57,6 +57,24 @@ class EqualsTest extends FunSuite with ResultAssertions {
     assertErrors(result)("equals is disabled - use === or equivalent instead", 2)
   }
 
+  test("can't use overridden equals") {
+    class Foo(i:Int) {
+      override def equals(obj: scala.Any) = false
+    }
+
+    val result = WartTestTraverser(Equals) {
+      new Foo(1).equals(1)
+    }
+    assertError(result)("equals is disabled - use === or equivalent instead")
+  }
+
+  test("can use custom equals") {
+    val result = WartTestTraverser(Equals) {
+      java.util.Arrays.equals(Array(1), Array(1))
+    }
+    assertEmpty(result)
+  }
+
   test("can't use eq or ne") {
     class Foo(i: Int)
 

@@ -29,7 +29,8 @@ object Equals extends WartTraverser {
           case Apply(Select(lhs, NotEq), _) =>
             error(u)(tree.pos, "!= is disabled - use =/= or equivalent instead")
 
-          case Apply(Select(lhs, Equals), _) =>
+          case Apply(Select(lhs, Equals), _)
+            if (tree.symbol :: tree.symbol.allOverriddenSymbols).exists(_.fullName == "scala.Any.equals") =>
             error(u)(tree.pos, "equals is disabled - use === or equivalent instead")
 
           case Apply(Select(lhs, Eq), _) =>
