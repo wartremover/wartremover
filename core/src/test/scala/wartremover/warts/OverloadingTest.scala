@@ -17,6 +17,21 @@ class OverloadingTest extends FunSuite with ResultAssertions {
     assertErrors(result)("Overloading is disabled", 3)
   }
 
+  test("Overriding is allowed") {
+    trait t {
+      def print(x: String): Unit
+      def print(x: Int): Unit = print(x.toString)
+    }
+
+    val result = WartTestTraverser(Overloading) {
+      class c extends t {
+        def print(x: String) = {}
+        override def print(x: Int) = {}
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("Overloading wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Overloading) {
       @SuppressWarnings(Array("org.wartremover.warts.Overloading"))

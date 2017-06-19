@@ -10,7 +10,7 @@ object Overloading extends WartTraverser {
         tree match {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
-          case t: DefDef if !isSynthetic(u)(t) =>
+          case t: DefDef if !isSynthetic(u)(t) && (!t.mods.hasFlag(Flag.OVERRIDE) && t.symbol.allOverriddenSymbols.isEmpty) =>
             val owner = t.symbol.owner
             if (owner.isClass && !owner.isSynthetic
                 && owner.typeSignature.declarations.nonEmpty
