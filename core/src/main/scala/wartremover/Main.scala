@@ -8,7 +8,7 @@ object Main {
   case class WartArgs(traversers: List[String], names: List[String]) {
     def append(o: WartArgs) = WartArgs(this.traversers ++ o.traversers, this.names ++ o.names)
     def addName(name: String) = WartArgs(this.traversers, name :: this.names)
-    def addTraverser(traverser: String) = WartArgs(traverser :: this.traversers, this.traversers)
+    def addTraverser(traverser: String) = WartArgs(traverser :: this.traversers, this.names)
   }
   object WartArgs {
     val empty = WartArgs(List.empty, List.empty)
