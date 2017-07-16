@@ -87,7 +87,7 @@ lazy val core = Project(
   // a hack (?) to make `compile` and `+compile` tasks etc. behave sanely
   aggregate := CrossVersion.partialVersion((scalaVersion in Global).value) == Some((2, 10)),
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
-): _*)
+): _*).dependsOn(testMacros % "test->compile")
 
 lazy val sbtPlug: Project = Project(
   id = "sbt-plugin",
@@ -120,3 +120,15 @@ lazy val sbtPlug: Project = Project(
     Seq(file)
   }
 ): _*)
+
+lazy val testMacros: Project = Project(
+  id = "test-macros",
+  base = file("test-macros")
+).settings(
+  libraryDependencies ++= Seq(
+    "org.typelevel" %% "macro-compat" % "1.1.1",
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
+  ),
+  scalaVersion := (crossScalaVersions in ThisBuild).value.head
+)
