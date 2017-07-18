@@ -18,6 +18,10 @@ object PublicInference extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
 
+          // Ignore string, char and boolean literals
+          case ValDef(_, _, _, Literal(c))
+            if c.tpe <:< typeOf[String] || c.tpe <:< typeOf[Char] || c.tpe <:< typeOf[Boolean] =>
+
           case t: ValOrDefDef if isPublic(u)(t) && isInPublicClass(t) &&
               !isConstructorOrOverrides(t) && !isAccessor(t) &&
               !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) =>
