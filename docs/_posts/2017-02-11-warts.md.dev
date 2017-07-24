@@ -141,6 +141,20 @@ val scalaMap: Map[String, String] = Map()
 val javaMap: java.util.Map[String, String] = scalaMap
 ```
 
+### JavaSerializable
+
+`java.io.Serializable` is a common subtype to many structures, especially those
+imported from Java.  For example, String is a subtype of java.io.Serializable
+but not `scala.Serializable`.  The Scala compiler loves to infer
+`java.io.Serializable` as a common supertype, but that is almost always
+incorrect. Explicit type arguments should be used instead.
+
+```scala
+// Won't compile: Inferred type containing java.io.Serializable
+object O extends Serializable
+val mistake = List("foo", "bar", O /* forgot O.toString */)
+```
+
 ### LeakingSealed
 
 Descendants of a sealed type must be final or sealed. Otherwise this type can be extended in another file through its descendant.
