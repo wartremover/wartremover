@@ -29,6 +29,15 @@ instead.
 val any = List(1, true, "three")
 ```
 
+### AnyVal
+
+See `Any`.
+
+```scala
+// Won't compile: Inferred type containing AnyVal
+val xs = List(1, true)
+```
+
 ### AsInstanceOf
 
 `asInstanceOf` is unsafe in isolation and violates parametricity when guarded by `isInstanceOf`. Refactor so that the desired type is proven statically.
