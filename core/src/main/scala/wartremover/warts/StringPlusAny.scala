@@ -9,6 +9,7 @@ object StringPlusAny extends WartTraverser {
     val PredefName: TermName = "Predef"
     val Any2StringAddName: TermName = "any2stringadd"
     val StringCanBuildFromName: TermName = "StringCanBuildFrom"
+    val ApplyName: TermName = "apply"
 
     def isString(t: Tree): Boolean = t.tpe <:< typeOf[String]
 
@@ -42,6 +43,11 @@ object StringPlusAny extends WartTraverser {
 
           case t @ Apply(Select(lhs, Plus), List(rhs))
               if isString(lhs) && !isStringExpression(rhs) && !isSynthetic(u)(t) =>
+            error(u)(tree.pos, "Implicit conversion to string is disabled")
+            super.traverse(tree)
+
+          case Apply(Select(Apply(Select(qualifier, ApplyName), _), _), args)
+            if qualifier.symbol.fullName == "scala.StringContext" && !args.forall(isString) && !isSynthetic(u)(tree) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 
