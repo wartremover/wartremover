@@ -119,7 +119,7 @@ implicit def int2Array(i: Int) = Array.fill(i)("madness")
 
 ### ImplicitParameter
 
-Implicit parameters aas configuration often lead to confusing interfaces and can result in surprising inconsistencies.
+Implicit parameters as configuration often lead to confusing interfaces and can result in surprising inconsistencies.
 
 ```scala
 // Won't compile: Implicit parameters are disabled
