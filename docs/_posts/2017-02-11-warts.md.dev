@@ -265,6 +265,12 @@ Type inference of public members can expose extra type information, that can bre
 class c {
   // Won't compile: Public member must have an explicit type ascription
   def f() = new c with t
+
+  val name = "abc" // Compiles: fields initialized by string, char or boolean literals are ignored
+}
+
+class c2 extends c {
+  override def f() = ... // Compiles: overridden members are ignored
 }
 ```
 

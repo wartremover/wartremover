@@ -124,6 +124,17 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("Public inference of string, char or boolean literals is allowed") {
+    val result = WartTestTraverser(PublicInference) {
+      class c {
+        val s = ""
+        val c = ' '
+        val b = true
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("PublicInference wart obeys SuppressWarnings") {
     val result = WartTestTraverser(PublicInference) {
       @SuppressWarnings(Array("org.wartremover.warts.PublicInference"))
