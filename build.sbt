@@ -44,7 +44,7 @@ lazy val root = Project(
 ).settings(commonSettings ++ Seq(
   publishArtifact := false,
   crossVersion := CrossVersion.binary,
-  crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.0"),
+  crossScalaVersions := Seq("2.11.11", "2.10.6", "2.12.3"),
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
@@ -82,7 +82,7 @@ lazy val core = Project(
   },
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-    "org.scalatest" %% "scalatest" % "3.0.0" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.1" % "test"
   ),
   // a hack (?) to make `compile` and `+compile` tasks etc. behave sanely
   aggregate := CrossVersion.partialVersion((scalaVersion in Global).value) == Some((2, 10)),
@@ -95,7 +95,7 @@ lazy val sbtPlug: Project = Project(
 ).settings(commonSettings ++ Seq(
   sbtPlugin := true,
   name := "sbt-wartremover",
-  crossSbtVersions := Vector("0.13.15", "1.0.0-M5"),
+  crossSbtVersions := Vector("0.13.16", "1.0.0"),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
