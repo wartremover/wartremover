@@ -7,8 +7,13 @@ object PublicInference extends WartTraverser {
 
     def isInPublicClass(t: Tree) = t.symbol.owner.isClass && t.symbol.owner.isPublic
 
-    def isConstructorOrOverrides(t: Tree) = t.symbol.isMethod && (t.symbol.asMethod.isConstructor ||
-        t.symbol.asMethod.allOverriddenSymbols.nonEmpty)
+    def isConstructorOrOverrides(t: Tree) =
+      if (t.symbol.isMethod)
+        t.symbol.asMethod.isConstructor || t.symbol.asMethod.allOverriddenSymbols.nonEmpty
+      else if (t.symbol.isTerm && (t.symbol.owner.isType || t.symbol.owner.isModule))
+        t.symbol.asTerm.getter.asMethod.allOverriddenSymbols.nonEmpty
+      else
+        false
 
     def isAccessor(t: Tree) = t.symbol.isTerm && (t.symbol.asTerm.isParamAccessor || t.symbol.asTerm.isCaseAccessor)
 

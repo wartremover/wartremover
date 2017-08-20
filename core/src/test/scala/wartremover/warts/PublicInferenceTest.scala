@@ -135,6 +135,21 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("Overridden getters are allowed") {
+    val result = WartTestTraverser(PublicInference) {
+      trait Foo {
+        def bar: Int
+      }
+
+      object Foo {
+        def apply(i: Int): Foo = new Foo {
+          override val bar = i
+        }
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("PublicInference wart obeys SuppressWarnings") {
     val result = WartTestTraverser(PublicInference) {
       @SuppressWarnings(Array("org.wartremover.warts.PublicInference"))
