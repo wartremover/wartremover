@@ -8,7 +8,7 @@ package object wartremover {
   val wartremoverExcluded = taskKey[Seq[File]]("List of files to be excluded from all checks.")
   val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
 
-  lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
+  lazy val wartremoverSettings: Seq[Def.Setting[_]] = Seq(
     wartremoverErrors := Seq.empty,
     wartremoverWarnings := Seq.empty,
     wartremoverExcluded := Seq.empty,
@@ -16,11 +16,29 @@ package object wartremover {
 
     addCompilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion)
   ) ++ inScope(This)(Seq(
-    derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
-    derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
-    derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
-    derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
+    derive {
+      val option = scalacOption("traverser") _
+      scalacOptions := reset(option, scalacOptions.value) ++ (wartremoverErrors.value.distinct map (_.clazz.toString) map option)
+    },
+    derive {
+      val option = scalacOption("only-warn-traverser") _
+      scalacOptions := reset(option, scalacOptions.value) ++ (wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (_.clazz.toString) map option)
+    },
+    derive {
+      val option = scalacOption("excluded") _
+      scalacOptions := reset(option, scalacOptions.value) ++ (wartremoverExcluded.value.distinct map (_.getAbsolutePath) map option)
+    },
+    derive {
+      val option = scalacOption("cp") _
+      scalacOptions := reset(option, scalacOptions.value) ++ (wartremoverClasspaths.value.distinct map option)
+    }
   ))
+
+  private[wartremover] def scalacOption(key: String)(value: String) =
+    s"-P:wartremover:$key:$value"
+
+  private[wartremover] def reset(option: String => String, options: Seq[String]) =
+    options filterNot (_.startsWith(option("")))
 
   // Workaround for typelevel/wartremover#123
   private[wartremover] def derive[T](s: Setting[T]): Setting[T] = {
