@@ -40,23 +40,26 @@ lazy val commonSettings = Seq(
 lazy val root = Project(
   id = "root",
   base = file("."),
-  aggregate = Seq(core)
+  aggregate = Seq(core, sbtPlug)
 ).settings(commonSettings ++ Seq(
   publishArtifact := false,
   crossVersion := CrossVersion.binary,
   crossScalaVersions := Seq("2.11.11", "2.10.6", "2.12.3"),
+  releaseCrossBuild := true,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
-    runTest,
+    releaseStepCommandAndRemaining("+core/test"),
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    publishArtifacts.copy(action = st => { // publish *everything* with `sbt "^release cross"`
-    val extracted = Project.extract(st)
-      val ref = extracted.get(thisProjectRef)
-      extracted.runAggregated(publishSigned in Global in ref, st)
-    }),
+    releaseStepCommandAndRemaining("+ core/publishSigned"),
+    releaseStepCommandAndRemaining("++ 2.12.3"),
+    releaseStepCommandAndRemaining("^^ 1.0.0"),
+    releaseStepCommandAndRemaining("sbt-plugin/publishSigned"),
+    releaseStepCommandAndRemaining("++ 2.10.6"),
+    releaseStepCommandAndRemaining("^^ 0.13.16"),
+    releaseStepCommandAndRemaining("sbt-plugin/publishSigned"),
     setNextVersion,
     commitNextVersion,
     pushChanges
@@ -65,8 +68,7 @@ lazy val root = Project(
 
 lazy val core = Project(
   id = "core",
-  base = file("core"),
-  aggregate = Seq(sbtPlug)
+  base = file("core")
 ).settings(commonSettings ++ Seq(
   name := "wartremover",
   scalaVersion := (crossScalaVersions in ThisBuild).value.head,
