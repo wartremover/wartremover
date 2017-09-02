@@ -52,7 +52,7 @@ lazy val root = Project(
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    publishArtifacts.copy(action = st => { // publish *everything* with `sbt "release cross"`
+    publishArtifacts.copy(action = st => { // publish *everything* with `sbt "^release cross"`
     val extracted = Project.extract(st)
       val ref = extracted.get(thisProjectRef)
       extracted.runAggregated(publishSigned in Global in ref, st)

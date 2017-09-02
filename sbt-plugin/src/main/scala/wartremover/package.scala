@@ -15,7 +15,7 @@ package object wartremover {
     wartremoverClasspaths := Seq.empty,
 
     addCompilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion)
-  ) ++ inScope(This)(Seq(
+  ) ++ inScope(Scope.ThisScope)(Seq(
     derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
     derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
     derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
