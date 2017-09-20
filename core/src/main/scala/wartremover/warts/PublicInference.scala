@@ -10,7 +10,7 @@ object PublicInference extends WartTraverser {
     def isConstructorOrOverrides(t: Tree) =
       if (t.symbol.isMethod)
         t.symbol.asMethod.isConstructor || t.symbol.asMethod.allOverriddenSymbols.nonEmpty
-      else if (t.symbol.isTerm && (t.symbol.owner.isType || t.symbol.owner.isModule))
+      else if (t.symbol.isTerm && t.symbol.asTerm.getter.isMethod && (t.symbol.owner.isType || t.symbol.owner.isModule))
         t.symbol.asTerm.getter.asMethod.allOverriddenSymbols.nonEmpty
       else
         false

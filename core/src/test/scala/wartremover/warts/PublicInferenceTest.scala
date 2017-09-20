@@ -150,6 +150,13 @@ class PublicInferenceTest extends FunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("Explicit self types are allowed") {
+    val result = WartTestTraverser(PublicInference) {
+      class c { self => }
+    }
+    assertEmpty(result)
+  }
+
   test("PublicInference wart obeys SuppressWarnings") {
     val result = WartTestTraverser(PublicInference) {
       @SuppressWarnings(Array("org.wartremover.warts.PublicInference"))
