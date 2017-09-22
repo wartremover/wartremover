@@ -1,6 +1,7 @@
 import ReleaseTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
 import com.typesafe.sbt.pgp.PgpSettings.useGpg
+import org.wartremover.TravisYaml.travisScalaVersions
 
 lazy val commonSettings = Seq(
   organization := "org.wartremover",
@@ -10,6 +11,13 @@ lazy val commonSettings = Seq(
   ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
+  scalaVersion := travisScalaVersions.value.last,
+  sbtVersion := {
+    scalaBinaryVersion.value match {
+      case "2.10" => "0.13.16"
+      case _      => "1.0.2"
+    }
+  },
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
@@ -43,36 +51,28 @@ lazy val root = Project(
   aggregate = Seq(core, sbtPlug)
 ).settings(commonSettings ++ Seq(
   publishArtifact := false,
-  crossVersion := CrossVersion.binary,
-  crossScalaVersions := Seq("2.11.11", "2.10.6", "2.12.3"),
   releaseCrossBuild := true,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
-    releaseStepCommandAndRemaining("+core/test"),
+    releaseStepCommandAndRemaining("+test"),
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    releaseStepCommandAndRemaining("+ core/publishSigned"),
-    releaseStepCommandAndRemaining("++ 2.12.3"),
-    releaseStepCommandAndRemaining("^^ 1.0.0"),
-    releaseStepCommandAndRemaining("sbt-plugin/publishSigned"),
-    releaseStepCommandAndRemaining("++ 2.10.6"),
-    releaseStepCommandAndRemaining("^^ 0.13.16"),
-    releaseStepCommandAndRemaining("sbt-plugin/publishSigned"),
+    releaseStepCommandAndRemaining("+publishSigned"),
     setNextVersion,
     commitNextVersion,
     pushChanges
   )
-): _*)
+): _*).enablePlugins(CrossPerProjectPlugin)
 
 lazy val core = Project(
   id = "core",
   base = file("core")
 ).settings(commonSettings ++ Seq(
   name := "wartremover",
-  scalaVersion := (crossScalaVersions in ThisBuild).value.head,
   fork in Test := true,
+  crossScalaVersions := travisScalaVersions.value,
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -86,18 +86,19 @@ lazy val core = Project(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value,
     "org.scalatest" %% "scalatest" % "3.0.1" % "test"
   ),
-  // a hack (?) to make `compile` and `+compile` tasks etc. behave sanely
-  aggregate := CrossVersion.partialVersion((scalaVersion in Global).value) == Some((2, 10)),
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
-): _*).dependsOn(testMacros % "test->compile")
+): _*)
+  .dependsOn(testMacros % "test->compile")
+  .enablePlugins(CrossPerProjectPlugin)
+  .enablePlugins(TravisYaml)
 
 lazy val sbtPlug: Project = Project(
   id = "sbt-plugin",
   base = file("sbt-plugin")
 ).settings(commonSettings ++ Seq(
-  sbtPlugin := true,
   name := "sbt-wartremover",
-  crossSbtVersions := Vector("0.13.16", "1.0.0"),
+  sbtPlugin := true,
+  crossScalaVersions := travisScalaVersions.value.filterNot(_.startsWith("2.11")),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
@@ -122,6 +123,8 @@ lazy val sbtPlug: Project = Project(
     Seq(file)
   }
 ): _*)
+  .enablePlugins(CrossPerProjectPlugin)
+  .enablePlugins(TravisYaml)
 
 lazy val testMacros: Project = Project(
   id = "test-macros",
@@ -131,6 +134,5 @@ lazy val testMacros: Project = Project(
     "org.typelevel" %% "macro-compat" % "1.1.1",
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
     compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
-  ),
-  scalaVersion := (crossScalaVersions in ThisBuild).value.head
-)
+  )
+).enablePlugins(CrossPerProjectPlugin)
