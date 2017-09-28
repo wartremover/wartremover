@@ -13,5 +13,13 @@ object WartRemover extends sbt.AutoPlugin {
     val Wart = wartremover.Wart
     val Warts = wartremover.Warts
   }
+
+  override def globalSettings = Seq(
+    wartremoverErrors := Nil,
+    wartremoverWarnings := Nil,
+    wartremoverExcluded := Nil,
+    wartremoverClasspaths := Nil
+  )
+
   override lazy val projectSettings = wartremoverSettings
 }

@@ -9,11 +9,6 @@ package object wartremover {
   val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
 
   lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
-    wartremoverErrors := Seq.empty,
-    wartremoverWarnings := Seq.empty,
-    wartremoverExcluded := Seq.empty,
-    wartremoverClasspaths := Seq.empty,
-
     addCompilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion)
   ) ++ inScope(Scope.ThisScope)(Seq(
     derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
