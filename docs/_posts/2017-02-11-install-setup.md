@@ -116,6 +116,30 @@ To use your custom `WartTraverser`, you'll need to provide a classpath where it 
 scalacOptions += "-P:wartremover:cp:someUrl"
 ```
 
+### Gradle
+Support for Gradle is provided by the [Gradle-Wartremover plugin](https://github.com/augi/gradle-wartremover):
+
+```gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+      classpath 'cz.augi:gradle-wartremover:putCurrentVersionHere'
+    }
+}
+apply plugin: 'wartremover'
+```
+
+The plugin can be also applied using [the new Gradle syntax](https://plugins.gradle.org/plugin/cz.augi.gradle.wartremover):
+```gradle
+plugins {
+    id 'cz.augi.gradle.wartremover' version 'putCurrentVersionHere'
+}
+```
+
+It automatically uses the safe Warts for all Scala code.
+
 ### Apache Maven
 
 You can use WartRemover in Maven by employing it as a compilerPlugin to scala-maven-plugin:
