@@ -117,7 +117,7 @@ scalacOptions += "-P:wartremover:cp:someUrl"
 ```
 
 ### Gradle
-You can use WartRemover in Gradle using [this plugin](https://github.com/augi/gradle-wartremover):
+Support for Gradle is provided by the [Gradle-Wartremover plugin](https://github.com/augi/gradle-wartremover):
 
 ```gradle
 buildscript {
@@ -138,7 +138,7 @@ plugins {
 }
 ```
 
-It automatically uses the safe Warts to all Scala code.
+It automatically uses the safe Warts for all Scala code.
 
 ### Apache Maven
 
