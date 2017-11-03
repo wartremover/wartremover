@@ -7,7 +7,9 @@ import org.wartremover.warts.TraversableOps
 class TraversableOpsTest extends FunSuite with ResultAssertions {
 
 
-  implicit val ordering: Ordering[Any] = (x: Any, y: Any) => 0
+  implicit val ordering: Ordering[Any] = new Ordering[Any] {
+    override def compare(x: Any, y: Any) = 0
+  }
 
   Seq[(String, Traversable[Any])]("List" -> List(1), "Seq" -> Seq(1), "Map" -> Map(1 -> 1)).foreach { case (name, x) =>
     test(s"can't use $name#head") {
