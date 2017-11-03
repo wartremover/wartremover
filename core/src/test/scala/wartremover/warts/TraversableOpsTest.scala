@@ -5,6 +5,10 @@ import org.scalatest.FunSuite
 import org.wartremover.warts.TraversableOps
 
 class TraversableOpsTest extends FunSuite with ResultAssertions {
+
+
+  implicit val ordering: Ordering[Any] = (x: Any, y: Any) => 0
+
   Seq[(String, Traversable[Any])]("List" -> List(1), "Seq" -> Seq(1), "Map" -> Map(1 -> 1)).foreach { case (name, x) =>
     test(s"can't use $name#head") {
       val result = WartTestTraverser(TraversableOps) {
@@ -54,6 +58,34 @@ class TraversableOpsTest extends FunSuite with ResultAssertions {
       }
       assertError(result)("reduceRight is disabled - use reduceRightOption or foldRight instead")
     }
+
+    test(s"can't use $name#max") {
+      val result = WartTestTraverser(TraversableOps) {
+        println(x.max)
+      }
+      assertError(result)("max is disabled - use foldLeft or foldRight instead")
+    }
+
+    test(s"can't use $name#maxBy") {
+      val result = WartTestTraverser(TraversableOps) {
+        println(x.maxBy(_.hashCode))
+      }
+      assertError(result)("maxBy is disabled - use foldLeft or foldRight instead")
+    }
+
+    test(s"can't use $name#min") {
+      val result = WartTestTraverser(TraversableOps) {
+        println(x.min)
+      }
+      assertError(result)("min is disabled - use foldLeft or foldRight instead")
+    }
+
+    test(s"can't use $name#minBy") {
+      val result = WartTestTraverser(TraversableOps) {
+        println(x.minBy(_.hashCode))
+      }
+      assertError(result)("minBy is disabled - use foldLeft or foldRight instead")
+    }
   }
 
   test("TraversableOps wart obeys SuppressWarnings") {
@@ -67,6 +99,10 @@ class TraversableOpsTest extends FunSuite with ResultAssertions {
         println(List.empty[Int].reduce(_ + _))
         println(List.empty[Int].reduceLeft(_ + _))
         println(List.empty[Int].reduceRight(_ + _))
+        println(List.empty[Int].max)
+        println(List.empty[Int].maxBy(identity))
+        println(List.empty[Int].min)
+        println(List.empty[Int].minBy(identity))
       }
     }
     assertEmpty(result)

@@ -36,7 +36,11 @@ object TraversableOps extends WartTraverser {
       new Op("last", "last is disabled - use lastOption instead"),
       new Op("reduce", "reduce is disabled - use reduceOption or fold instead"),
       new Op("reduceLeft", "reduceLeft is disabled - use reduceLeftOption or foldLeft instead"),
-      new Op("reduceRight", "reduceRight is disabled - use reduceRightOption or foldRight instead")
+      new Op("reduceRight", "reduceRight is disabled - use reduceRightOption or foldRight instead"),
+      new Op("maxBy", "maxBy is disabled - use foldLeft or foldRight instead"),
+      new Op("max", "max is disabled - use foldLeft or foldRight instead"),
+      new Op("minBy", "minBy is disabled - use foldLeft or foldRight instead"),
+      new Op("min", "min is disabled - use foldLeft or foldRight instead")
     ))
 
 }
