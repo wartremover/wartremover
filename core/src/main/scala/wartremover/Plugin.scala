@@ -59,7 +59,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     override def newPhase(prev: Phase) = new StdPhase(prev) {
       override def apply(unit: CompilationUnit) = {
-        val isExcluded = excludedFiles contains unit.source.file.absolute.path
+        val isExcluded = excludedFiles exists unit.source.file.absolute.path.startsWith
 
         if (!isExcluded) {
           def wartUniverse(onlyWarn: Boolean) = new WartUniverse {

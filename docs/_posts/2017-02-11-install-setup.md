@@ -57,10 +57,11 @@ To exclude a specific piece of code from one or more checks, use the `SuppressWa
 var foo = null
 ```
 
-To exclude a file from all checks, use `wartremoverExcluded` in your `build.sbt` file:
+To exclude a file or directory from all checks, use `wartremoverExcluded` in your `build.sbt` file:
 
 ```scala
 wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
+wartremoverExcluded += sourceManaged.value
 ```
 
 ## Other ways of using WartRemover
