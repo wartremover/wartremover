@@ -22,7 +22,7 @@ trait ForbidInference[T] extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
-        def error() = ForbidInference.this.error(u)(tree.pos, s"Inferred type containing ${tSymbol.name}")
+        def error(tpe: Type) = ForbidInference.this.error(u)(tree.pos, s"Inferred type containing ${tSymbol.name}: $tpe")
 
         tree match {
           // Ignore trees marked by SuppressWarnings
@@ -33,7 +33,7 @@ trait ForbidInference[T] extends WartTraverser {
               case ExistentialType(_, _) =>
 
               case _ =>
-                error()
+                error(tpt.tpe)
             }
 
           // Ignore case classes generated methods
