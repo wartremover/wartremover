@@ -1,6 +1,8 @@
 package org.wartremover
 package test
 
+import scala.util.Properties.versionNumberString
+
 import org.scalatest.FunSuite
 
 import org.wartremover.warts.Serializable
@@ -10,7 +12,11 @@ class SerializableTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Serializable) {
       List((1, 2, 3), (1, 2))
     }
-    assertError(result)("Inferred type containing Serializable")
+    if (versionNumberString.matches("2\\.1[012].*")) {
+      assertError(result)("Inferred type containing Serializable: Product with Serializable")
+    } else {
+      assertError(result)("Inferred type containing Serializable: Product with java.io.Serializable")
+    }
   }
   test("Serializable wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Serializable) {

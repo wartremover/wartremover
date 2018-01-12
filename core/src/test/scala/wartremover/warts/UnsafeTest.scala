@@ -18,8 +18,9 @@ class UnsafeTest extends FunSuite {
       println(null)
     }
     assertResult(
-      Set("[wartremover:Any] Inferred type containing Any",
+      Set("[wartremover:Any] Inferred type containing Any: Any",
            "[wartremover:EitherProjectionPartial] LeftProjection#get is disabled - use LeftProjection#toOption instead",
+           "[wartremover:Any] Inferred type containing Any: List[Any]",
            "[wartremover:EitherProjectionPartial] RightProjection#get is disabled - use RightProjection#toOption instead",
            "[wartremover:NonUnitStatements] Statements must return Unit",
            "[wartremover:Null] null is disabled",
