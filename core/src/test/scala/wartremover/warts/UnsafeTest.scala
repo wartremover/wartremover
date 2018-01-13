@@ -17,15 +17,18 @@ class UnsafeTest extends FunSuite {
       println(Right(42).right.get)
       println(null)
     }
+
     assertResult(
-      Set("[wartremover:Any] Inferred type containing Any",
+      Set("[wartremover:Any] Inferred type containing Any: Any",
            "[wartremover:EitherProjectionPartial] LeftProjection#get is disabled - use LeftProjection#toOption instead",
+           "[wartremover:Any] Inferred type containing Any: List[Any]",
            "[wartremover:EitherProjectionPartial] RightProjection#get is disabled - use RightProjection#toOption instead",
            "[wartremover:NonUnitStatements] Statements must return Unit",
            "[wartremover:Null] null is disabled",
            "[wartremover:OptionPartial] Option#get is disabled - use Option#fold instead",
            "[wartremover:StringPlusAny] Implicit conversion to string is disabled",
            "[wartremover:Var] var is disabled"), "result.errors")(result.errors.toSet)
+
     assertResult(List.empty, "result.warnings")(result.warnings)
   }
 }

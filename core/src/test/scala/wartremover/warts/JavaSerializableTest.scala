@@ -16,8 +16,9 @@ class JavaSerializableTest extends FunSuite with ResultAssertions {
       // so scala should infer List[java.io.Serializable]
       List("foo", Foo)
     }
-    assertError(result)("Inferred type containing Serializable")
+    assertError(result)("Inferred type containing Serializable: java.io.Serializable")
   }
+
   test("Serializable wart obeys SuppressWarnings") {
     val result = WartTestTraverser(JavaSerializable) {
       @SuppressWarnings(Array("org.wartremover.warts.JavaSerializable"))

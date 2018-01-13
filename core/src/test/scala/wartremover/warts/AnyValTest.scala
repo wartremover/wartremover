@@ -10,7 +10,7 @@ class AnyValTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(AnyVal) {
       List(1, true)
     }
-    assertError(result)("Inferred type containing AnyVal")
+    assertError(result)("Inferred type containing AnyVal: AnyVal")
   }
 
   test("AnyVal wart obeys SuppressWarnings") {
