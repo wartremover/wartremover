@@ -84,7 +84,7 @@ lazy val core = Project(
   },
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-    "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.5-M1" % "test"
   ),
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 ): _*)
@@ -98,7 +98,7 @@ lazy val sbtPlug: Project = Project(
 ).settings(commonSettings ++ Seq(
   name := "sbt-wartremover",
   sbtPlugin := true,
-  crossScalaVersions := travisScalaVersions.value.filterNot(_.startsWith("2.11")),
+  crossScalaVersions := travisScalaVersions.value.filter(v => Seq("2.12", "2.10").exists(v.startsWith)),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
