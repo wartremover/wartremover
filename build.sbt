@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   scalaVersion := travisScalaVersions.value.last,
   sbtVersion := {
     scalaBinaryVersion.value match {
-      case "2.10" => "0.13.16"
+      case "2.10" => "0.13.17"
       case _      => "1.0.2"
     }
   },
