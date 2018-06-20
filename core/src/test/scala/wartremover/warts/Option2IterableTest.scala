@@ -20,10 +20,16 @@ class Option2IterableTest extends FunSuite with ResultAssertions {
     assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
   }
   test("can't use Option.option2Iterable when zipping Options") {
+    val v = scala.util.Properties.versionNumberString
     val result = WartTestTraverser(Option2Iterable) {
       println(Option(1) zip Option(2))
     }
-    assertErrors(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead", 2)
+    if (v.matches("2\\.1[012].*")) {
+      assertErrors(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead", 2)
+    } else {
+      // https://github.com/scala/scala/blob/v2.13.0-M4/src/library/scala/Option.scala#L321
+      assertEmpty(result)
+    }
   }
   test("doesn't detect user defined option2Iterable functions") {
     def option2Iterable[A](o: Option[A]): Iterable[A] = o.toIterable
