@@ -11,6 +11,15 @@ lazy val commonSettings = Seq(
   ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
+  excludeFilter in unmanagedSources := {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, v)) if v >= 13 =>
+        // JavaConversions removed since Scala 2.13.0-M4
+        (excludeFilter in unmanagedSources).value || new SimpleFilter(_.contains("JavaConversions"))
+      case _ =>
+        (excludeFilter in unmanagedSources).value
+    }
+  },
   scalaVersion := travisScalaVersions.value.last,
   sbtVersion := {
     scalaBinaryVersion.value match {
@@ -66,6 +75,17 @@ lazy val root = Project(
   )
 ): _*).enablePlugins(CrossPerProjectPlugin)
 
+lazy val macroParadise = Def.setting(
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, v)) if v >= 13 =>
+      // if scala 2.13.0-M4 or later, macro annotations merged into scala-reflect
+      // https://github.com/scala/scala/pull/6606
+      Nil
+    case _ =>
+      Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full))
+  }
+)
+
 lazy val core = Project(
   id = "core",
   base = file("core")
@@ -73,18 +93,20 @@ lazy val core = Project(
   name := "wartremover",
   fork in Test := true,
   crossScalaVersions := travisScalaVersions.value,
-  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+  libraryDependencies ++= macroParadise.value,
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 10)) =>
         libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.1")
+      case Some((2, v)) if v >= 13 =>
+        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0")
       case _ =>
         libraryDependencies.value
     }
   },
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-    "org.scalatest" %% "scalatest" % "3.0.5-M1" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % "test"
   ),
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 ): _*)
@@ -134,7 +156,7 @@ lazy val testMacros: Project = Project(
 ).settings(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "macro-compat" % "1.1.1",
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
-  )
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
+  ),
+  libraryDependencies ++= macroParadise.value
 ).enablePlugins(CrossPerProjectPlugin)
