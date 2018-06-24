@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
   sbtVersion := {
     scalaBinaryVersion.value match {
       case "2.10" => "0.13.17"
-      case _      => "1.0.2"
+      case _      => "1.1.6"
     }
   },
   publishTo := {
