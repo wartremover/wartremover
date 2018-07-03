@@ -1,5 +1,7 @@
 # WartRemover
 
+## [Currently Unmaintained](https://github.com/wartremover/wartremover/issues/428)
+
 [![Build Status](https://travis-ci.org/wartremover/wartremover.svg?branch=master)](https://travis-ci.org/wartremover/wartremover)
 
 [![Join us on gitter](http://badges.gitter.im/wartremover/Lobby.png)](https://gitter.im/wartremover/Lobby)
