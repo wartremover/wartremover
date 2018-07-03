@@ -1,6 +1,6 @@
 # WartRemover
 
-## [Currently Unmaintained](https://github.com/wartremover/wartremover/issues/428)
+###  [Currently Unmaintained](https://github.com/wartremover/wartremover/issues/428)
 
 [![Build Status](https://travis-ci.org/wartremover/wartremover.svg?branch=master)](https://travis-ci.org/wartremover/wartremover)
 
