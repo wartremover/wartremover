@@ -74,9 +74,9 @@ Apart from [using the sbt plugin](/README.md) to set it up for your project, War
 
 ### Command-line
 
-Compile the command-line tool via `sbt core/assembly` and then use the provided `wartremover` shell script:
+Compile the command-line tool via `sbt "++ 2.12.6" core/assembly` and then use the provided `wartremover` shell script:
 
-    $ sbt core/assembly
+    $ sbt "++ 2.12.6" core/assembly
     
       ...
     
