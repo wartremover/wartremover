@@ -21,10 +21,10 @@ If you want to get started right away, head over to [Installation & Setup]({{ si
 
 ## Project Information
 
-Wartremover is released under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) license, the code is on [Github](https://github.com/wartremover/wartremover), the documentation is on [Github Pages](https://wartremover.github.io/wartremover), and releases are on [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.wartremover%22). It is tested against the three latest versions of Scala (2.10, 2.11, 2.12).
+Wartremover is released under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) license, the code is on [GitHub](https://github.com/wartremover/wartremover), the documentation is on [GitHub Pages](https://wartremover.github.io/wartremover), and releases are on [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.wartremover%22). It is tested against the three latest versions of Scala (2.10, 2.11, 2.12).
 
 ## Where to Get Help
 
 Feel free to ask questions in Wartremover's [Gitter](https://gitter.im/wartremover/Lobby#) channel.
 
-Issues are managed using [Github Issues](https://github.com/wartremover/wartremover/issues).
+Issues are managed using [GitHub Issues](https://github.com/wartremover/wartremover/issues).

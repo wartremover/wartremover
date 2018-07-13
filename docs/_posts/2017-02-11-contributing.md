@@ -6,7 +6,7 @@ date: 2017-02-11 0:00:00
 order: 0
 ---
 
-All code contributions are done via Github so the first step to contributing is to [fork the repo](https://help.github.com/articles/fork-a-repo).
+All code contributions are done via GitHub so the first step to contributing is to [fork the repo](https://help.github.com/articles/fork-a-repo).
 
 If you already have a fork, make sure it is up-to-date with the main repo. Always create your pull request branch off of the `master` branch.
 
