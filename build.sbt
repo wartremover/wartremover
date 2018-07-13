@@ -35,7 +35,7 @@ lazy val commonSettings = Seq(
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
   homepage := Some(url("http://wartremover.org")),
-  useGpg := true,
+  useGpg := false,
   pomExtra :=
     <scm>
       <url>git@github.com:wartremover/wartremover.git</url>
