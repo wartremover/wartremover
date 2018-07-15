@@ -31,7 +31,7 @@ object Unimplemented extends WartTraverser {
     val notImplemented: Symbol = typeOf[Predef.type].member(notImplementedName)
     require(notImplemented != NoSymbol)
     new Traverser {
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case rt: RefTree if rt.symbol == notImplemented =>
             u.error(tree.pos, "There was something left unimplemented")
