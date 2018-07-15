@@ -91,7 +91,7 @@ trait WartTraverser {
   }
 
   def isPublic(u: WartUniverse)(t: u.universe.ValOrDefDef): Boolean = {
-    hasAccess(u)(t, _.isPublic)
+    hasAccess(u)(t, s => s.isPublic && (s != u.universe.NoSymbol))
   }
 
   def isPrivate(u: WartUniverse)(t: u.universe.ValOrDefDef): Boolean = {

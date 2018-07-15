@@ -5,6 +5,26 @@ import org.scalatest.FunSuite
 import org.wartremover.warts.PublicInference
 
 class PublicInferenceTest extends FunSuite with ResultAssertions {
+  test("Non-public fields and methods are allowed") {
+    case class X(i: Int)
+    val result = WartTestTraverser(PublicInference) {
+      class Y {
+        private[this] val a1 = X(2)
+        private val a2 = X(2)
+        protected[this] val a3 = X(2)
+        protected val a4 = X(2)
+        private[test] val a5 = X(2)
+
+        private[this] def b1 = X(2)
+        private def b2 = X(2)
+        protected[this] def b3 = X(2)
+        protected def b4 = X(2)
+        private[test] def b5 = X(2)
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("Public members without type ascription are disabled") {
     val result = WartTestTraverser(PublicInference) {
       class c {
