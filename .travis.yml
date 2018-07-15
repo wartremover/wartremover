@@ -9,6 +9,9 @@ jdk:
   - openjdk7
   - oraclejdk8
 matrix:
+  include:
+    - scala: 2.12.6
+      jdk: oraclejdk10
   exclude:
     - scala: 2.12.6
       jdk: openjdk7
