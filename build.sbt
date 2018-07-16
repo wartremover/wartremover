@@ -11,6 +11,16 @@ lazy val commonSettings = Seq(
   ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
+  scalacOptions in (Compile, doc) ++= {
+    val base = (baseDirectory in LocalRootProject).value.getAbsolutePath
+    val t = sys.process.Process("git rev-parse HEAD").lines_!.head
+    Seq(
+      "-sourcepath",
+      base,
+      "-doc-source-url",
+      "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
+    )
+  },
   excludeFilter in unmanagedSources := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
