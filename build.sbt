@@ -21,15 +21,6 @@ lazy val commonSettings = Seq(
       "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
     )
   },
-  excludeFilter in unmanagedSources := {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, v)) if v >= 13 =>
-        // JavaConversions removed since Scala 2.13.0-M4
-        (excludeFilter in unmanagedSources).value || new SimpleFilter(_.contains("JavaConversions"))
-      case _ =>
-        (excludeFilter in unmanagedSources).value
-    }
-  },
   scalaVersion := travisScalaVersions.value.last,
   sbtVersion := {
     scalaBinaryVersion.value match {
@@ -99,10 +90,22 @@ lazy val macroParadise = Def.setting(
 lazy val core = Project(
   id = "core",
   base = file("core")
-).settings(commonSettings ++ Seq(
+).settings(
+  commonSettings,
   name := "wartremover",
   fork in Test := true,
   crossScalaVersions := travisScalaVersions.value,
+  Seq(Compile, Test).map { scope =>
+    unmanagedSourceDirectories in scope += {
+      val dir = baseDirectory.value / "src" / Defaults.nameForSrc(scope.name)
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v >= 13 =>
+          dir / s"scala-2.13+"
+        case _ =>
+          dir / s"scala-2.13-"
+      }
+    }
+  },
   libraryDependencies ++= macroParadise.value,
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -119,7 +122,7 @@ lazy val core = Project(
     "org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % "test"
   ),
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
-): _*)
+)
   .dependsOn(testMacros % "test->compile")
   .enablePlugins(CrossPerProjectPlugin)
   .enablePlugins(TravisYaml)
