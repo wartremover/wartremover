@@ -12,6 +12,11 @@ matrix:
   include:
     - scala: 2.12.6
       jdk: oraclejdk10
+    - scala: scripted-test
+      jdk: oraclejdk8
+      env: SCRIPT=";+ core/publishLocal;+ sbt-plugin/scripted"
+      script:
+      - sbt "${SCRIPT}"
   exclude:
     - scala: 2.12.6
       jdk: openjdk7

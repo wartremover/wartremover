@@ -2,6 +2,9 @@ import ReleaseTransformations._
 import com.typesafe.sbt.pgp.PgpKeys._
 import com.typesafe.sbt.pgp.PgpSettings.useGpg
 import org.wartremover.TravisYaml.travisScalaVersions
+import xsbti.api.{ClassLike, DefinitionType}
+import scala.reflect.NameTransformer
+import java.lang.reflect.Modifier
 
 lazy val commonSettings = Seq(
   organization := "org.wartremover",
@@ -127,19 +130,48 @@ lazy val core = Project(
   .enablePlugins(CrossPerProjectPlugin)
   .enablePlugins(TravisYaml)
 
+val wartClasses = Def.task {
+  Tests.allDefs((compile in (core, Compile)).value).collect{
+    case c: ClassLike =>
+      val decoded = c.name.split('.').map(NameTransformer.decode).mkString(".")
+      c.definitionType match {
+        case DefinitionType.Module =>
+          decoded + "$"
+        case _ =>
+          decoded
+      }
+  }
+  .map(c => Class.forName(c, false, (testLoader in (core, Test)).value))
+  .filter(c => !Modifier.isAbstract(c.getModifiers) && Util.isWartClass(c))
+  .map(_.getSimpleName.replace("$", ""))
+  .filterNot(Set("Unsafe", "ForbidInference")).sorted
+}
+
 lazy val sbtPlug: Project = Project(
   id = "sbt-plugin",
   base = file("sbt-plugin")
-).settings(commonSettings ++ Seq(
+).settings(
+  commonSettings,
   name := "sbt-wartremover",
   sbtPlugin := true,
+  ScriptedPlugin.scriptedSettings,
+  ScriptedPlugin.scriptedBufferLog := false,
+  ScriptedPlugin.scriptedLaunchOpts ++= {
+    val javaVmArgs = {
+      import scala.collection.JavaConverters._
+      java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
+    }
+    javaVmArgs.filter(
+      a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith)
+    )
+  },
+  ScriptedPlugin.scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   crossScalaVersions := travisScalaVersions.value.filter(v => Seq("2.12", "2.10").exists(v.startsWith)),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
+    val warts = wartClasses.value
     val wartsDir = core.base / "src" / "main" / "scala" / "wartremover" / "warts"
-    val warts: Seq[String] = wartsDir.listFiles.toSeq.map(_.getName.replaceAll("""\.scala$""", "")).
-      filterNot(Seq("Unsafe", "ForbidInference") contains _).sorted
     val unsafe = warts.filter(IO.read(wartsDir / "Unsafe.scala") contains _)
     val content =
       s"""package wartremover
@@ -159,7 +191,7 @@ lazy val sbtPlug: Project = Project(
     IO.write(file, content)
     Seq(file)
   }
-): _*)
+)
   .enablePlugins(CrossPerProjectPlugin)
   .enablePlugins(TravisYaml)
 
