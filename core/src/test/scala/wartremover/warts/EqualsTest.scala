@@ -44,6 +44,11 @@ class EqualsTest extends FunSuite with ResultAssertions {
       Foo(5) != Foo(4)
     }
     assertError(result2)("!= is disabled - use =/= or equivalent instead")
+
+    val result3 = WartTestTraverser(Equals) {
+      "abc" == Foo(4)
+    }
+    assertError(result3)("== is disabled - use === or equivalent instead")
   }
 
   test("can't use equals") {
