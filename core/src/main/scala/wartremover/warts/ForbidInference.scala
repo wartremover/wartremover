@@ -10,6 +10,9 @@ trait ForbidInference[T] extends WartTraverser {
     val ProductElementName: TermName = "productElement"
     val ProductIteratorName: TermName = "productIterator"
 
+    // since Scala 2.13 https://github.com/scala/scala/commit/efc48213073ce5e68a7fd7dc9820610eccdeb9f7
+    val ProductElementNameName: TermName = "productElementName"
+
     val tSymbol = typeOf[T].typeSymbol
 
     // Scala compiler inserts stuff like "extends AnyRef with Serializable"
