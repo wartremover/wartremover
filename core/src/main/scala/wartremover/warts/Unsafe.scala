@@ -15,7 +15,7 @@ object Unsafe extends WartTraverser {
     Product,
     Return,
     Serializable,
-	 StringPlusAny,
+    StringPlusAny,
     Throw,
     TryPartial,
     Var

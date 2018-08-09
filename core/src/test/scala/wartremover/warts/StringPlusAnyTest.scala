@@ -91,9 +91,9 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
   
   test("adding with StringOps is allowed") {
     val result = WartTestTraverser(StringPlusAny) {
-		"" + ("" padTo (1, ' '))
-	}
-	assertEmpty(result)
+      "" + ("" padTo (1, ' '))
+    }
+    assertEmpty(result)
   }
 }
 

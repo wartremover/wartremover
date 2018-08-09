@@ -36,7 +36,7 @@ class EqualsTest extends FunSuite with ResultAssertions {
     case class Foo(i: Int)
 
     val result1 = WartTestTraverser(Equals) {
-  		Foo(5) == Foo(4)
+      Foo(5) == Foo(4)
     }
     assertError(result1)("== is disabled - use === or equivalent instead")
 
