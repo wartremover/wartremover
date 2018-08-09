@@ -6,7 +6,15 @@ import xsbti.api.{ClassLike, DefinitionType}
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
-lazy val commonSettings = Seq(
+lazy val baseSettings = Def.settings(
+  scalaVersion := {
+    val v = travisScalaVersions.value
+    v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))
+  }
+)
+
+lazy val commonSettings = Def.settings(
+  baseSettings,
   organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
@@ -23,10 +31,6 @@ lazy val commonSettings = Seq(
       "-doc-source-url",
       "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
     )
-  },
-  scalaVersion := {
-    val v = travisScalaVersions.value
-    v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))
   },
   sbtVersion := {
     scalaBinaryVersion.value match {
@@ -61,26 +65,23 @@ lazy val commonSettings = Seq(
     </developers>
 )
 
-lazy val root = Project(
-  id = "root",
-  base = file("."),
-  aggregate = Seq(core, sbtPlug)
-).settings(commonSettings ++ Seq(
-  publishArtifact := false,
-  releaseCrossBuild := true,
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    releaseStepCommandAndRemaining("+test"),
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    releaseStepCommandAndRemaining("+publishSigned"),
-    setNextVersion,
-    commitNextVersion,
-    pushChanges
-  )
-): _*).enablePlugins(CrossPerProjectPlugin)
+commonSettings
+publishArtifact := false
+releaseCrossBuild := true
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  releaseStepCommandAndRemaining("+test"),
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  releaseStepCommandAndRemaining("+publishSigned"),
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)
+
+enablePlugins(CrossPerProjectPlugin)
 
 lazy val macroParadise = Def.setting(
   CrossVersion.partialVersion(scalaVersion.value) match {
@@ -202,6 +203,13 @@ lazy val testMacros: Project = Project(
   id = "test-macros",
   base = file("test-macros")
 ).settings(
+  baseSettings,
+  skip in publish := true,
+  publishArtifact := false,
+  publish := {},
+  publishLocal := {},
+  publishSigned := {},
+  publishLocalSigned := {},
   libraryDependencies ++= Seq(
     "org.typelevel" %% "macro-compat" % "1.1.1",
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
