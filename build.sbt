@@ -24,7 +24,10 @@ lazy val commonSettings = Seq(
       "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
     )
   },
-  scalaVersion := travisScalaVersions.value.last,
+  scalaVersion := {
+    val v = travisScalaVersions.value
+    v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))
+  },
   sbtVersion := {
     scalaBinaryVersion.value match {
       case "2.10" => "0.13.17"
