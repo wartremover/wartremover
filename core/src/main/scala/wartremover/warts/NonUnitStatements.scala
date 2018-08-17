@@ -33,10 +33,13 @@ object NonUnitStatements extends WartTraverser {
     }
 
     def checkUnitLike(statements: List[Tree]): Unit = {
-      statements.foreach { stat =>
-        val unitLike = stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
-        if (!unitLike)
-          error(u)(stat.pos, "Statements must return Unit")
+      statements.foreach {
+        case Block((statements0, _)) =>
+          checkUnitLike(statements0)
+        case stat =>
+          val unitLike = stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
+          if (!unitLike)
+            error(u)(stat.pos, s"Statements must return Unit")
       }
     }
 
