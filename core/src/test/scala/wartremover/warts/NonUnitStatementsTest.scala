@@ -27,6 +27,18 @@ class NonUnitStatementsTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+  test("&+ method but not xml") {
+    class A {
+      def &+(i: Int): A = this
+    }
+    val result = WartTestTraverser(NonUnitStatements) {
+      val a = new A
+      a &+ 42
+      a
+    }
+    assertError(result)("Statements must return Unit")
+  }
+
   test("NonUnitStatements wart obeys SuppressWarnings") {
     val result = WartTestTraverser(NonUnitStatements) {
       @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
