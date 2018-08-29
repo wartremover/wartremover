@@ -119,7 +119,7 @@ lazy val core = Project(
       case Some((2, 10)) =>
         libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.1")
       case Some((2, v)) if v >= 13 =>
-        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0")
+        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0" % "test")
       case _ =>
         libraryDependencies.value
     }

@@ -23,7 +23,7 @@ object NonUnitStatements extends WartTraverser {
       // scala.xml.NodeBuffer#&+ returns NodeBuffer instead of Unit, so
       // val x = <x>5</x> desugars to a non-Unit statement; ignore.
       case Apply(Select(qual, NodeBufferAddName), _)
-        if qual.symbol.typeSignature =:= typeOf[scala.xml.NodeBuffer] => true
+        if qual.tpe.typeSymbol.fullName == "scala.xml.NodeBuffer" => true
       // Scala creates synthetic blocks with <init> calls on classes.
       // The calls return Object so we need to ignore them.
       case t @ Apply(_, _) => isClassConstructor(t)
