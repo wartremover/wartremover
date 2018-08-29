@@ -7,6 +7,7 @@ import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
 lazy val baseSettings = Def.settings(
+  travisScalaVersions += "2.13.0-M5",
   scalaVersion := {
     val v = travisScalaVersions.value
     v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))
@@ -71,7 +72,6 @@ releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
-  releaseStepCommandAndRemaining("+test"),
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
@@ -118,16 +118,22 @@ lazy val core = Project(
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 10)) =>
         libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.1")
-      case Some((2, v)) if v >= 13 =>
+      case Some((2, v)) if v >= 13 && scalaVersion.value != "2.13.0-M5" =>
         libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0" % "test")
       case _ =>
         libraryDependencies.value
     }
   },
   libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-    "org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % "test"
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ),
+  libraryDependencies ++= {
+    if (scalaVersion.value == "2.13.0-M5") {
+      Nil
+    } else {
+      Seq("org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % "test")
+    }
+  },
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 )
   .dependsOn(testMacros % "test->compile")
@@ -210,8 +216,14 @@ lazy val testMacros: Project = Project(
   publishLocal := {},
   publishSigned := {},
   publishLocalSigned := {},
+  libraryDependencies ++= {
+    if (scalaVersion.value == "2.13.0-M5") {
+      Nil
+    } else {
+      Seq("org.typelevel" %% "macro-compat" % "1.1.1")
+    }
+  },
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "macro-compat" % "1.1.1",
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   ),
   libraryDependencies ++= macroParadise.value

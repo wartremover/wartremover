@@ -12,6 +12,11 @@ matrix:
   include:
     - scala: 2.12.6
       jdk: oraclejdk10
+    - scala: 2.13.0-M5
+      jdk: oraclejdk8
+      script:
+      # TODO enable test
+      - sbt "++ ${TRAVIS_SCALA_VERSION}" core/compile
     - scala: scripted-test
       jdk: oraclejdk8
       env: SCRIPT=";+ core/publishLocal;+ sbt-plugin/scripted"
