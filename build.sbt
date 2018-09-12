@@ -216,14 +216,8 @@ lazy val testMacros: Project = Project(
   publishLocal := {},
   publishSigned := {},
   publishLocalSigned := {},
-  libraryDependencies ++= {
-    if (scalaVersion.value == "2.13.0-M5") {
-      Nil
-    } else {
-      Seq("org.typelevel" %% "macro-compat" % "1.1.1")
-    }
-  },
   libraryDependencies ++= Seq(
+    "org.typelevel" %% "macro-compat" % "1.1.1",
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   ),
   libraryDependencies ++= macroParadise.value
