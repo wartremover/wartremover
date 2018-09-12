@@ -210,6 +210,7 @@ lazy val testMacros: Project = Project(
   base = file("test-macros")
 ).settings(
   baseSettings,
+  crossScalaVersions := travisScalaVersions.value,
   skip in publish := true,
   publishArtifact := false,
   publish := {},
@@ -221,4 +222,4 @@ lazy val testMacros: Project = Project(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   ),
   libraryDependencies ++= macroParadise.value
-).enablePlugins(CrossPerProjectPlugin)
+).enablePlugins(CrossPerProjectPlugin, TravisYaml)

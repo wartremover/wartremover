@@ -16,7 +16,7 @@ matrix:
       jdk: oraclejdk8
       script:
       # TODO enable test
-      - sbt "++ ${TRAVIS_SCALA_VERSION}" core/compile
+      - sbt "+++$TRAVIS_SCALA_VERSION compile"
     - scala: scripted-test
       jdk: oraclejdk8
       env: SCRIPT=";+ core/publishLocal;+ sbt-plugin/scripted"
