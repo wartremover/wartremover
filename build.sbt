@@ -134,6 +134,18 @@ lazy val core = Project(
       Seq("org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % "test")
     }
   },
+  pomPostProcess := { node =>
+    import scala.xml._
+    import scala.xml.transform._
+    val strip = new RewriteRule {
+      override def transform(n: Node) =
+        if ((n \ "groupId").text == "test-macros" && (n \ "artifactId").text.startsWith("test-macros_"))
+          NodeSeq.Empty
+        else
+          n
+    }
+    new RuleTransformer(strip).transform(node)(0)
+  },
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 )
   .dependsOn(testMacros % "test->compile")
