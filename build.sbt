@@ -118,7 +118,7 @@ lazy val core = Project(
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 10)) =>
         libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.1")
-      case Some((2, v)) if v >= 13 && scalaVersion.value != "2.13.0-M5" =>
+      case Some((2, v)) if v >= 13 =>
         libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0" % "test")
       case _ =>
         libraryDependencies.value
