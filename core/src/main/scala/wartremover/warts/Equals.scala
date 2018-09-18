@@ -12,6 +12,7 @@ object Equals extends WartTraverser {
     val Equals: TermName = "equals"
     val Eq: TermName = "eq"
     val Ne: TermName = "ne"
+    val IsDefinedAt: TermName = "isDefinedAt"
 
     new Traverser {
       override def traverse(tree: Tree) = {
@@ -20,6 +21,13 @@ object Equals extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
 
           case Function(_, body) => traverse(body)
+
+          case ClassDef(_, _, _, Template((_, _, statements))) if isSyntheticPartialFunction(u)(tree) =>
+            statements.foreach {
+              case DefDef(_, IsDefinedAt, _, _, _, _) =>
+              case t =>
+                traverse(t)
+            }
 
           case _ if isSynthetic(u)(tree) =>
 

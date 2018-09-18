@@ -109,10 +109,13 @@ class EqualsTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Equals) {
       Seq(1, 2, 3).exists(_ == 1)
       Seq(1, 2, 3).exists(n => n != 1)
+      Seq("a").collect{ case s if s eq "" => s ne "x" }
     }
     assertResult(List(
       "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"),
+      "[wartremover:Equals] != is disabled - use =/= or equivalent instead",
+      "[wartremover:Equals] eq is disabled - use === or equivalent instead",
+      "[wartremover:Equals] ne is disabled - use =/= or equivalent instead"),
       "result.errors")(result.errors)
   }
 
@@ -120,10 +123,19 @@ class EqualsTest extends FunSuite with ResultAssertions {
     val result = WartTestTraverser(Equals) {
       Seq(1, 2, 3).exists(new Function1[Int, Boolean] { def apply(i: Int): Boolean = i == 1 })
       Seq(1, 2, 3).exists(new Function1[Int, Boolean] { def apply(i: Int): Boolean = i != 1 })
+      Seq("a").collect(new PartialFunction[String, String] {
+        override def apply(s: String) = {
+          s ne ""
+          s
+        }
+        override def isDefined(s: String) = s eq ""
+      })
     }
     assertResult(List(
       "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead"),
+      "[wartremover:Equals] != is disabled - use =/= or equivalent instead",
+      "[wartremover:Equals] ne is disabled - use =/= or equivalent instead",
+      "[wartremover:Equals] eq is disabled - use === or equivalent instead"),
       "result.errors")(result.errors)
   }
 

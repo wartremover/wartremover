@@ -50,6 +50,24 @@ trait WartTraverser {
     }
   }
 
+  def isSyntheticPartialFunction(u: WartUniverse)(tree: u.universe.Tree): Boolean = {
+    import u.universe._
+    tree match {
+      case ClassDef(_, className, _, Template((parents, _, _))) =>
+        isAnonymousFunctionName(u)(className) && isSynthetic(u)(tree) && parents.exists {
+          case t @ TypeTree() =>
+            t.symbol.fullName == "scala.runtime.AbstractPartialFunction"
+          case _ =>
+            false
+        }
+      case _ =>
+        false
+    }
+  }
+
+  def isAnonymousFunctionName(u: WartUniverse)(t: u.universe.TypeName): Boolean =
+    t == u.universe.newTypeName("$anonfun")
+
   def isSynthetic(u: WartUniverse)(t: u.universe.Tree): Boolean = {
     // Unfortunately, Scala does not mark accessors as Synthetic (even though the documentation claims that they do).
     // A manually crafted getter/setter does not deserve a GETTER/SETTER flag in Scala compiler's eyes, so we can
