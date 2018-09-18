@@ -48,6 +48,10 @@ trait ForbidInference[T] extends WartTraverser {
             explicitParents(parents).foreach(traverse)
             traverse(self)
             statements.foreach(traverse)
+          case ClassDef(_, className, _, Template((_, self, statements))) if isAnonymousFunctionName(u)(className) =>
+            // https://github.com/wartremover/wartremover/issues/294
+            traverse(self)
+            statements.foreach(traverse)
           case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _) if synthetic =>
 
           case _ =>
