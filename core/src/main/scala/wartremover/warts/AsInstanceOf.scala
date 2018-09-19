@@ -6,6 +6,7 @@ object AsInstanceOf extends WartTraverser {
     import u.universe._
     val EqualsName: TermName = "equals"
     val AsInstanceOfName: TermName = "asInstanceOf"
+    val IsDefinedAt: TermName = "isDefinedAt"
 
     val allowedCasts = List(
       "scala.tools.nsc.interpreter.IMain" // REPL needs this
@@ -19,6 +20,13 @@ object AsInstanceOf extends WartTraverser {
 
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
+
+          case ClassDef(_, _, _, Template((_, _, statements))) if isSyntheticPartialFunction(u)(tree) =>
+            statements.foreach {
+              case DefDef(_, IsDefinedAt, _, _, _, _) =>
+              case t =>
+                traverse(t)
+            }
 
           // Ignore usage in synthetic classes
           case ClassDef(_, _, _, _) if synthetic => 
