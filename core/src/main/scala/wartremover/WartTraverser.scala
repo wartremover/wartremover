@@ -124,7 +124,8 @@ trait WartTraverser {
     a.tpe <:< typeTag[java.lang.SuppressWarnings].tpe &&
       a.javaArgs.exists {
         case Tuple2(_, ArrayArgument(args)) => args.exists {
-          case LiteralArgument(Constant(arg)) => arg == className
+          case LiteralArgument(Constant(arg)) =>
+            (arg == className) || (arg == "org.wartremover.warts.All")
         }
         case _ => false
       }

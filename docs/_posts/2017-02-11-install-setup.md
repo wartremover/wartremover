@@ -55,6 +55,10 @@ To exclude a specific piece of code from one or more checks, use the `SuppressWa
 ```scala
 @SuppressWarnings(Array("org.wartremover.warts.Var", "org.wartremover.warts.Null"))
 var foo = null
+
+// suppress all warts
+@SuppressWarnings(Array("org.wartremover.warts.All"))
+var bar = null
 ```
 
 To exclude a file or directory from all checks, use `wartremoverExcluded` in your `build.sbt` file:
