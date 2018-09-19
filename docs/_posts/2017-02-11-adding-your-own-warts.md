@@ -61,3 +61,5 @@ wartremoverClasspaths ++= {
     .toList
 }
 ```
+
+See also [example repository](https://github.com/wartremover/own-wart-example)
