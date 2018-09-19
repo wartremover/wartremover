@@ -33,6 +33,29 @@ class AsInstanceOfTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+  test("issue 266 GADTs") {
+    /* scalac generate following AST
+
+      c match {
+        case (message: String)PrintLn(_) =>
+          new Task[Unit](()).asInstanceOf[Task[A]]
+      }
+    */
+
+    val result = WartTestTraverser(AsInstanceOf) {
+      class Task[A](value: A)
+      trait ~>[F[_], G[_]] { def apply[A](a: F[A]): G[A] }
+      sealed trait ConsoleIO[A]
+      case class PrintLn(message: String) extends ConsoleIO[Unit]
+
+      new (ConsoleIO ~> Task) {
+        def apply[A](c: ConsoleIO[A]): Task[A] = c match {
+          case PrintLn(_) => new Task(())
+        }
+      }
+    }
+    assertEmpty(result)
+  }
   test("asInstanceOf wart obeys SuppressWarnings") {
     val result = WartTestTraverser(AsInstanceOf) {
       @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
