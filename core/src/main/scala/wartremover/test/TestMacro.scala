@@ -15,8 +15,8 @@ object WartTestTraverser {
 
     val traverser = c.eval[WartTraverser](c.Expr(c.resetLocalAttrs(t.tree.duplicate)))
 
-    var errors = collection.mutable.ListBuffer[String]()
-    var warnings = collection.mutable.ListBuffer[String]()
+    val errors = collection.mutable.ListBuffer[String]()
+    val warnings = collection.mutable.ListBuffer[String]()
 
     object MacroTestUniverse extends WartUniverse {
       val universe: c.universe.type = c.universe
