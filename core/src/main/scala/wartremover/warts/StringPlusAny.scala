@@ -30,7 +30,7 @@ object StringPlusAny extends WartTraverser {
           case Apply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
-            
+
           case TypeApply(Select(Select(_, PredefName), Any2StringAddName), _) =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)

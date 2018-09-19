@@ -58,14 +58,14 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
- 
+
   test("Concatenation of a string with a block containing an if-statement is allowed.") {
     val result = WartTestTraverser(StringPlusAny) {
       "" + { val x = ""; if (true) x else x }
     }
     assertEmpty(result)
   }
-  
+
   test("Adding float variables to an int value is allowed.") {
     val result = WartTestTraverser(StringPlusAny) {
       val a:Float = 1
@@ -88,7 +88,7 @@ class StringPlusAnyTest extends FunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
-  
+
   test("adding with StringOps is allowed") {
     val result = WartTestTraverser(StringPlusAny) {
       "" + ("" padTo (1, ' '))

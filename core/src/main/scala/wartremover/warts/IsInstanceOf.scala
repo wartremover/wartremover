@@ -16,7 +16,7 @@ object IsInstanceOf extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
 
           // Ignore synthetic canEquals() and equals()
-          case DefDef(_, CanEqualName | EqualsName, _, _, _, _) if synthetic => 
+          case DefDef(_, CanEqualName | EqualsName, _, _, _, _) if synthetic =>
 
           // Otherwise nope, for non-synthetic receivers
           case Select(id, IsInstanceOfName) if !isSynthetic(u)(id)
@@ -25,7 +25,7 @@ object IsInstanceOf extends WartTraverser {
 
           case _ => super.traverse(tree)
 
-        }          
+        }
       }
     }
   }

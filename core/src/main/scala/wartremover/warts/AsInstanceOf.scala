@@ -29,10 +29,10 @@ object AsInstanceOf extends WartTraverser {
             }
 
           // Ignore usage in synthetic classes
-          case ClassDef(_, _, _, _) if synthetic => 
+          case ClassDef(_, _, _, _) if synthetic =>
 
           // Ignore synthetic equals()
-          case DefDef(_, EqualsName, _, _, _, _) if synthetic => 
+          case DefDef(_, EqualsName, _, _, _, _) if synthetic =>
 
           // Pattern matcher writes var x1 = null.asInstanceOf[...]
           case ValDef(mods, _, _, _) if mods.hasFlag(Flag.MUTABLE) && synthetic =>
