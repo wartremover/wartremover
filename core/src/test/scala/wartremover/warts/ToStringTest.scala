@@ -51,13 +51,13 @@ class ToStringTest extends FunSuite with ResultAssertions {
   }
   test("can use toString method of primitives") {
     val result = WartTestTraverser(ToString) {
-     1.toString
-     1l.toString
-     1f.toString
-     1.0.toString
-     true.toString
-     'a'.toString
-     "a".toString
+     val x1 = 1.toString
+     val x2 = 1l.toString
+     val x3 = 1f.toString
+     val x4 = 1.0.toString
+     val x5 = true.toString
+     val x6 = 'a'.toString
+     val x7 = "a".toString
     }
     assertEmpty(result)
   }
