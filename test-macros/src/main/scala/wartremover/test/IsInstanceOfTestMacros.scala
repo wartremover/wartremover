@@ -16,9 +16,10 @@ private class IsInstanceOfTestMacrosImpl(val c: blackbox.Context) {
 
     val aTpe = weakTypeOf[A]
     val bTpe = weakTypeOf[B]
+    val a = TermName(c.freshName("a"))
 
     c.Expr[A => Boolean](q"""
-      (a: $aTpe) => a.isInstanceOf[$bTpe]
+      ($a: $aTpe) => $a.isInstanceOf[$bTpe]
     """)
   }
 }

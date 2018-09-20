@@ -26,7 +26,7 @@ object WartTestTraverser {
 
     traverser(MacroTestUniverse).traverse(a.tree)
 
-    c.Expr(q"WartTestTraverser.Result(List(..${errors.toList}), List(..${warnings.toList}))")
+    c.Expr(q"_root_.org.wartremover.test.WartTestTraverser.Result(_root_.scala.List(..${errors.toList}), _root_.scala.List(..${warnings.toList}))")
   }
 
   /**
