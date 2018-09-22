@@ -202,7 +202,7 @@ lazy val sbtPlug: Project = Project(
          |  override def toString: String = clazz
          |}
          |object Wart {
-         |  private[wartremover] val PluginVersion = "${version.value}"
+         |  val PluginVersion: String = "${version.value}"
          |  private[wartremover] lazy val AllWarts = List(${warts mkString ", "})
          |  private[wartremover] lazy val UnsafeWarts = List(${unsafe mkString ", "})
          |  /** A fully-qualified class name of a custom Wart implementing `org.wartremover.WartTraverser`. */
