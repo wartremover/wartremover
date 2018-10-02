@@ -11,7 +11,7 @@ jdk:
 matrix:
   include:
     - scala: 2.12.7
-      jdk: oraclejdk10
+      jdk: oraclejdk11
     - scala: 2.13.0-M5
       jdk: oraclejdk8
       script:
