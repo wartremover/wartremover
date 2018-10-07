@@ -16,6 +16,12 @@ lazy val baseSettings = Def.settings(
 
 lazy val commonSettings = Def.settings(
   baseSettings,
+  Seq(packageBin, packageDoc, packageSrc).flatMap {
+    // include LICENSE file in all packaged artifacts
+    inTask(_)(Seq(
+      mappings in Compile += ((baseDirectory in ThisBuild).value / "LICENSE") -> "LICENSE"
+    ))
+  },
   organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
