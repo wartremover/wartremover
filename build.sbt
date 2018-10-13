@@ -7,7 +7,6 @@ import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
 lazy val baseSettings = Def.settings(
-  travisScalaVersions += "2.13.0-M5",
   scalaVersion := {
     val v = travisScalaVersions.value
     v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))
@@ -134,11 +133,7 @@ lazy val core = Project(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ),
   libraryDependencies ++= {
-    if (scalaVersion.value == "2.13.0-M5") {
-      Nil
-    } else {
-      Seq("org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % "test")
-    }
+    Seq("org.scalatest" %% "scalatest" % "3.0.6-SNAP3" % "test")
   },
   pomPostProcess := { node =>
     import scala.xml._
