@@ -40,7 +40,7 @@ lazy val commonSettings = Def.settings(
   },
   sbtVersion := {
     scalaBinaryVersion.value match {
-      case "2.10" => "0.13.17"
+      case "2.10" => "0.13.18"
       case _      => "1.1.6" // don't update sbt 1.2.0. see https://github.com/wartremover/wartremover/issues/433
     }
   },
