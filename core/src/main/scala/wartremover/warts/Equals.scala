@@ -7,12 +7,12 @@ object Equals extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val Eqeq: TermName = NameTransformer.encode("==")
-    val NotEq: TermName = NameTransformer.encode("!=")
-    val Equals: TermName = "equals"
-    val Eq: TermName = "eq"
-    val Ne: TermName = "ne"
-    val IsDefinedAt: TermName = "isDefinedAt"
+    val Eqeq = TermName(NameTransformer.encode("=="))
+    val NotEq = TermName(NameTransformer.encode("!="))
+    val Equals = TermName("equals")
+    val Eq = TermName("eq")
+    val Ne = TermName("ne")
+    val IsDefinedAt = TermName("isDefinedAt")
 
     new Traverser {
       override def traverse(tree: Tree) = {
@@ -38,7 +38,7 @@ object Equals extends WartTraverser {
             error(u)(tree.pos, "!= is disabled - use =/= or equivalent instead")
 
           case Apply(Select(lhs, Equals), _)
-            if (tree.symbol :: tree.symbol.allOverriddenSymbols).exists(_.fullName == "scala.Any.equals") =>
+            if (tree.symbol :: tree.symbol.overrides).exists(_.fullName == "scala.Any.equals") =>
             error(u)(tree.pos, "equals is disabled - use === or equivalent instead")
 
           case Apply(Select(lhs, Eq), _) =>

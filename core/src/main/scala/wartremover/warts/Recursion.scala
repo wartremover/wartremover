@@ -12,7 +12,7 @@ object Recursion extends WartTraverser {
         open = open + sym
         try expr finally open = open - sym
       }
-      def isTailrec(m: Symbol) = m.annotations exists (_.tpe <:< Tailrec)
+      def isTailrec(m: Symbol) = m.annotations exists (_.tree.tpe <:< Tailrec)
       override def traverse(tree: Tree): Unit = {
         tree match {
           // Ignore trees marked by SuppressWarnings

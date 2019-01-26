@@ -5,10 +5,10 @@ object StringPlusAny extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val Plus: TermName = "$plus"
-    val PredefName: TermName = "Predef"
-    val Any2StringAddName: TermName = "any2stringadd"
-    val StringCanBuildFromName: TermName = "StringCanBuildFrom"
+    val Plus = TermName("$plus")
+    val PredefName = TermName("Predef")
+    val Any2StringAddName = TermName("any2stringadd")
+    val StringCanBuildFromName = TermName("StringCanBuildFrom")
 
     def isString(t: Tree): Boolean = t.tpe <:< typeOf[String]
 

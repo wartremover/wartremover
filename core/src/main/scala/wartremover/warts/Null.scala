@@ -7,19 +7,19 @@ object Null extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val UnapplyName: TermName = "unapply"
-    val UnapplySeqName: TermName = "unapplySeq"
-    val Equals: TermName = NameTransformer.encode("==")
-    val NotEquals: TermName = NameTransformer.encode("!=")
-    val Eq: TermName = NameTransformer.encode("eq")
-    val Ne: TermName = NameTransformer.encode("ne")
+    val UnapplyName = TermName("unapply")
+    val UnapplySeqName = TermName("unapplySeq")
+    val Equals = TermName(NameTransformer.encode("=="))
+    val NotEquals = TermName(NameTransformer.encode("!="))
+    val Eq = TermName(NameTransformer.encode("eq"))
+    val Ne = TermName(NameTransformer.encode("ne"))
     val xmlSymbols = List(
       "scala.xml.Elem", "scala.xml.NamespaceBinding"
     ) // cannot do `map rootMirror.staticClass` here because then:
       //   scala.ScalaReflectionException: object scala.xml.Elem in compiler mirror not found.
 
     val optionSymbol = rootMirror.staticClass("scala.Option")
-    val OrNull: TermName = "orNull"
+    val OrNull = TermName("orNull")
 
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {

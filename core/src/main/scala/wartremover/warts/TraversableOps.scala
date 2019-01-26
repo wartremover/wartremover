@@ -16,7 +16,7 @@ object TraversableOps extends WartTraverser {
           // Traversable removed since Scala 2.13
           rootMirror.staticClass("scala.collection.Iterable")
       }
-      val Name: TermName = name
+      val Name = TermName(name)
       new u.Traverser {
         override def traverse(tree: Tree): Unit = {
           tree match {

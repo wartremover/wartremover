@@ -3,7 +3,7 @@ package test
 
 import language.experimental.macros
 import reflect.internal.util.Position
-import reflect.macros.Context
+import reflect.macros.blackbox.Context
 import tools.nsc.reporters.Reporter
 
 object WartTestTraverser {
@@ -13,7 +13,7 @@ object WartTestTraverser {
   def applyImpl(c: Context)(t: c.Expr[WartTraverser])(a: c.Expr[Any]) = {
     import c.universe._
 
-    val traverser = c.eval[WartTraverser](c.Expr(c.resetLocalAttrs(t.tree.duplicate)))
+    val traverser = c.eval[WartTraverser](c.Expr(c.untypecheck(t.tree.duplicate)))
 
     val errors = collection.mutable.ListBuffer[String]()
     val warnings = collection.mutable.ListBuffer[String]()

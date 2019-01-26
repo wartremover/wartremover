@@ -2,7 +2,7 @@ package org.wartremover
 
 import tools.nsc.Global
 import reflect.api.Universe
-import reflect.macros.Context
+import reflect.macros.blackbox.Context
 import scala.util.matching.Regex
 
 trait WartTraverser {
@@ -30,7 +30,7 @@ trait WartTraverser {
     import c.universe._
 
     val block = Block(annottees.map(_.tree).toList, Literal(Constant(())))
-    c.typeCheck(block)
+    c.typecheck(block)
 
     annottees.foreach { expr =>
       asMacro(c)(expr)
@@ -66,7 +66,7 @@ trait WartTraverser {
   }
 
   def isAnonymousFunctionName(u: WartUniverse)(t: u.universe.TypeName): Boolean =
-    t == u.universe.newTypeName("$anonfun")
+    t == u.universe.TypeName("$anonfun")
 
   def isSynthetic(u: WartUniverse)(t: u.universe.Tree): Boolean = {
     // Unfortunately, Scala does not mark accessors as Synthetic (even though the documentation claims that they do).
@@ -121,7 +121,7 @@ trait WartTraverser {
 
   def isWartAnnotation(u: WartUniverse)(a : u.universe.Annotation) : Boolean = {
     import u.universe._
-    a.tpe <:< typeTag[java.lang.SuppressWarnings].tpe &&
+    a.tree.tpe <:< typeTag[java.lang.SuppressWarnings].tpe &&
       a.tree.children.tail.exists {
         _.exists {
           case Literal(Constant(arg)) =>

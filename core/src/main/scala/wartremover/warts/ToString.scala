@@ -7,7 +7,7 @@ object ToString extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val ToString: TermName = NameTransformer.encode("toString")
+    val ToString = TermName(NameTransformer.encode("toString"))
 
     def notOverridden(t: Type): Boolean = {
       val toString = t.member(ToString)

@@ -7,7 +7,7 @@ object EitherProjectionPartial extends WartTraverser {
 
     val leftProjectionSymbol = rootMirror.staticClass("scala.util.Either.LeftProjection")
     val rightProjectionSymbol = rootMirror.staticClass("scala.util.Either.RightProjection")
-    val GetName: TermName = "get"
+    val GetName = TermName("get")
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {

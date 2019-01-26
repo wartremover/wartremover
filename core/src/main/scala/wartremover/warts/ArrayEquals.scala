@@ -7,7 +7,7 @@ object ArrayEquals extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val Equals: TermName = NameTransformer.encode("==")
+    val Equals = TermName(NameTransformer.encode("=="))
 
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {

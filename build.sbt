@@ -7,6 +7,9 @@ import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
 lazy val baseSettings = Def.settings(
+  scalacOptions ++= Seq(
+    "-deprecation"
+  ),
   scalaVersion := {
     val v = travisScalaVersions.value
     v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))

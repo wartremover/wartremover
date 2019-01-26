@@ -5,9 +5,9 @@ object Option2Iterable extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val scala = newTypeName("scala")
-    val option = newTermName("Option")
-    val option2Iterable = newTermName("option2Iterable")
+    val scala = TypeName("scala")
+    val option = TermName("Option")
+    val option2Iterable = TermName("option2Iterable")
 
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {

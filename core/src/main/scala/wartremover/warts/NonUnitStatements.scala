@@ -8,13 +8,13 @@ object NonUnitStatements extends WartTraverser {
     import u.universe._
     import scala.reflect.NameTransformer
 
-    val ReadName: TermName = "$read"
-    val IwName: TermName = "$iw"
-    val NodeBufferAddName: TermName = NameTransformer.encode("&+")
+    val ReadName = TermName("$read")
+    val IwName = TermName("$iw")
+    val NodeBufferAddName = TermName(NameTransformer.encode("&+"))
 
     @tailrec
     def isClassConstructor(tree: Tree): Boolean = tree match {
-      case Select(_, nme.CONSTRUCTOR) => true
+      case Select(_, termNames.CONSTRUCTOR) => true
       case Apply(t, _) => isClassConstructor(t)
       case _ => false
     }

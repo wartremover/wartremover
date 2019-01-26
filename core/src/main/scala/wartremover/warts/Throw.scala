@@ -4,10 +4,10 @@ package warts
 object Throw extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
-    val ProductElementName: TermName = "productElement"
+    val ProductElementName = TermName("productElement")
 
     // since Scala 2.13 https://github.com/scala/scala/commit/efc48213073ce5e68a7fd7dc9820610eccdeb9f7
-    val ProductElementNameName: TermName = "productElementName"
+    val ProductElementNameName = TermName("productElementName")
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
