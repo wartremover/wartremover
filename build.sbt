@@ -119,8 +119,6 @@ lazy val core = Project(
   libraryDependencies ++= macroParadise.value,
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) =>
-        libraryDependencies.value :+ ("org.scalamacros" %% "quasiquotes" % "2.0.1")
       case Some((2, v)) if v >= 13 =>
         libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0" % "test")
       case _ =>
@@ -229,7 +227,6 @@ lazy val testMacros: Project = Project(
   publishSigned := {},
   publishLocalSigned := {},
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "macro-compat" % "1.1.1",
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   ),
   libraryDependencies ++= macroParadise.value

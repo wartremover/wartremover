@@ -9,7 +9,6 @@ object IsInstanceOfTestMacros {
   def is[A, B]: A => Boolean = macro IsInstanceOfTestMacrosImpl.is_impl[A, B]
 }
 
-@macrocompat.bundle
 private class IsInstanceOfTestMacrosImpl(val c: blackbox.Context) {
   def is_impl[A: c.WeakTypeTag, B: c.WeakTypeTag]: c.Expr[A => Boolean] = {
     import c.universe._
