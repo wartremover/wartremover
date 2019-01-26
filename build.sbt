@@ -33,7 +33,7 @@ lazy val commonSettings = Def.settings(
   publishArtifact in Test := false,
   scalacOptions in (Compile, doc) ++= {
     val base = (baseDirectory in LocalRootProject).value.getAbsolutePath
-    val t = sys.process.Process("git rev-parse HEAD").lines_!.head
+    val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
     Seq(
       "-sourcepath",
       base,
@@ -41,7 +41,6 @@ lazy val commonSettings = Def.settings(
       "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
     )
   },
-  sbtVersion := "1.2.8",
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
@@ -83,8 +82,6 @@ releaseProcess := Seq[ReleaseStep](
   commitNextVersion,
   pushChanges
 )
-
-enablePlugins(CrossPerProjectPlugin)
 
 lazy val core = Project(
   id = "core",
@@ -134,7 +131,6 @@ lazy val core = Project(
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 )
   .dependsOn(testMacros % "test->compile")
-  .enablePlugins(CrossPerProjectPlugin)
   .enablePlugins(TravisYaml)
 
 val wartClasses = Def.task {
@@ -148,7 +144,14 @@ val wartClasses = Def.task {
           decoded
       }
   }
-  .map(c => Class.forName(c, false, (testLoader in (core, Test)).value))
+  .flatMap(c =>
+    try {
+      List[Class[_]](Class.forName(c, false, (testLoader in (core, Test)).value))
+    } catch {
+      case _: ClassNotFoundException =>
+        Nil
+    }
+  )
   .filter(c => !Modifier.isAbstract(c.getModifiers) && Util.isWartClass(c))
   .map(_.getSimpleName.replace("$", ""))
   .filterNot(Set("Unsafe", "ForbidInference")).sorted
@@ -161,9 +164,8 @@ lazy val sbtPlug: Project = Project(
   commonSettings,
   name := "sbt-wartremover",
   sbtPlugin := true,
-  ScriptedPlugin.scriptedSettings,
-  ScriptedPlugin.scriptedBufferLog := false,
-  ScriptedPlugin.scriptedLaunchOpts ++= {
+  scriptedBufferLog := false,
+  scriptedLaunchOpts ++= {
     val javaVmArgs = {
       import scala.collection.JavaConverters._
       java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
@@ -172,7 +174,7 @@ lazy val sbtPlug: Project = Project(
       a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith)
     )
   },
-  ScriptedPlugin.scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
+  scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   crossScalaVersions := travisScalaVersions.value.filter(_ startsWith "2.12"),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
@@ -204,7 +206,7 @@ lazy val sbtPlug: Project = Project(
     Seq(file)
   }
 )
-  .enablePlugins(CrossPerProjectPlugin)
+  .enablePlugins(ScriptedPlugin)
   .enablePlugins(TravisYaml)
 
 lazy val testMacros: Project = Project(
@@ -222,4 +224,4 @@ lazy val testMacros: Project = Project(
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   )
-).enablePlugins(CrossPerProjectPlugin, TravisYaml)
+).enablePlugins(TravisYaml)

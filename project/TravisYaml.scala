@@ -2,10 +2,10 @@ package org.wartremover
 
 import java.util.{Map => JMap, List => JList}
 import org.yaml.snakeyaml.Yaml
-import sbt.{AutoPlugin, Setting, SettingKey, Using}
+import sbt._
+import sbt.io.Using
 import sbt.Def.settingKey
 import sbt.Keys.baseDirectory
-import sbt.Path.richFile
 import scala.collection.JavaConverters._
 
 // Adapted from dwijnand/sbt-travisci
