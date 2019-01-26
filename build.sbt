@@ -38,12 +38,7 @@ lazy val commonSettings = Def.settings(
       "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
     )
   },
-  sbtVersion := {
-    scalaBinaryVersion.value match {
-      case "2.10" => "0.13.18"
-      case _      => "1.1.6" // don't update sbt 1.2.0. see https://github.com/wartremover/wartremover/issues/433
-    }
-  },
+  sbtVersion := "1.2.8",
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
@@ -189,7 +184,7 @@ lazy val sbtPlug: Project = Project(
     )
   },
   ScriptedPlugin.scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
-  crossScalaVersions := travisScalaVersions.value.filter(v => Seq("2.12", "2.10").exists(v.startsWith)),
+  crossScalaVersions := travisScalaVersions.value.filter(_ startsWith "2.12"),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
