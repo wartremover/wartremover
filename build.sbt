@@ -86,17 +86,6 @@ releaseProcess := Seq[ReleaseStep](
 
 enablePlugins(CrossPerProjectPlugin)
 
-lazy val macroParadise = Def.setting(
-  CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, v)) if v >= 13 =>
-      // if scala 2.13.0-M4 or later, macro annotations merged into scala-reflect
-      // https://github.com/scala/scala/pull/6606
-      Nil
-    case _ =>
-      Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full))
-  }
-)
-
 lazy val core = Project(
   id = "core",
   base = file("core")
@@ -116,7 +105,6 @@ lazy val core = Project(
       }
     }
   },
-  libraryDependencies ++= macroParadise.value,
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
@@ -228,6 +216,5 @@ lazy val testMacros: Project = Project(
   publishLocalSigned := {},
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
-  ),
-  libraryDependencies ++= macroParadise.value
+  )
 ).enablePlugins(CrossPerProjectPlugin, TravisYaml)

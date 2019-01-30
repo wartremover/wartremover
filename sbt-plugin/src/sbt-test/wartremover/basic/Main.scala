@@ -11,3 +11,6 @@ object Main {
     a
   }
 }
+
+case class Foo(n: Int)
+object Foo
