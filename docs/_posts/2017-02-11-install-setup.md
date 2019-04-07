@@ -94,8 +94,6 @@ Compile the command-line tool via `sbt "++ 2.12.8" core/assembly` and then use t
 Add the following to `build.sbt`:
 
 ```scala
-resolvers += Resolver.sonatypeRepo("releases")
-
 addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.1")
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
