@@ -105,7 +105,7 @@ lazy val core = Project(
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
-        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.1.0" % "test")
+        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.2.0" % "test")
       case _ =>
         libraryDependencies.value
     }
@@ -114,7 +114,7 @@ lazy val core = Project(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ),
   libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest" % "3.0.7" % "test")
+    Seq("org.scalatest" %% "scalatest" % "3.0.8-RC2" % "test")
   },
   pomPostProcess := { node =>
     import scala.xml._
