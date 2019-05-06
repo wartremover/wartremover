@@ -20,6 +20,13 @@ class ArrayEqualsTest extends FunSuite with ResultAssertions {
     assertError(result)("== is disabled, use sameElements instead")
   }
 
+  test("`Array == null` is allowed") {
+    val result = WartTestTraverser(ArrayEquals) {
+      Array(1) == null
+    }
+    assertEmpty(result)
+  }
+
   test("Collections == is allowed") {
     val result = WartTestTraverser(ArrayEquals) {
       List(1) == List(1)
