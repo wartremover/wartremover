@@ -7,24 +7,36 @@ import org.wartremover.warts.Option2Iterable
 
 class Option2IterableTest extends FunSuite with ResultAssertions {
 
+  def isScala212: Boolean = {
+    val v = scala.util.Properties.versionNumberString
+    v.matches("2\\.1[012].*")
+  }
+
   test("can't use Option.option2Iterable with Some") {
     val result = WartTestTraverser(Option2Iterable) {
       println(Iterable(1).flatMap(Some(_)))
     }
-    assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+
+    // https://github.com/scala/scala/pull/8038
+    if (isScala212) {
+      assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    }
   }
   test("can't use Option.option2Iterable with None") {
     val result = WartTestTraverser(Option2Iterable) {
       println(Iterable(1).flatMap(_ => None))
     }
-    assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+
+    // https://github.com/scala/scala/pull/8038
+    if (isScala212) {
+      assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    }
   }
   test("can't use Option.option2Iterable when zipping Options") {
-    val v = scala.util.Properties.versionNumberString
     val result = WartTestTraverser(Option2Iterable) {
       println(Option(1) zip Option(2))
     }
-    if (v.matches("2\\.1[012].*")) {
+    if (isScala212) {
       assertErrors(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead", 2)
     } else {
       // https://github.com/scala/scala/blob/v2.13.0-M4/src/library/scala/Option.scala#L321
