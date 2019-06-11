@@ -114,7 +114,7 @@ lazy val core = Project(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ),
   libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest" % "3.0.8-RC5" % "test")
+    Seq("org.scalatest" %% "scalatest" % "3.0.8" % "test")
   },
   pomPostProcess := { node =>
     import scala.xml._
