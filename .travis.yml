@@ -3,13 +3,13 @@ language: scala
 dist: xenial
 scala:
   - 2.11.12
-  - 2.12.8
+  - 2.12.10
   - 2.13.0
 jdk:
   - openjdk8
 matrix:
   include:
-    - scala: 2.12.8
+    - scala: 2.12.10
       jdk: openjdk11
     - scala: scripted-test
       jdk: openjdk8
