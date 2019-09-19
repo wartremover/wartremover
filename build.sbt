@@ -41,13 +41,7 @@ lazy val commonSettings = Def.settings(
       "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
     )
   },
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (version.value.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-  },
+  publishTo := sonatypePublishToBundle.value,
   homepage := Some(url("http://wartremover.org")),
   useGpg := false,
   pomExtra :=
@@ -78,6 +72,7 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   releaseStepCommandAndRemaining("+publishSigned"),
+  releaseStepCommand("sonatypeBundleRelease"),
   setNextVersion,
   commitNextVersion,
   pushChanges
