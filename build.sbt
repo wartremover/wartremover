@@ -1,6 +1,5 @@
 import ReleaseTransformations._
-import com.typesafe.sbt.pgp.PgpKeys._
-import com.typesafe.sbt.pgp.PgpSettings.useGpg
+import com.jsuereth.sbtpgp.PgpKeys
 import org.wartremover.TravisYaml.travisScalaVersions
 import xsbti.api.{ClassLike, DefinitionType}
 import scala.reflect.NameTransformer
@@ -45,7 +44,6 @@ lazy val commonSettings = Def.settings(
   },
   publishTo := sonatypePublishToBundle.value,
   homepage := Some(url("http://wartremover.org")),
-  useGpg := false,
   pomExtra :=
     <scm>
       <url>git@github.com:wartremover/wartremover.git</url>
@@ -221,8 +219,8 @@ lazy val testMacros: Project = Project(
   publishArtifact := false,
   publish := {},
   publishLocal := {},
-  publishSigned := {},
-  publishLocalSigned := {},
+  PgpKeys.publishSigned := {},
+  PgpKeys.publishLocalSigned := {},
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   )
