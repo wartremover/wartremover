@@ -94,7 +94,7 @@ Compile the command-line tool via `sbt "++ 2.12.10" core/assembly` and then use 
 Add the following to `build.sbt`:
 
 ```scala
-addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.3")
+addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.3" cross CrossVersion.full)
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
