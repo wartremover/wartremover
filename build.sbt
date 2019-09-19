@@ -91,6 +91,11 @@ lazy val core = Project(
   name := "wartremover",
   fork in Test := true,
   crossScalaVersions := travisScalaVersions.value,
+  crossVersion := CrossVersion.full,
+  crossTarget := {
+    // workarond for https://github.com/sbt/sbt/issues/5097
+    target.value / s"scala-${scalaVersion.value}"
+  },
   Seq(Compile, Test).map { scope =>
     unmanagedSourceDirectories in scope += {
       val dir = baseDirectory.value / "src" / Defaults.nameForSrc(scope.name)

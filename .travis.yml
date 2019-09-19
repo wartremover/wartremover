@@ -1,9 +1,18 @@
 sudo: false
 language: scala
 dist: xenial
+
+# compiler plugin should be fully cross-versioned. e.g.
+# - https://github.com/ghik/silencer/issues/31
+# - https://github.com/typelevel/kind-projector/issues/15
+#
+# add more scala versions when found binary and/or source incompatibilities in scala-compiler
 scala:
   - 2.11.12
+  - 2.12.8
+  - 2.12.9
   - 2.12.10
+  - 2.13.0
   - 2.13.1
 jdk:
   - openjdk8
