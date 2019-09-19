@@ -6,6 +6,8 @@ import xsbti.api.{ClassLike, DefinitionType}
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
