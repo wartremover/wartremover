@@ -88,7 +88,7 @@ lazy val core = Project(
   crossScalaVersions := travisScalaVersions.value,
   crossVersion := CrossVersion.full,
   crossTarget := {
-    // workarond for https://github.com/sbt/sbt/issues/5097
+    // workaround for https://github.com/sbt/sbt/issues/5097
     target.value / s"scala-${scalaVersion.value}"
   },
   Seq(Compile, Test).map { scope =>
