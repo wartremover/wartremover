@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
+import org.scalatest.funsuite.AnyFunSuite
 
-class CaseClassTest extends FunSuite with ResultAssertions {
+class CaseClassTest extends AnyFunSuite with ResultAssertions {
   test("case classes still work") {
     val result = WartTestTraverser(Unsafe) {
       case class A(a: Int)

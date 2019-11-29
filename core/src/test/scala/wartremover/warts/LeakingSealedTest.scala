@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.LeakingSealed
+import org.scalatest.funsuite.AnyFunSuite
 
-class LeakingSealedTest extends FunSuite with ResultAssertions {
+class LeakingSealedTest extends AnyFunSuite with ResultAssertions {
   test("Descendants of a sealed type must be final or sealed") {
     val result = WartTestTraverser(LeakingSealed) {
       sealed trait t

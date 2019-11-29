@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 import org.wartremover.warts.{Var, Null, Return}
+import org.scalatest.funsuite.AnyFunSuite
 
-class SuppressAllTest extends FunSuite with ResultAssertions {
+class SuppressAllTest extends AnyFunSuite with ResultAssertions {
   test("all warts obeys SuppressWarnings") {
     val result1 = WartTestTraverser(Var) {
       @SuppressWarnings(Array("org.wartremover.warts.All"))

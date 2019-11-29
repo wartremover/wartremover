@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Any
+import org.scalatest.funsuite.AnyFunSuite
 
-class AnyTest extends FunSuite with ResultAssertions {
+class AnyTest extends AnyFunSuite with ResultAssertions {
   private def foo: Any = 42
 
   test("Any can't be inferred") {

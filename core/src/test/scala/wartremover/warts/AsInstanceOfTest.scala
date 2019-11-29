@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.AsInstanceOf
+import org.scalatest.funsuite.AnyFunSuite
 
-class AsInstanceOfTest extends FunSuite with ResultAssertions {
+class AsInstanceOfTest extends AnyFunSuite with ResultAssertions {
   test("asInstanceOf is disabled") {
     val result = WartTestTraverser(AsInstanceOf) {
       "abc".asInstanceOf[String]

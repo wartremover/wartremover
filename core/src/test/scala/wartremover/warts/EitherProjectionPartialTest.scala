@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.EitherProjectionPartial
+import org.scalatest.funsuite.AnyFunSuite
 
-class EitherProjectionPartialTest extends FunSuite with ResultAssertions {
+class EitherProjectionPartialTest extends AnyFunSuite with ResultAssertions {
   test("can't use LeftProjection#get on Left") {
     val result = WartTestTraverser(EitherProjectionPartial) {
       println(Left(1).left.get)

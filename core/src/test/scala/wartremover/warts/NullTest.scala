@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Null
+import org.scalatest.funsuite.AnyFunSuite
 
-class NullTest extends FunSuite with ResultAssertions {
+class NullTest extends AnyFunSuite with ResultAssertions {
   test("can't use `null`") {
     val result = WartTestTraverser(Null) {
       println(null)

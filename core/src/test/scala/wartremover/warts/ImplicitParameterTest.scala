@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 import org.wartremover.warts.ImplicitParameter
+import org.scalatest.funsuite.AnyFunSuite
 
-class ImplicitParameterTest extends FunSuite with ResultAssertions {
+class ImplicitParameterTest extends AnyFunSuite with ResultAssertions {
 
   test("Implicit parameters are disabled") {
     val result = WartTestTraverser(ImplicitParameter) {

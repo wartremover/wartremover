@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
+import org.scalatest.funsuite.AnyFunSuite
 
-class XmlLiteralTest extends FunSuite with ResultAssertions {
+class XmlLiteralTest extends AnyFunSuite with ResultAssertions {
   test("can use xml literals") {
     val result = WartTestTraverser(Unsafe) {
       val x = <foo />

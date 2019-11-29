@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
+import org.scalatest.funsuite.AnyFunSuite
 
-class UnsafeTest extends FunSuite {
+class UnsafeTest extends AnyFunSuite {
   test("can't use `null`, `var`, non-unit statements, Option#get, LeftProjection#get, RightProjection#get, or any2stringadd") {
     val result = WartTestTraverser(Unsafe) {
       val x = List(1, true, "three")

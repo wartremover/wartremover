@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.OptionPartial
+import org.scalatest.funsuite.AnyFunSuite
 
-class OptionPartialTest extends FunSuite with ResultAssertions {
+class OptionPartialTest extends AnyFunSuite with ResultAssertions {
   test("can't use Option#get on Some") {
     val result = WartTestTraverser(OptionPartial) {
       println(Some(1).get)

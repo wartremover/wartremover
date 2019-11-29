@@ -3,11 +3,11 @@ package test
 
 import scala.util.Properties.versionNumberString
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Product
+import org.scalatest.funsuite.AnyFunSuite
 
-class ProductTest extends FunSuite with ResultAssertions {
+class ProductTest extends AnyFunSuite with ResultAssertions {
   test("Product can't be inferred") {
     val result = WartTestTraverser(Product) {
       List((1, 2, 3), (1, 2))

@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Throw
+import org.scalatest.funsuite.AnyFunSuite
 
-class ThrowTest extends FunSuite with ResultAssertions {
+class ThrowTest extends AnyFunSuite with ResultAssertions {
   test("throw is disabled") {
     val result = WartTestTraverser(Throw) {
       def foo(n: Int): Int = throw new IllegalArgumentException("bar")

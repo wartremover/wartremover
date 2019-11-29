@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 import scala.annotation.tailrec
 import org.wartremover.warts.Recursion
+import org.scalatest.funsuite.AnyFunSuite
 
-class RecursionTest extends FunSuite with ResultAssertions {
+class RecursionTest extends AnyFunSuite with ResultAssertions {
 
   test("can't use recursion") {
     val result = WartTestTraverser(Recursion) {

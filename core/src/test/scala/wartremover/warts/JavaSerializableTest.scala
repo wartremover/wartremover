@@ -2,13 +2,13 @@ package org.wartremover
 package test
 
 import java.io.Serializable
-import org.scalatest.FunSuite
 import org.wartremover.warts.JavaSerializable
+import org.scalatest.funsuite.AnyFunSuite
 
 
 object Foo extends Serializable
 
-class JavaSerializableTest extends FunSuite with ResultAssertions {
+class JavaSerializableTest extends AnyFunSuite with ResultAssertions {
   test("java.io.Serializable can't be inferred") {
     val result = WartTestTraverser(JavaSerializable) {
       // String is not a subtype of scala.Serializable, but is of java.io.Serializable

@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.JavaConversions
+import org.scalatest.funsuite.AnyFunSuite
 
-class JavaConversionsTest extends FunSuite with ResultAssertions {
+class JavaConversionsTest extends AnyFunSuite with ResultAssertions {
   test("handle explicit method reference") {
     val result = WartTestTraverser(JavaConversions) {
       def ff[A](it: Iterable[A]) = collection.JavaConversions.asJavaCollection(it)

@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.DefaultArguments
+import org.scalatest.funsuite.AnyFunSuite
 
-class DefaultArgumentsTest extends FunSuite with ResultAssertions {
+class DefaultArgumentsTest extends AnyFunSuite with ResultAssertions {
   test("Default arguments can't be used") {
     val result = WartTestTraverser(DefaultArguments) {
       def x(y: Int = 4) = y

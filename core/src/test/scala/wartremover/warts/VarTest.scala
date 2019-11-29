@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Var
+import org.scalatest.funsuite.AnyFunSuite
 
-class VarTest extends FunSuite with ResultAssertions {
+class VarTest extends AnyFunSuite with ResultAssertions {
   test("can't use `var`") {
     val result = WartTestTraverser(Var) {
       var x = 10

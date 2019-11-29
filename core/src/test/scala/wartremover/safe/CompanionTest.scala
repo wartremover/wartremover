@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
+import org.scalatest.funsuite.AnyFunSuite
 
-class CompanionTest extends FunSuite with ResultAssertions {
+class CompanionTest extends AnyFunSuite with ResultAssertions {
   test("can use companion objects for type aliases") {
     val result = WartTestTraverser(Unsafe) {
       trait T[R]

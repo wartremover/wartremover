@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.MutableDataStructures
+import org.scalatest.funsuite.AnyFunSuite
 
-class MutableDataStructuresTest extends FunSuite with ResultAssertions {
+class MutableDataStructuresTest extends AnyFunSuite with ResultAssertions {
   test("disable scala.collection.mutable._ when referenced") {
     val result = WartTestTraverser(MutableDataStructures) {
       var x = scala.collection.mutable.HashMap("key" -> "value")

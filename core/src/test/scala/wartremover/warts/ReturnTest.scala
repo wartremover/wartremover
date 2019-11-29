@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Return
+import org.scalatest.funsuite.AnyFunSuite
 
-class ReturnTest extends FunSuite with ResultAssertions {
+class ReturnTest extends AnyFunSuite with ResultAssertions {
   test("local return is disabled") {
     val result = WartTestTraverser(Return) {
       def foo(n:Int): Int = return n + 1

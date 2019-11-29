@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.StringPlusAny
+import org.scalatest.funsuite.AnyFunSuite
 
-class StringPlusAnyTest extends FunSuite with ResultAssertions {
+class StringPlusAnyTest extends AnyFunSuite with ResultAssertions {
   test("Implicit conversion to string is disabled") {
     val result = WartTestTraverser(StringPlusAny) {
       {} + "lol"

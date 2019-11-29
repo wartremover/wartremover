@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Nothing
+import org.scalatest.funsuite.AnyFunSuite
 
-class NothingTest extends FunSuite with ResultAssertions {
+class NothingTest extends AnyFunSuite with ResultAssertions {
   test("Nothing can't be inferred") {
     val result = WartTestTraverser(Nothing) {
       val x = ???

@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 import org.wartremover.warts.TryPartial
 import scala.util.{Try, Success, Failure}
+import org.scalatest.funsuite.AnyFunSuite
 
-class TryPartialTest extends FunSuite with ResultAssertions {
+class TryPartialTest extends AnyFunSuite with ResultAssertions {
   test("can't use Try#get on Success") {
     val result = WartTestTraverser(TryPartial) {
       println(Success(1).get)

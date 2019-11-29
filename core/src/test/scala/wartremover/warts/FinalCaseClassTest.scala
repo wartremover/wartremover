@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.FinalCaseClass
+import org.scalatest.funsuite.AnyFunSuite
 
-class FinalCaseClassTest extends FunSuite with ResultAssertions {
+class FinalCaseClassTest extends AnyFunSuite with ResultAssertions {
   test("can't declare nonfinal case classes") {
     val result = WartTestTraverser(FinalCaseClass) {
       case class Foo(i: Int)

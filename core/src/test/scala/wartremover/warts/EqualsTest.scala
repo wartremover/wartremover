@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Equals
+import org.scalatest.funsuite.AnyFunSuite
 
-class EqualsTest extends FunSuite with ResultAssertions {
+class EqualsTest extends AnyFunSuite with ResultAssertions {
   test("can't use == or != method on primitives") {
     val result1 = WartTestTraverser(Equals) {
       5 == "foo"
