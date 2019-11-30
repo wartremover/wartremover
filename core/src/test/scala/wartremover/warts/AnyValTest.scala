@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.AnyVal
+import org.scalatest.funsuite.AnyFunSuite
 
-class AnyValTest extends FunSuite with ResultAssertions {
+class AnyValTest extends AnyFunSuite with ResultAssertions {
   test("AnyVal can't be inferred") {
     val result = WartTestTraverser(AnyVal) {
       List(1, true)

@@ -3,11 +3,11 @@ package test
 
 import scala.util.Properties.versionNumberString
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Serializable
+import org.scalatest.funsuite.AnyFunSuite
 
-class SerializableTest extends FunSuite with ResultAssertions {
+class SerializableTest extends AnyFunSuite with ResultAssertions {
   test("Serializable can't be inferred") {
     val result = WartTestTraverser(Serializable) {
       List((1, 2, 3), (1, 2))

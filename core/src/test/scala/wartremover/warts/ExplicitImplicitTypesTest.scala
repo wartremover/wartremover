@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.ExplicitImplicitTypes
+import org.scalatest.funsuite.AnyFunSuite
 
-class ExplicitImplicitTypesTest extends FunSuite with ResultAssertions {
+class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
   test("can't declare implicit vals without a type ascription") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
       implicit val foo = 5

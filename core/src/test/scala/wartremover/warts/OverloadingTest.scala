@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Overloading
+import org.scalatest.funsuite.AnyFunSuite
 
-class OverloadingTest extends FunSuite with ResultAssertions {
+class OverloadingTest extends AnyFunSuite with ResultAssertions {
   test("Overloading is disabled") {
     val result = WartTestTraverser(Overloading) {
       class c {

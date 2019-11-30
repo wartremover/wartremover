@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.FinalVal
+import org.scalatest.funsuite.AnyFunSuite
 
-class FinalValTest extends FunSuite with ResultAssertions {
+class FinalValTest extends AnyFunSuite with ResultAssertions {
   test("final val is disabled") {
     val result = WartTestTraverser(FinalVal) {
       class c {

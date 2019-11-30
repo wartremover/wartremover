@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.NonUnitStatements
+import org.scalatest.funsuite.AnyFunSuite
 
-class NonUnitStatementsTest extends FunSuite with ResultAssertions {
+class NonUnitStatementsTest extends AnyFunSuite with ResultAssertions {
   test("non-unit statements are disabled") {
     val result = WartTestTraverser(NonUnitStatements) {
       1

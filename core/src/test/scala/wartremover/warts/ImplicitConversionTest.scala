@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.ImplicitConversion
+import org.scalatest.funsuite.AnyFunSuite
 
-class ImplicitConversionTest extends FunSuite with ResultAssertions {
+class ImplicitConversionTest extends AnyFunSuite with ResultAssertions {
   test("Implicit conversion is disabled") {
     val result = WartTestTraverser(ImplicitConversion) {
       class c {

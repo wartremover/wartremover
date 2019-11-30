@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
+import org.scalatest.funsuite.AnyFunSuite
 
-class PartialFunctionTest extends FunSuite with ResultAssertions {
+class PartialFunctionTest extends AnyFunSuite with ResultAssertions {
   test("can use partial functions") {
     val result = WartTestTraverser(Unsafe) {
       val f1: PartialFunction[Int, Int] = {

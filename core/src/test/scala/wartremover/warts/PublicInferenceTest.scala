@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 import org.wartremover.warts.PublicInference
+import org.scalatest.funsuite.AnyFunSuite
 
-class PublicInferenceTest extends FunSuite with ResultAssertions {
+class PublicInferenceTest extends AnyFunSuite with ResultAssertions {
   test("Non-public fields and methods are allowed") {
     case class X(i: Int)
     val result = WartTestTraverser(PublicInference) {

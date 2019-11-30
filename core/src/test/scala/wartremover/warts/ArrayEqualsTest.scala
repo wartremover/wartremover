@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.ArrayEquals
+import org.scalatest.funsuite.AnyFunSuite
 
-class ArrayEqualsTest extends FunSuite with ResultAssertions {
+class ArrayEqualsTest extends AnyFunSuite with ResultAssertions {
   test("Array == is disabled") {
     val result = WartTestTraverser(ArrayEquals) {
       Array(1) == Array(1)

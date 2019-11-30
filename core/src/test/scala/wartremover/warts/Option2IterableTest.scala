@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Option2Iterable
+import org.scalatest.funsuite.AnyFunSuite
 
-class Option2IterableTest extends FunSuite with ResultAssertions {
+class Option2IterableTest extends AnyFunSuite with ResultAssertions {
 
   def isScala212: Boolean = {
     val v = scala.util.Properties.versionNumberString

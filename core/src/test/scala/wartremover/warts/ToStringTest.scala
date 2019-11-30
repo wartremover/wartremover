@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.ToString
+import org.scalatest.funsuite.AnyFunSuite
 
-class ToStringTest extends FunSuite with ResultAssertions {
+class ToStringTest extends AnyFunSuite with ResultAssertions {
   test("can't use automatic toString method") {
     val result = WartTestTraverser(ToString) {
       class Foo(i: Int)

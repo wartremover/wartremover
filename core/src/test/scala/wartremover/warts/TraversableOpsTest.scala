@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 import org.wartremover.warts.TraversableOps
+import org.scalatest.funsuite.AnyFunSuite
 
-class TraversableOpsTest extends FunSuite with ResultAssertions {
+class TraversableOpsTest extends AnyFunSuite with ResultAssertions {
 
 
   implicit val ordering: Ordering[Any] = new Ordering[Any] {

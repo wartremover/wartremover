@@ -1,11 +1,11 @@
 package org.wartremover
 package test
 
-import org.scalatest.FunSuite
 
 import org.wartremover.warts.Unsafe
+import org.scalatest.funsuite.AnyFunSuite
 
-class ExistentialTest extends FunSuite with ResultAssertions {
+class ExistentialTest extends AnyFunSuite with ResultAssertions {
   test("can use existential values") {
     val result = WartTestTraverser(Unsafe) {
       case class Name[A](value: String)
