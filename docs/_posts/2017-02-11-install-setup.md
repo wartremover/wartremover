@@ -70,7 +70,7 @@ wartremoverExcluded += sourceManaged.value
 
 ## Other ways of using WartRemover
 
-Apart from [using the sbt plugin](/README.md) to set it up for your project, WartRemover can also be used in the following ways:
+Apart from using the sbt plugin to set it up for your project, WartRemover can also be used in the following ways:
 
 * as a command-line tool,
 * as a compiler plugin with *manually* provided `scalac` options,
