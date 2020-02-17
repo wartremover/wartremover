@@ -134,6 +134,8 @@ lazy val core = Project(
   .enablePlugins(TravisYaml)
 
 val wartClasses = Def.task {
+  val loader = (testLoader in (core, Test)).value
+  val wartTraverserClass = Class.forName("org.wartremover.WartTraverser", false, loader)
   Tests.allDefs((compile in (core, Compile)).value).collect{
     case c: ClassLike =>
       val decoded = c.name.split('.').map(NameTransformer.decode).mkString(".")
@@ -146,13 +148,13 @@ val wartClasses = Def.task {
   }
   .flatMap(c =>
     try {
-      List[Class[_]](Class.forName(c, false, (testLoader in (core, Test)).value))
+      List[Class[_]](Class.forName(c, false, loader))
     } catch {
       case _: ClassNotFoundException =>
         Nil
     }
   )
-  .filter(c => !Modifier.isAbstract(c.getModifiers) && Util.isWartClass(c))
+  .filter(c => !Modifier.isAbstract(c.getModifiers) && wartTraverserClass.isAssignableFrom(c))
   .map(_.getSimpleName.replace("$", ""))
   .filterNot(Set("Unsafe", "ForbidInference")).sorted
 }
