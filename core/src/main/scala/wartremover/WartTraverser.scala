@@ -72,7 +72,7 @@ trait WartTraverser {
     // Unfortunately, Scala does not mark accessors as Synthetic (even though the documentation claims that they do).
     // A manually crafted getter/setter does not deserve a GETTER/SETTER flag in Scala compiler's eyes, so we can
     // "safely" rely on this
-    Option(t.symbol).map(s => s.isSynthetic || (s.isTerm && s.asTerm.isAccessor)).getOrElse(false)
+    Option(t.symbol).map(s => s.isSynthetic || s.isImplementationArtifact || (s.isTerm && s.asTerm.isAccessor)).getOrElse(false)
   }
 
   def isPrimitive(u: WartUniverse)(t: u.universe.Type): Boolean =
