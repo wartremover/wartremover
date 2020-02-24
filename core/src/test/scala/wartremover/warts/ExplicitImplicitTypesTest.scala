@@ -4,6 +4,7 @@ package test
 
 import org.wartremover.warts.ExplicitImplicitTypes
 import org.scalatest.funsuite.AnyFunSuite
+import wartremover.test.ExplicitImplicitTypesTestMacros
 
 class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
   test("can't declare implicit vals without a type ascription") {
@@ -19,6 +20,20 @@ class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
       implicit def bar[A] = 5
       implicit def baz(i: Int) = 5
       implicit def qux[I](i: I) = 5
+    }
+    assertErrors(result)("implicit definitions must have an explicit type ascription", 4)
+  }
+
+  test("can't declare implicit vals without a type ascription in macro expansions") {
+    val result = WartTestTraverser(ExplicitImplicitTypes) {
+      ExplicitImplicitTypesTestMacros.valsWithoutTypeAscription
+    }
+    assertErrors(result)("implicit definitions must have an explicit type ascription", 2)
+  }
+
+  test("can't declare implicit defs without a type ascription in macro expansions") {
+    val result = WartTestTraverser(ExplicitImplicitTypes) {
+      ExplicitImplicitTypesTestMacros.defsWithoutTypeAscription
     }
     assertErrors(result)("implicit definitions must have an explicit type ascription", 4)
   }
@@ -46,6 +61,20 @@ class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
       implicit def bar[A]: Int = 5
       implicit def baz(i: Int): Int = 5
       implicit def qux[I](i: I): Int = 5
+    }
+    assertEmpty(result)
+  }
+
+  test("can declare implicit vals with a type ascription in macro expansions") {
+    val result = WartTestTraverser(ExplicitImplicitTypes) {
+      ExplicitImplicitTypesTestMacros.defsWithTypeAscription
+    }
+    assertEmpty(result)
+  }
+
+  test("can declare implicit defs with a type ascription in macro expansions") {
+    val result = WartTestTraverser(ExplicitImplicitTypes) {
+      ExplicitImplicitTypesTestMacros.defsWithTypeAscription
     }
     assertEmpty(result)
   }
