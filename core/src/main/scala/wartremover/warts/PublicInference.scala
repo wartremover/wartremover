@@ -17,6 +17,11 @@ object PublicInference extends WartTraverser {
 
     def isAccessor(t: Tree) = t.symbol.isTerm && (t.symbol.asTerm.isParamAccessor || t.symbol.asTerm.isCaseAccessor)
 
+    def isMacroExpansion(t: ValOrDefDef) = {
+      val pos = t.pos.start
+      pos == t.pos.end && pos == t.symbol.owner.pos.start && pos == t.symbol.owner.pos.end
+    }
+
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
@@ -29,7 +34,7 @@ object PublicInference extends WartTraverser {
 
           case t: ValOrDefDef if isPublic(u)(t) && isInPublicClass(t) &&
               !isConstructorOrOverrides(t) && !isAccessor(t) &&
-              !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) =>
+              !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) && !isMacroExpansion(t) =>
             error(u)(tree.pos, "Public member must have an explicit type ascription")
 
           case _ =>
