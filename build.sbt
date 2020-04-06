@@ -7,14 +7,23 @@ import java.lang.reflect.Modifier
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
+val latestScala211 = settingKey[String]("")
+val latestScala212 = settingKey[String]("")
+val latestScala213 = settingKey[String]("")
+
+def latest(n: Int, versions: Seq[String]) = {
+  val prefix = "2." + n + "."
+  prefix + versions.filter(_ startsWith prefix).map(_.drop(prefix.length).toLong).reduceLeftOption(_ max _).getOrElse(s"not found Scala ${prefix}x version ${versions}")
+}
+
 lazy val baseSettings = Def.settings(
+  latestScala211 := latest(11, travisScalaVersions.value),
+  latestScala212 := latest(12, travisScalaVersions.value),
+  latestScala213 := latest(13, travisScalaVersions.value),
   scalacOptions ++= Seq(
     "-deprecation"
   ),
-  scalaVersion := {
-    val v = travisScalaVersions.value
-    v.find(_.startsWith("2.12")).getOrElse(sys.error(s"not found Scala 2.12.x version $v"))
-  }
+  scalaVersion := latestScala212.value,
 )
 
 lazy val commonSettings = Def.settings(
@@ -78,19 +87,11 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges
 )
 
-lazy val core = Project(
-  id = "core",
-  base = file("core")
-).settings(
+val coreSettings = Def.settings(
   commonSettings,
   name := "wartremover",
   fork in Test := true,
   crossScalaVersions := travisScalaVersions.value,
-  crossVersion := CrossVersion.full,
-  crossTarget := {
-    // workaround for https://github.com/sbt/sbt/issues/5097
-    target.value / s"scala-${scalaVersion.value}"
-  },
   Seq(Compile, Test).map { scope =>
     unmanagedSourceDirectories in scope += {
       val dir = baseDirectory.value / "src" / Defaults.nameForSrc(scope.name)
@@ -127,6 +128,31 @@ lazy val core = Project(
           n
     }
     new RuleTransformer(strip).transform(node)(0)
+  },
+  assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
+)
+
+lazy val coreCrossBinary = Project(
+  id = "core-cross-binary",
+  base = file("core-cross-binary")
+).settings(
+  coreSettings,
+  Compile / scalaSource := (core / Compile / scalaSource).value,
+  crossScalaVersions := Seq(latestScala211.value, latestScala212.value, latestScala213.value),
+  crossVersion := CrossVersion.binary
+).enablePlugins(TravisYaml)
+
+
+lazy val core = Project(
+  id = "core",
+  base = file("core")
+).settings(
+  coreSettings,
+  crossScalaVersions := travisScalaVersions.value,
+  crossVersion := CrossVersion.full,
+  crossTarget := {
+    // workaround for https://github.com/sbt/sbt/issues/5097
+    target.value / s"scala-${scalaVersion.value}"
   },
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 )
@@ -177,7 +203,7 @@ lazy val sbtPlug: Project = Project(
     )
   },
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
-  crossScalaVersions := travisScalaVersions.value.filter(_ startsWith "2.12"),
+  crossScalaVersions := Seq(latestScala212.value),
   sourceGenerators in Compile += Def.task {
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
