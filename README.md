@@ -1,6 +1,6 @@
 # WartRemover
 
-[![Build Status](https://travis-ci.org/wartremover/wartremover.svg?branch=master)](https://travis-ci.org/wartremover/wartremover)
+[![Build Status](https://travis-ci.com/wartremover/wartremover.svg?branch=master)](https://travis-ci.com/wartremover/wartremover)
 [![scaladoc](https://javadoc-badge.appspot.com/org.wartremover/wartremover_2.12.11.svg?label=scaladoc)](https://javadoc-badge.appspot.com/org.wartremover/wartremover_2.12.11/org/wartremover/index.html?javadocio=true)
 
 [![Join us on gitter](http://badges.gitter.im/wartremover/Lobby.png)](https://gitter.im/wartremover/Lobby)
