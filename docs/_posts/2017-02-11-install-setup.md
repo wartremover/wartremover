@@ -149,26 +149,26 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
 
 ```xml
 <build>
-        <plugins>
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.1</version>
-                <configuration>
-                    <compilerPlugins>
-                        <compilerPlugin>
-                            <groupId>org.wartremover</groupId>
-                            <artifactId>wartremover_2.11</artifactId>
-                            <version>2.4.6</version>
-                        </compilerPlugin>
-                    </compilerPlugins>
-                    <args>
-                        <arg>-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe</arg>
-                    </args>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>  
+  <plugins>
+    <plugin>
+      <groupId>net.alchim31.maven</groupId>
+      <artifactId>scala-maven-plugin</artifactId>
+      <version>3.2.1</version>
+      <configuration>
+        <compilerPlugins>
+          <compilerPlugin>
+            <groupId>org.wartremover</groupId>
+            <artifactId>wartremover_2.11</artifactId>
+            <version>2.4.6</version>
+          </compilerPlugin>
+        </compilerPlugins>
+        <args>
+          <arg>-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe</arg>
+        </args>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
 ```
 
 See the notes on the compiler plugin above for options to pass as `<arg>`s.
