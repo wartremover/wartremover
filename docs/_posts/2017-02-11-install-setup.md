@@ -158,7 +158,7 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
         <compilerPlugins>
           <compilerPlugin>
             <groupId>org.wartremover</groupId>
-            <artifactId>wartremover_2.11</artifactId>
+            <artifactId>wartremover_2.13</artifactId>
             <version>2.4.6</version>
           </compilerPlugin>
         </compilerPlugins>
