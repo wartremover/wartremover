@@ -1,23 +1,26 @@
 import sbt._
 import Keys._
-import wartremover.WartRemover.autoImport.wartremoverCrossVersion
+import wartremover.WartRemover.autoImport
 
-/** sbt-wartremover's key definitions */
 package object wartremover {
-  val wartremoverErrors = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation errors.")
-  val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
-  val wartremoverExcluded = taskKey[Seq[File]]("List of files to be excluded from all checks.")
-  val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
+  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverErrors instead", since = "2.4.7")
+  val wartremoverErrors = autoImport.wartremoverErrors
+  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverWarnings instead", since = "2.4.7")
+  val wartremoverWarnings = autoImport.wartremoverErrors
+  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverExcluded instead", since = "2.4.7")
+  val wartremoverExcluded = autoImport.wartremoverErrors
+  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverClasspaths instead", since = "2.4.7")
+  val wartremoverClasspaths = autoImport.wartremoverErrors
 
   lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
     libraryDependencies += {
-      compilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross wartremoverCrossVersion.value)
+      compilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value)
     }
   ) ++ inScope(Scope.ThisScope)(Seq(
-    derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
-    derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
-    derive(scalacOptions ++= wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
-    derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
+    derive(scalacOptions ++= autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
+    derive(scalacOptions ++= autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
+    derive(scalacOptions ++= autoImport.wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
+    derive(scalacOptions ++= autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
   ))
 
   // Workaround for https://github.com/wartremover/wartremover/issues/123
