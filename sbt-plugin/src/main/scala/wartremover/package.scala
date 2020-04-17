@@ -17,7 +17,7 @@ package object wartremover {
     derive(scalacOptions ++= wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
   ))
 
-  // Workaround for typelevel/wartremover#123
+  // Workaround for https://github.com/wartremover/wartremover/issues/123
   private[wartremover] def derive[T](s: Setting[T]): Setting[T] = {
     try {
       Def derive s
