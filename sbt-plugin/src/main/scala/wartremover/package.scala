@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import wartremover.WartRemover.autoImport.wartremoverCrossVersion
 
 /** sbt-wartremover's key definitions */
 package object wartremover {
@@ -9,7 +10,9 @@ package object wartremover {
   val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
 
   lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
-    addCompilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross CrossVersion.full)
+    libraryDependencies += {
+      compilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross wartremoverCrossVersion.value)
+    }
   ) ++ inScope(Scope.ThisScope)(Seq(
     derive(scalacOptions ++= wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
     derive(scalacOptions ++= wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),

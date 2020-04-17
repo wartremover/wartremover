@@ -1,5 +1,7 @@
 package wartremover
 
+import sbt.{CrossVersion, settingKey}
+
 object WartRemover extends sbt.AutoPlugin {
   override def trigger = allRequirements
   object autoImport {
@@ -10,11 +12,15 @@ object WartRemover extends sbt.AutoPlugin {
     val wartremoverWarnings = wartremover.wartremoverWarnings
     val wartremoverExcluded = wartremover.wartremoverExcluded
     val wartremoverClasspaths = wartremover.wartremoverClasspaths
+    val wartremoverCrossVersion = settingKey[CrossVersion]("CrossVersion setting for wartremover")
     val Wart = wartremover.Wart
     val Warts = wartremover.Warts
   }
 
+  import autoImport.wartremoverCrossVersion
+
   override def globalSettings = Seq(
+    wartremoverCrossVersion := CrossVersion.full,
     wartremoverErrors := Nil,
     wartremoverWarnings := Nil,
     wartremoverExcluded := Nil,
