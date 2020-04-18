@@ -87,22 +87,25 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges
 )
 
+val coreId = "core"
+
+def crossSrcSetting(c: Configuration) = {
+  unmanagedSourceDirectories in c += {
+    val dir = (baseDirectory in LocalProject(coreId)).value / "src" / Defaults.nameForSrc(c.name)
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, v)) if v >= 13 =>
+        dir / s"scala-2.13+"
+      case _ =>
+        dir / s"scala-2.13-"
+    }
+  }
+}
+
 val coreSettings = Def.settings(
   commonSettings,
   name := "wartremover",
   fork in Test := true,
   crossScalaVersions := travisScalaVersions.value,
-  Seq(Compile, Test).map { scope =>
-    unmanagedSourceDirectories in scope += {
-      val dir = baseDirectory.value / "src" / Defaults.nameForSrc(scope.name)
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v >= 13 =>
-          dir / s"scala-2.13+"
-        case _ =>
-          dir / s"scala-2.13-"
-      }
-    }
-  },
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
@@ -137,17 +140,23 @@ lazy val coreCrossBinary = Project(
   base = file("core-cross-binary")
 ).settings(
   coreSettings,
+  crossSrcSetting(Compile),
   Compile / scalaSource := (core / Compile / scalaSource).value,
+  Compile / resourceDirectory := (core / Compile / resourceDirectory).value,
   crossScalaVersions := Seq(latestScala211.value, latestScala212.value, latestScala213.value),
   crossVersion := CrossVersion.binary
-).enablePlugins(TravisYaml)
+)
+  .dependsOn(testMacros % "test->compile")
+  .enablePlugins(TravisYaml)
 
 
 lazy val core = Project(
-  id = "core",
+  id = coreId,
   base = file("core")
 ).settings(
   coreSettings,
+  crossSrcSetting(Compile),
+  crossSrcSetting(Test),
   crossScalaVersions := travisScalaVersions.value,
   crossVersion := CrossVersion.full,
   crossTarget := {

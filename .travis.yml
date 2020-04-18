@@ -23,7 +23,7 @@ matrix:
       jdk: openjdk11
     - scala: scripted-test
       jdk: openjdk8
-      env: SCRIPT=";+ core/publishLocal;+ sbt-plugin/scripted"
+      env: SCRIPT=";+ publishLocal;+ sbt-plugin/scripted"
       script:
       - sbt "${SCRIPT}"
     - os: windows
@@ -34,7 +34,7 @@ matrix:
       - source .install-jdk-travis.sh
       - wget https://raw.githubusercontent.com/paulp/sbt-extras/0ee2dae2eba72efb4a464a5ad255e348696ecda7/sbt && chmod +x ./sbt
       script:
-      - ./sbt test "+ core/publishLocal" "+ sbt-plugin/scripted"
+      - ./sbt test "+ publishLocal" "+ sbt-plugin/scripted"
 script: sbt "++${TRAVIS_SCALA_VERSION} -v" compile test
 cache:
   directories:
