@@ -12,26 +12,11 @@ package object wartremover {
   @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverClasspaths instead", since = "2.4.7")
   val wartremoverClasspaths = autoImport.wartremoverErrors
 
-  lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] = Seq(
-    libraryDependencies += {
-      compilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value)
-    }
-  ) ++ inScope(Scope.ThisScope)(Seq(
-    derive(scalacOptions ++= autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
-    derive(scalacOptions ++= autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
-    derive(scalacOptions ++= autoImport.wartremoverExcluded.value.distinct map (c => s"-P:wartremover:excluded:${c.getAbsolutePath}")),
-    derive(scalacOptions ++= autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
-  ))
+  @deprecated(message = "will be removed. use wartremover.WartRemover.projectSettings", since = "2.4.7")
+  lazy val wartremoverSettings: Seq[sbt.Def.Setting[_]] =
+    wartremover.WartRemover.projectSettings
 
-  // Workaround for https://github.com/wartremover/wartremover/issues/123
-  private[wartremover] def derive[T](s: Setting[T]): Setting[T] = {
-    try {
-      Def derive s
-    } catch {
-      case _: LinkageError =>
-        import scala.language.reflectiveCalls
-        Def.asInstanceOf[{def derive[T](setting: Setting[T], allowDynamic: Boolean, filter: Scope => Boolean, trigger: AttributeKey[_] => Boolean, default: Boolean): Setting[T]}]
-          .derive(s, false, _ => true, _ => true, false)
-    }
-  }
+  @deprecated(message = "will be removed. use wartremover.WartRemover.derive", since = "2.4.7")
+  private[wartremover] def derive[T](s: Setting[T]): Setting[T] =
+    wartremover.WartRemover.derive[T](s)
 }
