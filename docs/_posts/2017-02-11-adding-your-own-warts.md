@@ -27,7 +27,7 @@ object Unimplemented extends WartTraverser {
     import u.universe._
     import scala.reflect.NameTransformer
 
-    val notImplementedName: TermName = NameTransformer.encode("???")
+    val notImplementedName: TermName = TermName(NameTransformer.encode("???"))
     val notImplemented: Symbol = typeOf[Predef.type].member(notImplementedName)
     require(notImplemented != NoSymbol)
     new Traverser {
