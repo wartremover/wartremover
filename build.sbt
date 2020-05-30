@@ -1,11 +1,26 @@
 import ReleaseTransformations._
 import com.jsuereth.sbtpgp.PgpKeys
-import org.wartremover.TravisYaml.travisScalaVersions
 import xsbti.api.{ClassLike, DefinitionType}
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
+
+// compiler plugin should be fully cross-versioned. e.g.
+// - https://github.com/ghik/silencer/issues/31
+// - https://github.com/typelevel/kind-projector/issues/15
+//
+// add more scala versions when found binary and/or source incompatibilities in scala-compiler
+lazy val allScalaVersions = Seq(
+  "2.11.12",
+  "2.12.8",
+  "2.12.9",
+  "2.12.10",
+  "2.12.11",
+  "2.13.0",
+  "2.13.1",
+  "2.13.2",
+)
 
 val latestScala211 = settingKey[String]("")
 val latestScala212 = settingKey[String]("")
@@ -17,9 +32,9 @@ def latest(n: Int, versions: Seq[String]) = {
 }
 
 lazy val baseSettings = Def.settings(
-  latestScala211 := latest(11, travisScalaVersions.value),
-  latestScala212 := latest(12, travisScalaVersions.value),
-  latestScala213 := latest(13, travisScalaVersions.value),
+  latestScala211 := latest(11, allScalaVersions),
+  latestScala212 := latest(12, allScalaVersions),
+  latestScala213 := latest(13, allScalaVersions),
   scalacOptions ++= Seq(
     "-deprecation"
   ),
@@ -105,7 +120,7 @@ val coreSettings = Def.settings(
   commonSettings,
   name := "wartremover",
   fork in Test := true,
-  crossScalaVersions := travisScalaVersions.value,
+  crossScalaVersions := allScalaVersions,
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
@@ -147,7 +162,6 @@ lazy val coreCrossBinary = Project(
   crossVersion := CrossVersion.binary
 )
   .dependsOn(testMacros % "test->compile")
-  .enablePlugins(TravisYaml)
 
 
 lazy val core = Project(
@@ -157,7 +171,7 @@ lazy val core = Project(
   coreSettings,
   crossSrcSetting(Compile),
   crossSrcSetting(Test),
-  crossScalaVersions := travisScalaVersions.value,
+  crossScalaVersions := allScalaVersions,
   crossVersion := CrossVersion.full,
   crossTarget := {
     // workaround for https://github.com/sbt/sbt/issues/5097
@@ -166,7 +180,6 @@ lazy val core = Project(
   assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
 )
   .dependsOn(testMacros % "test->compile")
-  .enablePlugins(TravisYaml)
 
 val wartClasses = Def.task {
   val loader = (testLoader in (core, Test)).value
@@ -244,14 +257,13 @@ lazy val sbtPlug: Project = Project(
   }
 )
   .enablePlugins(ScriptedPlugin)
-  .enablePlugins(TravisYaml)
 
 lazy val testMacros: Project = Project(
   id = "test-macros",
   base = file("test-macros")
 ).settings(
   baseSettings,
-  crossScalaVersions := travisScalaVersions.value,
+  crossScalaVersions := allScalaVersions,
   skip in publish := true,
   publishArtifact := false,
   publish := {},
@@ -261,4 +273,4 @@ lazy val testMacros: Project = Project(
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
   )
-).enablePlugins(TravisYaml)
+)

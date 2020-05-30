@@ -2,26 +2,12 @@ sudo: false
 language: scala
 dist: xenial
 
-# compiler plugin should be fully cross-versioned. e.g.
-# - https://github.com/ghik/silencer/issues/31
-# - https://github.com/typelevel/kind-projector/issues/15
-#
-# add more scala versions when found binary and/or source incompatibilities in scala-compiler
-scala:
-  - 2.11.12
-  - 2.12.8
-  - 2.12.9
-  - 2.12.10
-  - 2.12.11
-  - 2.13.0
-  - 2.13.1
-  - 2.13.2
-jdk:
-  - openjdk8
 matrix:
   include:
-    - scala: 2.12.11
-      jdk: openjdk11
+    - jdk: openjdk11
+      script: sbt test
+    - jdk: openjdk8
+      script: sbt "+compile" "+test"
     - scala: scripted-test
       jdk: openjdk8
       env: SCRIPT=";+ publishLocal;+ sbt-plugin/scripted"
@@ -36,7 +22,6 @@ matrix:
       - wget https://raw.githubusercontent.com/paulp/sbt-extras/0ee2dae2eba72efb4a464a5ad255e348696ecda7/sbt && chmod +x ./sbt
       script:
       - ./sbt test "+ publishLocal" "+ sbt-plugin/scripted"
-script: sbt "++${TRAVIS_SCALA_VERSION} -v" compile test
 cache:
   directories:
     - "$HOME/.ivy2/cache"
