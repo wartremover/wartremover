@@ -42,7 +42,7 @@ object WartTestTraverser {
   def applyToFiles(t: WartTraverser)(paths: String*): Result = {
     var errors = List[String]()
     var warnings = List[String]()
-    Main.compile(Main.WartArgs(List(t.className), paths.toList), Some(new Reporter {
+    Main.compile(Main.WartArgs(List(t.className), paths.toList, Nil), Some(new Reporter {
       override protected def info0(pos: Position, msg: String, severity: Severity, force: Boolean) = severity match {
         case ERROR => errors ::= msg
         case WARNING => warnings ::= msg

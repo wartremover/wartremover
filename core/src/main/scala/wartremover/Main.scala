@@ -5,17 +5,19 @@ import tools.nsc.io.VirtualDirectory
 import tools.nsc.reporters.{ConsoleReporter, Reporter}
 
 object Main {
-  case class WartArgs(traversers: List[String], names: List[String]) {
-    def append(o: WartArgs) = WartArgs(this.traversers ++ o.traversers, this.names ++ o.names)
-    def addName(name: String) = WartArgs(this.traversers, name :: this.names)
-    def addTraverser(traverser: String) = WartArgs(traverser :: this.traversers, this.names)
+  case class WartArgs(traversers: List[String], names: List[String], scalacArgs: List[String]) {
+    def append(o: WartArgs) = WartArgs(traversers ++ o.traversers, names ++ o.names, scalacArgs ++ o.scalacArgs)
+    def addName(name: String) = copy(names = name :: names)
+    def addTraverser(traverser: String) = copy(traversers = traverser :: traversers)
+    def addScalacArg(scalacArg: String) = copy(scalacArgs = scalacArg :: scalacArgs)
   }
   object WartArgs {
-    val empty = WartArgs(List.empty, List.empty)
+    val empty = WartArgs(List.empty, List.empty, List.empty)
   }
 
   def processArgs(args: List[String], processed: WartArgs): WartArgs = args match {
     case "-traverser" :: traverser :: xs => processArgs(xs, processed.addTraverser(traverser))
+    case "-scalac" :: scalacArg :: xs => processArgs(xs, processed.addScalacArg(scalacArg))
     case name :: xs => processArgs(xs, processed.addName(name))
     case Nil => processed
   }
@@ -27,7 +29,7 @@ object Main {
     settings.usejavacp.value = true
     settings.embeddedDefaults(getClass.getClassLoader)
     settings.pluginOptions.value = args.traversers.map("wartremover:traverser:" ++ _)
-
+    args.scalacArgs.foreach(settings.processArgumentString)
     val global = new Global(settings, reporter.getOrElse(new ConsoleReporter(settings))) {
       override protected def loadRoughPluginsList() = List(new Plugin(this))
     }
