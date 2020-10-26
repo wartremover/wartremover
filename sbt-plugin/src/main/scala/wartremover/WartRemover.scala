@@ -1,5 +1,6 @@
 package wartremover
 
+import java.nio.file.Path
 import sbt._
 import sbt.Keys._
 import sbt.internal.librarymanagement.IvySbt
@@ -21,13 +22,6 @@ object WartRemover extends sbt.AutoPlugin {
   }
 
   override def globalSettings = Seq(
-    autoImport.wartremoverPluginJarsDir := {
-      if (VersionNumber(sbtVersion.value).matchesSemVer(SemanticSelector(">=1.4.0"))) {
-        Some((LocalRootProject / target).value / "compiler_plugins")
-      } else {
-        None
-      }
-    },
     autoImport.wartremoverCrossVersion := CrossVersion.full,
     autoImport.wartremoverDependencies := Nil,
     autoImport.wartremoverErrors := Nil,
@@ -36,34 +30,64 @@ object WartRemover extends sbt.AutoPlugin {
     autoImport.wartremoverClasspaths := Nil
   )
 
-  def copyCompilerPluginSetting(c: Configuration): Def.SettingsDefinition = {
-    (c / scalacOptions) := {
-      val log = streams.value.log
-      autoImport.wartremoverPluginJarsDir.value match {
-        case Some(compilerPluginsDir) =>
-          val base = (LocalRootProject / baseDirectory).value
-          val prefix = "-Xplugin:"
-          (c / scalacOptions).value.map { opt =>
-            if (opt startsWith prefix) {
-              val originalPluginFile = file(opt.drop(prefix.length))
-              val pluginJarName = originalPluginFile.getName
-              val targetJar = compilerPluginsDir / pluginJarName
-              if (!targetJar.isFile) {
-                IO.copyFile(
-                  sourceFile = originalPluginFile,
-                  targetFile = targetJar
-                )
-              }
-              IO.relativize(base, targetJar).map(prefix + _).getOrElse {
-                log.warn(s"$base is not a parent of $targetJar")
-                opt
-              }
-            } else {
-              opt
-            }
+  private[this] def copyToCompilerPluginJarsDir(src: File, jarDir: Option[File], base: File, log: Logger): Option[Path] = {
+    jarDir match {
+      case Some(compilerPluginsDir) =>
+        if (src.isFile) {
+          val jarName = src.getName
+          val targetJar = compilerPluginsDir / jarName
+          if (!targetJar.isFile) {
+            IO.copyFile(
+              sourceFile = src,
+              targetFile = targetJar
+            )
+            log.debug(s"copy from $src to $targetJar")
+          } else {
+            log.debug(s"file $targetJar already exists")
           }
-        case None =>
-          (c / scalacOptions).value
+          Some(base.toPath.relativize(targetJar.toPath))
+        } else {
+          if (!src.isDirectory) {
+            log.debug(s"neither file nor directory!? $src")
+          }
+          Some(base.toPath.relativize(src.toPath))
+        }
+      case None =>
+        log.debug("jarDir is None")
+        None
+    }
+  }
+
+  def scalacOptionSetting(k: TaskKey[Seq[String]]): Def.SettingsDefinition = {
+    k := {
+      val prefix = "-Xplugin:"
+      k.value.map { opt =>
+        if (opt startsWith prefix) {
+          val originalPluginFile = file(opt.drop(prefix.length))
+          copyToCompilerPluginJarsDir(
+            src = originalPluginFile,
+            jarDir = autoImport.wartremoverPluginJarsDir.value,
+            base = (LocalRootProject / baseDirectory).value,
+            log = streams.value.log
+          ).map {
+            prefix + _
+          }.getOrElse(opt)
+        } else {
+          opt
+        }
+      }
+    }
+  }
+
+  def dependsOnLocalProjectWarts(p: Reference, configuration: Configuration = Compile): Def.SettingsDefinition = {
+    autoImport.wartremoverClasspaths ++= {
+      (fullClasspath in (p, configuration)).value.map(_.data).map{ f =>
+        copyToCompilerPluginJarsDir(
+          src = f,
+          jarDir = autoImport.wartremoverPluginJarsDir.value,
+          base = (LocalRootProject / baseDirectory).value,
+          log = streams.value.log
+        ).map("file:" + _).getOrElse(f.toURI.toString)
       }
     }
   }
@@ -72,7 +96,25 @@ object WartRemover extends sbt.AutoPlugin {
     libraryDependencies += {
       compilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value)
     },
-    Seq(Compile, Test).flatMap(copyCompilerPluginSetting),
+    scalacOptionSetting(scalacOptions),
+    scalacOptionSetting(Compile / scalacOptions),
+    scalacOptionSetting(Test / scalacOptions),
+    scalacOptions ++= {
+      // use relative path
+      // https://github.com/sbt/sbt/issues/6027
+      autoImport.wartremoverExcluded.value.distinct.map { c =>
+        val base = (LocalRootProject / baseDirectory).value
+        val x = base.toPath.relativize(c.toPath)
+        s"-P:wartremover:excluded:$x"
+      }
+    },
+    autoImport.wartremoverPluginJarsDir := {
+      if (VersionNumber(sbtVersion.value).matchesSemVer(SemanticSelector(">=1.4.0"))) {
+        Some((LocalRootProject / target).value / "compiler_plugins")
+      } else {
+        None
+      }
+    },
     inScope(Scope.ThisScope)(Seq(
       autoImport.wartremoverClasspaths ++= {
         val ivy = ivySbt.value
@@ -84,27 +126,17 @@ object WartRemover extends sbt.AutoPlugin {
             case None =>
               m
           }
-          getArtifact(moduleId, ivy, s).toURI.toString
+          val a = getArtifact(moduleId, ivy, s)
+          copyToCompilerPluginJarsDir(
+            src = a,
+            jarDir = autoImport.wartremoverPluginJarsDir.value,
+            base = (LocalRootProject / baseDirectory).value,
+            log = streams.value.log
+          ).map("file:" + _).getOrElse(a.toURI.toString)
         }
       },
       derive(scalacOptions ++= autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")),
       derive(scalacOptions ++= autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")),
-      derive(scalacOptions ++= {
-        // use relative path if possible
-        // https://github.com/sbt/sbt/issues/6027
-        val log = streams.value.log
-        autoImport.wartremoverExcluded.value.distinct.map { c =>
-          val base = baseDirectory.value
-          val x = IO.relativizeFile(base, c) match {
-            case Some(f) =>
-              f
-            case None =>
-              log.info(s"$base is not a parent of $c")
-              c.getAbsolutePath
-          }
-          s"-P:wartremover:excluded:$x"
-        }
-      }),
       derive(scalacOptions ++= autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp"))
     ))
   )
