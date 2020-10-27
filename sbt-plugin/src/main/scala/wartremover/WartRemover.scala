@@ -75,7 +75,7 @@ object WartRemover extends sbt.AutoPlugin {
         } else {
           opt
         }
-      }
+      }.distinct
     }
   }
 
