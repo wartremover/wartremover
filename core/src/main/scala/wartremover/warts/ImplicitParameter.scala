@@ -5,14 +5,6 @@ object ImplicitParameter extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    implicit class TypeOps(self: Type) { // 2.10 compat
-      def typeArgs: List[Type] = self match {
-        case PolyType(args, _) => args.map(_.typeSignature)
-        case TypeRef(_, _, args) => args
-        case ExistentialType(_, u) => u.typeArgs
-        case _ => List.empty[Type]
-      }
-    }
     def flatTypesFrom(t: Type): Set[Type] = Set(t) ++ t.typeArgs.flatMap(x => flatTypesFrom(x))
 
     def isImplicitParamTypeInTparams(param: ValDef, tparamSymbols: Set[Symbol]) =
