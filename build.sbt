@@ -232,7 +232,7 @@ lazy val sbtPlug: Project = Project(
     val base = (sourceManaged in Compile).value
     val file = base / "wartremover" / "Wart.scala"
     val warts = wartClasses.value
-    val expectCount = 37
+    val expectCount = 38
     assert(
       warts.size == expectCount,
       s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"
