@@ -1,9 +1,10 @@
 lazy val commonSettings = Def.settings(
-  scalaVersion := "2.13.3",
+  scalaVersion := "2.13.4",
   wartremoverWarnings ++= Warts.all,
   wartremoverWarnings += Wart.custom("org.wartremover.contrib.warts.OldTime"),
+  wartremoverCrossVersion := CrossVersion.binary,
   wartremoverDependencies += {
-    "org.wartremover" %% "wartremover-contrib" % "1.3.9" cross wartremoverCrossVersion.value
+    "org.wartremover" %% "wartremover-contrib" % "1.3.11" cross wartremoverCrossVersion.value
   },
 )
 

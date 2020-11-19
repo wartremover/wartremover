@@ -22,6 +22,7 @@ lazy val allScalaVersions = Seq(
   "2.13.1",
   "2.13.2",
   "2.13.3",
+  "2.13.4",
 )
 
 val latestScala211 = settingKey[String]("")

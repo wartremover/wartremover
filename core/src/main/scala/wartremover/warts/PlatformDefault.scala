@@ -34,7 +34,7 @@ object PlatformDefault extends WartTraverser {
             error(u)(tree.pos, newString)
           case Select(obj, FallbackSystemCodec) if obj.tpe =:= typeOf[scala.io.Codec.type] =>
             // `fallbackSystemCodec` depends on `java.nio.charset.Charset.defaultCharset`
-            // https://github.com/scala/scala/blob/v2.13.3/src/library/scala/io/Codec.scala#L80
+            // https://github.com/scala/scala/blob/v2.13.4/src/library/scala/io/Codec.scala#L80
             error(u)(tree.pos, fallbackSystemCodec)
           case _ =>
             super.traverse(tree)
