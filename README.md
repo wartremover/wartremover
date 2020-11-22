@@ -1,6 +1,6 @@
 # WartRemover
 
-[![scaladoc](https://javadoc-badge.appspot.com/org.wartremover/wartremover_2.12.11.svg?label=scaladoc)](https://javadoc-badge.appspot.com/org.wartremover/wartremover_2.12.11/org/wartremover/index.html?javadocio=true)
+[![scaladoc](https://javadoc-badge.appspot.com/org.wartremover/wartremover_2.13.svg?label=scaladoc)](https://javadoc-badge.appspot.com/org.wartremover/wartremover_2.13/org/wartremover/index.html?javadocio=true)
 [![Maven Central](https://img.shields.io/maven-central/v/org.wartremover/wartremover_2.13?label=Maven%20Central&color=%236DBE42)](https://search.maven.org/search?q=g:%22org.wartremover%22%20AND%20a:%22wartremover_2.13%22)
 
 [![Join us on gitter](http://badges.gitter.im/wartremover/Lobby.png)](https://gitter.im/wartremover/Lobby)
