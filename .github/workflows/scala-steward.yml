@@ -8,10 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: laughedelic/coursier-setup@v1
-    - run: cs install scalafmt
+    - name: Generate token
+      id: generate_token
+      uses: tibdex/github-app-token@v1
+      with:
+        app_id: 89668
+        private_key: ${{ secrets.WARTREMOVER_BOT_KEY }}
     - name: Launch Scala Steward
       if: ${{ !github.event.repository.fork }}
       uses: scala-steward-org/scala-steward-action@v2.9.1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ steps.generate_token.outputs.token }}
+        author-email: "74847867+wartremover-bot[bot]@users.noreply.github.com"
+        author-name: wartremover-bot[bot]
