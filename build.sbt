@@ -31,7 +31,9 @@ val latestScala213 = settingKey[String]("")
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
-  prefix + versions.filter(_ startsWith prefix).map(_.drop(prefix.length).toLong).reduceLeftOption(_ max _).getOrElse(s"not found Scala ${prefix}x version ${versions}")
+  prefix + versions.filter(_ startsWith prefix).map(_.drop(prefix.length).toLong).reduceLeftOption(_ max _).getOrElse(
+    sys.error(s"not found Scala ${prefix}x version ${versions}")
+  )
 }
 
 lazy val baseSettings = Def.settings(
