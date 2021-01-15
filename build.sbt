@@ -13,11 +13,10 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 // add more scala versions when found binary and/or source incompatibilities in scala-compiler
 lazy val allScalaVersions = Seq(
   "2.11.12",
-  "2.12.8",
-  "2.12.9",
   "2.12.10",
   "2.12.11",
   "2.12.12",
+  "2.12.13",
   "2.13.0",
   "2.13.1",
   "2.13.2",
