@@ -50,7 +50,7 @@ lazy val commonSettings = Def.settings(
   Seq(packageBin, packageDoc, packageSrc).flatMap {
     // include LICENSE file in all packaged artifacts
     inTask(_)(Seq(
-      mappings in Compile += ((baseDirectory in ThisBuild).value / "LICENSE") -> "LICENSE"
+      (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
     ))
   },
   organization := "org.wartremover",
@@ -59,9 +59,9 @@ lazy val commonSettings = Def.settings(
       url("http://www.apache.org/licenses/LICENSE-2.0.txt")
   ),
   publishMavenStyle := true,
-  publishArtifact in Test := false,
-  scalacOptions in (Compile, doc) ++= {
-    val base = (baseDirectory in LocalRootProject).value.getAbsolutePath
+  Test / publishArtifact := false,
+  (Compile / doc / scalacOptions) ++= {
+    val base = (LocalRootProject / baseDirectory).value.getAbsolutePath
     val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
     Seq(
       "-sourcepath",
@@ -109,8 +109,8 @@ releaseProcess := Seq[ReleaseStep](
 val coreId = "core"
 
 def crossSrcSetting(c: Configuration) = {
-  unmanagedSourceDirectories in c += {
-    val dir = (baseDirectory in LocalProject(coreId)).value / "src" / Defaults.nameForSrc(c.name)
+  (c / unmanagedSourceDirectories) += {
+    val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
         dir / s"scala-2.13+"
@@ -123,7 +123,7 @@ def crossSrcSetting(c: Configuration) = {
 val coreSettings = Def.settings(
   commonSettings,
   name := "wartremover",
-  fork in Test := true,
+  Test / fork := true,
   crossScalaVersions := allScalaVersions,
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -151,7 +151,7 @@ val coreSettings = Def.settings(
     }
     new RuleTransformer(strip).transform(node)(0)
   },
-  assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
+  assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
 )
 
 lazy val coreCrossBinary = Project(
@@ -181,14 +181,14 @@ lazy val core = Project(
     // workaround for https://github.com/sbt/sbt/issues/5097
     target.value / s"scala-${scalaVersion.value}"
   },
-  assemblyOutputPath in assembly := file("./wartremover-assembly.jar")
+  assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
 )
   .dependsOn(testMacros % "test->compile")
 
 val wartClasses = Def.task {
-  val loader = (testLoader in (core, Test)).value
+  val loader = (core / Test / testLoader).value
   val wartTraverserClass = Class.forName("org.wartremover.WartTraverser", false, loader)
-  Tests.allDefs((compile in (core, Compile)).value).collect{
+  Tests.allDefs((core / Compile / compile).value).collect{
     case c: ClassLike =>
       val decoded = c.name.split('.').map(NameTransformer.decode).mkString(".")
       c.definitionType match {
@@ -230,8 +230,8 @@ lazy val sbtPlug: Project = Project(
   },
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   crossScalaVersions := Seq(latestScala212.value),
-  sourceGenerators in Compile += Def.task {
-    val base = (sourceManaged in Compile).value
+  (Compile / sourceGenerators) += Def.task {
+    val base = (Compile / sourceManaged).value
     val file = base / "wartremover" / "Wart.scala"
     val warts = wartClasses.value
     val expectCount = 40
@@ -268,7 +268,7 @@ lazy val testMacros: Project = Project(
 ).settings(
   baseSettings,
   crossScalaVersions := allScalaVersions,
-  skip in publish := true,
+  publish / skip := true,
   publishArtifact := false,
   publish := {},
   publishLocal := {},
