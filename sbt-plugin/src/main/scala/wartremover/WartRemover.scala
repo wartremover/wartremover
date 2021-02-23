@@ -81,7 +81,7 @@ object WartRemover extends sbt.AutoPlugin {
 
   def dependsOnLocalProjectWarts(p: Reference, configuration: Configuration = Compile): Def.SettingsDefinition = {
     autoImport.wartremoverClasspaths ++= {
-      (fullClasspath in (p, configuration)).value.map(_.data).map{ f =>
+      (p / configuration / fullClasspath).value.map(_.data).map{ f =>
         copyToCompilerPluginJarsDir(
           src = f,
           jarDir = autoImport.wartremoverPluginJarsDir.value,
