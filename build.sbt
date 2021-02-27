@@ -72,7 +72,7 @@ lazy val commonSettings = Def.settings(
     )
   },
   publishTo := sonatypePublishToBundle.value,
-  homepage := Some(url("http://wartremover.org")),
+  homepage := Some(url("https://wartremover.org")),
   pomExtra :=
     <scm>
       <url>git@github.com:wartremover/wartremover.git</url>
