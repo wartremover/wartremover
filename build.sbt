@@ -129,7 +129,7 @@ val coreSettings = Def.settings(
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
-        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "1.3.0" % "test")
+        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "2.0.0" % "test")
       case _ =>
         libraryDependencies.value
     }
