@@ -8,7 +8,7 @@ lazy val commonSettings = Def.settings(
   },
 )
 
-scalaVersion := "2.12.13"
+scalaVersion := "2.12.14"
 
 lazy val myWarts = project.in(file("my-warts")).settings(
   commonSettings,
