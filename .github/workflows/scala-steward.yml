@@ -24,3 +24,4 @@ jobs:
         github-token: ${{ steps.generate_token.outputs.token }}
         author-email: "74847867+wartremover-bot[bot]@users.noreply.github.com"
         author-name: wartremover-bot[bot]
+        scala-steward-version: 0.10.0
