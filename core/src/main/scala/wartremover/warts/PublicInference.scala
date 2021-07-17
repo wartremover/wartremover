@@ -28,7 +28,9 @@ object PublicInference extends WartTraverser {
 
     def scoverage(tree: Tree): Boolean = {
       // https://github.com/wartremover/wartremover/issues/475
+      // https://github.com/wartremover/wartremover/issues/532
       //
+      // https://github.com/scoverage/scalac-scoverage-plugin/blob/9e1ea5c47f1a6cd/scalac-scoverage-runtime/shared/src/main/scala/scoverage/Invoker.scala#L36-L40
       // https://github.com/scoverage/scalac-scoverage-plugin/blob/c568ec50b01ccdf/scalac-scoverage-runtime/shared/src/main/scala/scoverage/Invoker.scala#L32
       // scoverage rewrite
       // val a = "b"
@@ -39,6 +41,8 @@ object PublicInference extends WartTraverser {
       // }
       tree match {
         case Block(Apply(q"scoverage.Invoker.invoked", Literal(_) :: Literal(_) :: Nil) :: Nil, Literal(c)) =>
+          isAcceptLiteralType(c.tpe)
+        case Block(Apply(q"scoverage.Invoker.invoked", Literal(_) :: Literal(_) :: Literal(_) :: Nil) :: Nil, Literal(c)) =>
           isAcceptLiteralType(c.tpe)
         case _ =>
           false
