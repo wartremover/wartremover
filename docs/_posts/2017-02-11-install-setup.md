@@ -5,7 +5,7 @@ category: doc
 date: 2017-02-11 0:00:00
 order: 0
 ---
-
+## sbt
 Add the following to your `project/plugins.sbt`:
 
 ```scala
@@ -91,6 +91,16 @@ Compile the command-line tool via `sbt "++ 2.12.14" core/assembly` and then use 
 
 ### Compiler plugin (manually)
 
+Similarly to the sbt plugin, warts needed to be checked and whether to report failiure as error or 
+warning can be defined as scalac option in the format -P:wartremover:_( traverser / only-warn-traverser / skip)_:
+(semicolon
+separated list of wart names). 
+
+Built-in warts can be defined by their simple class name like.
+
+`-P:wartremover:traverser:Any,Var`
+
+#### checks reported as error
 Add the following to `build.sbt`:
 
 ```scala
@@ -99,20 +109,33 @@ addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.16" cross CrossVersi
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
 
+#### checks reported as warnings
 By default, WartRemover generates compile-time errors. If you want to be warned only, use an `only-warn-traverser`:
 
 ```scala
 scalacOptions += "-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe"
 ```
 
-If you don't want to perform the checks in some file, you can use:
-
+#### checks to skip (both error and warning)
+Since there are 39 [built-in warts](https://www.wartremover.org/doc/warts.html) specifying the 
+needed ones can be cumbersome. Similarly to the sbt plugin's `Warts.allBut` both the checks defined 
+as error and warning can be filtered by the option `skip`. It can be particularly useful when using 
+the special warts `All` or `Unsafe` that are only containers of other warts.
 ```scala
-scalacOptions += "-P:wartremover:excluded:ABSOLUTE_PATH_TO_THE_FILE"
+scalacOptions += "-P:wartremover:only-warn-traverser:All"
+scalacOptions += "-P:wartremover:skip:While,Return"
 ```
 
-The `excluded` option accepts a colon-separated list of absolute paths to files to ignore.
+#### exclude files
+If you don't want to perform the checks in some file(s), you can use:
 
+```scala
+scalacOptions += "-P:wartremover:excluded:PATH_TO_FILE:PATH_TO_OTHER_FILE"
+```
+
+The `excluded` option accepts a colon-separated list of paths to files to ignore.
+
+#### custom wart
 To use your custom `WartTraverser`, you'll need to provide a classpath where it can be found:
 
 ```scala

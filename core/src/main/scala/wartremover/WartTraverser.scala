@@ -1,9 +1,7 @@
 package org.wartremover
 
-import tools.nsc.Global
 import reflect.api.Universe
 import reflect.macros.blackbox.Context
-import scala.util.matching.Regex
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
@@ -159,4 +157,8 @@ trait WartUniverse {
     error(pos, s"[wartremover:$wartName] $message")
   def warning(pos: universe.Position, message: String, wartName: String): Unit =
     warning(pos, s"[wartremover:$wartName] $message")
+}
+
+trait Container{
+  def items: List[WartTraverser]
 }
