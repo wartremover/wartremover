@@ -196,6 +196,25 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
 
 See the notes on the compiler plugin above for options to pass as `<arg>`s.
 
+### Mill
+
+Add the following lines to the module definition in `build.sc`
+```scala
+object Module1 extends ScalaModule {
+	val wartRemoverVer = "2.4.16"
+
+	def compileIvyDeps = Agg(ivy"org.wartremover::wartremover:$wartRemoverVer")
+
+	def scalacPluginIvyDeps = T {
+		super.scalacPluginIvyDeps() ++
+			Agg(ivy"org.wartremover::wartremover:$wartRemoverVer")
+	}
+   
+   def scalacOptions = Seq("-P:wartremover:only-warn-traverser:Unsafe")
+}
+```
+See the notes on the compiler plugin above for options to pass as `scalacOptions`.
+
 ### Macros
 
 You can make any wart into a macro, like so:
