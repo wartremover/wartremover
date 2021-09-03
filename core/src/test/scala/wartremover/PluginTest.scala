@@ -2,11 +2,14 @@ package org.wartremover
 
 import org.scalatest.funsuite.AnyFunSuite
 import warts._
+
+import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.{Global, Settings}
 
 class PluginTest extends AnyFunSuite {
 	test("plugin parameters") {
-		val plugin = new Plugin(Global(new Settings()))
+		val settings = new Settings()
+		val plugin = new Plugin(Global(settings, new ConsoleReporter(settings)))
 		plugin.init(List(
 			 "traverser:While; AnyVal; Any"
 			,"traverser: org.wartremover.warts.Unsafe; AnyVal "

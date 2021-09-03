@@ -50,10 +50,11 @@ wartremoverWarnings ++= Seq(Wart.Any, Wart.Serializable)
 
 ## Suppressing Errors & Warnings
 
-To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation:
+To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation listing the fully 
+qualified class names or for built-in warts `wartremover:`{simple class name} can be also used:
 
 ```scala
-@SuppressWarnings(Array("org.wartremover.warts.Var", "org.wartremover.warts.Null"))
+@SuppressWarnings(Array("org.wartremover.warts.Var", "wartremover:Null"))
 var foo = null
 
 // suppress all warts
@@ -61,12 +62,15 @@ var foo = null
 var bar = null
 ```
 
-To exclude a file or directory from all checks, use `wartremoverExcluded` in your `build.sbt` file:
+To exclude a file or directory from _all_ checks,
+
+- use `wartremoverExcluded` in your `build.sbt` file:
 
 ```scala
 wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
 wartremoverExcluded += sourceManaged.value
 ```
+- or set as [scalac option](#exclude-files)
 
 ## Other ways of using WartRemover
 
@@ -125,6 +129,7 @@ the special warts `All` or `Unsafe` that are only containers of other warts.
 scalacOptions += "-P:wartremover:only-warn-traverser:All"
 scalacOptions += "-P:wartremover:skip:While,Return"
 ```
+will check _all_ built-in warts except `While` and `Return`
 
 #### exclude files
 If you don't want to perform the checks in some file(s), you can use:

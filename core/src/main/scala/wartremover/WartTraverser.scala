@@ -118,7 +118,8 @@ trait WartTraverser {
       a.tree.children.tail.exists {
         _.exists {
           case Literal(Constant(arg)) =>
-            (arg == className) || (arg == "org.wartremover.warts.All")
+            (arg == className) || (arg == "org.wartremover.warts.All") ||
+              arg == "wartremover:"+ wartName || arg == "wartremover:All"
           case _ =>
             false
         }
