@@ -31,7 +31,7 @@ jobs:
       with:
         java-version: ${{matrix.java}}
         distribution: temurin
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - shell: bash
       name: install sbt
       run: curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/aff36a23f7213d94189aabfcc47a32b11f3a6fba/sbt > ./sbt && chmod 0755 ./sbt
