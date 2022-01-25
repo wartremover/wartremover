@@ -143,7 +143,7 @@ val coreSettings = Def.settings(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ),
   libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest" % "3.2.10" % "test")
+    Seq("org.scalatest" %% "scalatest" % "3.2.11" % "test")
   },
   pomPostProcess := { node =>
     import scala.xml._
