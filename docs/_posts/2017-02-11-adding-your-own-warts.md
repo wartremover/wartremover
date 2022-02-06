@@ -55,7 +55,7 @@ You'll also need to add the package containing your wart to wartremover's classp
 ```scala
 libraryDependencies += "myOrg" %% "myWartPackage" % "1.0.0"
 wartremoverClasspaths ++= {
-  (dependencyClasspath in Compile).value.files
+  (Compile / dependencyClasspath).value.files
     .find(_.name.contains("myWartPackage"))
     .map(_.toURI.toString)
     .toList
