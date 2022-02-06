@@ -35,7 +35,7 @@ wartremoverWarnings ++= Warts.all    // or Warts.unsafe
 You can also use scopes, e.g. to turn on all warts only for compilation (and not for the tests nor the `sbt console`), use:
 
 ```scala
-wartremoverErrors in (Compile, compile) ++= Warts.all
+Compile / compile / wartremoverErrors ++= Warts.all
 ```
 
 To choose warts more selectively, use any of the following:
