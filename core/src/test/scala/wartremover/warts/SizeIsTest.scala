@@ -41,4 +41,15 @@ class SizeIsTest extends AnyFunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+
+  test("don't suggest if not compare methods") {
+    val result = WartTestTraverser(SizeIs) {
+      List(3).size.toString
+      Vector(3).length + 2
+      Iterable(3).size - 1
+      Map.empty[Int, String].size * 2
+      Set.empty[Boolean].size to 3
+    }
+    assertEmpty(result)
+  }
 }
