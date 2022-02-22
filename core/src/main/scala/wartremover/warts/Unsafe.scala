@@ -1,8 +1,8 @@
 package org.wartremover
 package warts
 
-object Unsafe extends WartTraverser {
-  val safeTraversers = List(
+object Unsafe extends WartTraverser with Container {
+  val items = List(
     Any,
     AsInstanceOf,
     DefaultArguments,
@@ -22,5 +22,5 @@ object Unsafe extends WartTraverser {
   )
 
   def apply(u: WartUniverse): u.Traverser =
-    WartTraverser.sumList(u)(safeTraversers)
+    WartTraverser.sumList(u)(items)
 }

@@ -5,7 +5,7 @@ category: doc
 date: 2017-02-11 0:00:00
 order: 0
 ---
-
+## sbt
 Add the following to your `project/plugins.sbt`:
 
 ```scala
@@ -50,10 +50,11 @@ wartremoverWarnings ++= Seq(Wart.Any, Wart.Serializable)
 
 ## Suppressing Errors & Warnings
 
-To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation:
+To exclude a specific piece of code from one or more checks, use the `SuppressWarnings` annotation listing the fully 
+qualified class names or for built-in warts `wartremover:`{simple class name} can be also used:
 
 ```scala
-@SuppressWarnings(Array("org.wartremover.warts.Var", "org.wartremover.warts.Null"))
+@SuppressWarnings(Array("org.wartremover.warts.Var", "wartremover:Null"))
 var foo = null
 
 // suppress all warts
@@ -61,12 +62,15 @@ var foo = null
 var bar = null
 ```
 
-To exclude a file or directory from all checks, use `wartremoverExcluded` in your `build.sbt` file:
+To exclude a file or directory from _all_ checks,
+
+- use `wartremoverExcluded` in your `build.sbt` file:
 
 ```scala
 wartremoverExcluded += baseDirectory.value / "src" / "main" / "scala" / "SomeFile.scala"
 wartremoverExcluded += sourceManaged.value
 ```
+- or set as [scalac option](#exclude-files)
 
 ## Other ways of using WartRemover
 
@@ -91,6 +95,16 @@ Compile the command-line tool via `sbt "++ 2.12.15" core/assembly` and then use 
 
 ### Compiler plugin (manually)
 
+Similarly to the sbt plugin, warts needed to be checked and whether to report failiure as error or 
+warning can be defined as scalac option in the format -P:wartremover:_( traverser / only-warn-traverser / skip)_:
+(semicolon
+separated list of wart names). 
+
+Built-in warts can be defined by their simple class name like.
+
+`-P:wartremover:traverser:Any,Var`
+
+#### checks reported as error
 Add the following to `build.sbt`:
 
 ```scala
@@ -99,20 +113,34 @@ addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.18" cross CrossVersi
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
 
+#### checks reported as warnings
 By default, WartRemover generates compile-time errors. If you want to be warned only, use an `only-warn-traverser`:
 
 ```scala
 scalacOptions += "-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe"
 ```
 
-If you don't want to perform the checks in some file, you can use:
+#### checks to skip (both error and warning)
+Since there are 39 [built-in warts](https://www.wartremover.org/doc/warts.html) specifying the 
+needed ones can be cumbersome. Similarly to the sbt plugin's `Warts.allBut` both the checks defined 
+as error and warning can be filtered by the option `skip`. It can be particularly useful when using 
+the special warts `All` or `Unsafe` that are only containers of other warts.
+```scala
+scalacOptions += "-P:wartremover:only-warn-traverser:All"
+scalacOptions += "-P:wartremover:skip:While,Return"
+```
+will check _all_ built-in warts except `While` and `Return`
+
+#### exclude files
+If you don't want to perform the checks in some file(s), you can use:
 
 ```scala
-scalacOptions += "-P:wartremover:excluded:ABSOLUTE_PATH_TO_THE_FILE"
+scalacOptions += "-P:wartremover:excluded:PATH_TO_FILE:PATH_TO_OTHER_FILE"
 ```
 
-The `excluded` option accepts a colon-separated list of absolute paths to files to ignore.
+The `excluded` option accepts a colon-separated list of paths to files to ignore.
 
+#### custom wart
 To use your custom `WartTraverser`, you'll need to provide a classpath where it can be found:
 
 ```scala
@@ -172,6 +200,25 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
 ```
 
 See the notes on the compiler plugin above for options to pass as `<arg>`s.
+
+### Mill
+
+Add the following lines to the module definition in `build.sc`
+```scala
+object Module1 extends ScalaModule {
+	val wartRemoverVer = "2.4.16"
+
+	def compileIvyDeps = Agg(ivy"org.wartremover::wartremover:$wartRemoverVer")
+
+	def scalacPluginIvyDeps = T {
+		super.scalacPluginIvyDeps() ++
+			Agg(ivy"org.wartremover::wartremover:$wartRemoverVer")
+	}
+   
+   def scalacOptions = Seq("-P:wartremover:only-warn-traverser:Unsafe")
+}
+```
+See the notes on the compiler plugin above for options to pass as `scalacOptions`.
 
 ### Macros
 

@@ -4,23 +4,24 @@ import tools.nsc.plugins.PluginComponent
 import tools.nsc.{Global, Phase}
 import java.io.File
 import java.net.{URL, URLClassLoader}
+import scala.collection.mutable
 
 class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
-  import global._
-
   val name = "wartremover"
   val description = "Linting library and plugin. Allows rules to run inside a plugin or inside macros."
   val components = List[PluginComponent](Traverser)
 
-  private[this] var traversers: List[WartTraverser] = List.empty
-  private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
-  private[this] var excludedFiles: List[String] = List.empty
+  private[this] var _traversers: List[WartTraverser] = List.empty
+  private[this] var _onlyWarnTraversers: List[WartTraverser] = List.empty
+  private[this] var _excludedFiles: List[String] = List.empty
 
-  def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
+  def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): List[WartTraverser] = {
     val moduleSymbol = mirror.staticModule(name)
-    val instance = mirror.reflectModule(moduleSymbol).instance
-    instance.asInstanceOf[WartTraverser]
-  }
+    mirror.reflectModule(moduleSymbol).instance match {
+      case c: Container => c.items
+      case s: WartTraverser => List(s)
+    }
+   }
 
   def prefixedOption(prefix: String)(option: String) =
     if (option.startsWith(s"$prefix:"))
@@ -31,7 +32,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   def filterOptions(prefix: String, options: List[String]) =
     options.map(prefixedOption(prefix)).flatten
 
-  override def processOptions(options: List[String], error: String => Unit): Unit = {
+  override def init(options: List[String], error: String => Unit): Boolean = {
     val classPathEntries = filterOptions("cp", options).map {
       c =>
         val filePrefix = "file:"
@@ -44,15 +45,31 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val mirror = reflect.runtime.universe.runtimeMirror(classLoader)
 
-    def ts(p: String) = {
-      val traverserNames = filterOptions(p, options)
-      traverserNames.map(getTraverser(mirror))
+    def ts(p: String, skip: collection.Set[String]): List[String] = {
+      filterOptions(p, options)
+         .flatMap(_ split ";")
+         .map { s =>
+           (if ( s contains '.' ) "" else "org.wartremover.warts.") + s.trim
+         }
+         .filterNot(skip.contains)
     }
 
-    traversers = ts("traverser")
-    onlyWarnTraversers = ts("only-warn-traverser")
-    excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+    def traversers(names: List[String], skip: collection.Set[String]) =
+      names.flatMap(getTraverser(mirror)).distinct.filterNot(t => skip.contains(t.className))
+
+    val skip = mutable.Set (ts("skip", Set()):_*)
+    val errorNames = ts("traverser", skip)
+    _traversers = traversers(errorNames, skip)
+    skip ++= errorNames
+    _onlyWarnTraversers = traversers(ts("only-warn-traverser", skip), skip)
+    _excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_)
+       .getAbsolutePath)
+    true
   }
+
+  def traversers = _traversers
+  def onlyWarnTraversers = _onlyWarnTraversers
+  def excludedFiles = _excludedFiles
 
   object Traverser extends PluginComponent {
     import global._

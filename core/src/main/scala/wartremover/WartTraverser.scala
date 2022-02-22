@@ -1,9 +1,7 @@
 package org.wartremover
 
-import tools.nsc.Global
 import reflect.api.Universe
 import reflect.macros.blackbox.Context
-import scala.util.matching.Regex
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
@@ -120,7 +118,8 @@ trait WartTraverser {
       a.tree.children.tail.exists {
         _.exists {
           case Literal(Constant(arg)) =>
-            (arg == className) || (arg == "org.wartremover.warts.All")
+            (arg == className) || (arg == "org.wartremover.warts.All") ||
+              arg == "wartremover:"+ wartName || arg == "wartremover:All"
           case _ =>
             false
         }
@@ -159,4 +158,8 @@ trait WartUniverse {
     error(pos, s"[wartremover:$wartName] $message")
   def warning(pos: universe.Position, message: String, wartName: String): Unit =
     warning(pos, s"[wartremover:$wartName] $message")
+}
+
+trait Container{
+  def items: List[WartTraverser]
 }
