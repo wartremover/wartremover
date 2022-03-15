@@ -30,9 +30,9 @@ lazy val allScalaVersions = Seq(
   "2.13.8",
 )
 
-val latestScala211 = settingKey[String]("")
-val latestScala212 = settingKey[String]("")
-val latestScala213 = settingKey[String]("")
+def latestScala211 = latest(11, allScalaVersions)
+def latestScala212 = latest(12, allScalaVersions)
+def latestScala213 = latest(13, allScalaVersions)
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
@@ -42,13 +42,10 @@ def latest(n: Int, versions: Seq[String]) = {
 }
 
 lazy val baseSettings = Def.settings(
-  latestScala211 := latest(11, allScalaVersions),
-  latestScala212 := latest(12, allScalaVersions),
-  latestScala213 := latest(13, allScalaVersions),
   scalacOptions ++= Seq(
     "-deprecation"
   ),
-  scalaVersion := latestScala212.value,
+  scalaVersion := latestScala212,
 )
 
 lazy val commonSettings = Def.settings(
@@ -168,7 +165,7 @@ lazy val coreCrossBinary = Project(
   crossSrcSetting(Compile),
   Compile / scalaSource := (core / Compile / scalaSource).value,
   Compile / resourceDirectory := (core / Compile / resourceDirectory).value,
-  crossScalaVersions := Seq(latestScala211.value, latestScala212.value, latestScala213.value),
+  crossScalaVersions := Seq(latestScala211, latestScala212, latestScala213),
   crossVersion := CrossVersion.binary
 )
   .dependsOn(testMacros % "test->compile")
@@ -235,7 +232,7 @@ lazy val sbtPlug: Project = Project(
     )
   },
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
-  crossScalaVersions := Seq(latestScala212.value),
+  crossScalaVersions := Seq(latestScala212),
   (Compile / sourceGenerators) += Def.task {
     val base = (Compile / sourceManaged).value
     val file = base / "wartremover" / "Wart.scala"
