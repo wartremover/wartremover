@@ -115,14 +115,14 @@ releaseProcess := Seq[ReleaseStep](
 val coreId = "core"
 
 def crossSrcSetting(c: Configuration) = {
-  (c / unmanagedSourceDirectories) += {
+  c / unmanagedSourceDirectories ++= {
     val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
-    CrossVersion.partialVersion(scalaVersion.value) match {
+    PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
       case Some((2, v)) if v >= 13 =>
         dir / s"scala-2.13+"
-      case _ =>
+      case Some((2, _)) =>
         dir / s"scala-2.13-"
-    }
+    }.toList
   }
 }
 
