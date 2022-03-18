@@ -48,24 +48,21 @@ jobs:
         java-version: ${{matrix.java}}
         distribution: temurin
     - uses: actions/checkout@v3
-    - shell: bash
-      name: install sbt
-      run: curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/aff36a23f7213d94189aabfcc47a32b11f3a6fba/sbt > ./sbt && chmod 0755 ./sbt
     - uses: coursier/cache-action@v6
     - shell: bash
       run: |
         case ${{ matrix.name }} in
           "format")
-            ./sbt -v scalafmtSbtCheck "+ scalafmtCheckAll"
+            sbt -v scalafmtSbtCheck "+ scalafmtCheckAll"
             ;;
           "test-cross")
-            ./sbt -v "project core" "testPartial 4 ${{matrix.test_index}}"
+            sbt -v "project core" "testPartial 4 ${{matrix.test_index}}"
             ;;
           "scripted")
-            ./sbt -v "+ publishLocal" "+ sbt-plugin/scripted"
+            sbt -v "+ publishLocal" "+ sbt-plugin/scripted"
             ;;
           "test")
-            ./sbt -v test
+            sbt -v test
             ;;
           *)
             echo "unknown job"
