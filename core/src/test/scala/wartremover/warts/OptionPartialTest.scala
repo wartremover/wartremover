@@ -18,6 +18,15 @@ class OptionPartialTest extends AnyFunSuite with ResultAssertions {
     }
     assertError(result)("Option#get is disabled - use Option#fold instead")
   }
+  test("pattern match") {
+    val result = WartTestTraverser(OptionPartial) {
+      Option("a") match {
+        case Some(x) => x
+        case None => "b"
+      }
+    }
+    assertEmpty(result)
+  }
   test("doesn't detect other `get` methods") {
     val result = WartTestTraverser(OptionPartial) {
       case class A(get: Int)
