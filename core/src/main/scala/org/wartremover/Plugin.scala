@@ -22,14 +22,14 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     instance.asInstanceOf[WartTraverser]
   }
 
-  def prefixedOption(prefix: String)(option: String) =
+  def prefixedOption(prefix: String)(option: String): Option[String] =
     if (option.startsWith(s"$prefix:"))
       Some(option.substring(s"$prefix:".length))
     else
       None
 
-  def filterOptions(prefix: String, options: List[String]) =
-    options.map(prefixedOption(prefix)).flatten
+  def filterOptions(prefix: String, options: List[String]): List[String] =
+    options.flatMap(prefixedOption(prefix))
 
   override def processOptions(options: List[String], error: String => Unit): Unit = {
     val classPathEntries = filterOptions("cp", options).map {

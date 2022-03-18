@@ -7,8 +7,6 @@ object Null extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
 
-    val UnapplyName = TermName("unapply")
-    val UnapplySeqName = TermName("unapplySeq")
     val Equals = TermName(NameTransformer.encode("=="))
     val NotEquals = TermName(NameTransformer.encode("!="))
     val Eq = TermName(NameTransformer.encode("eq"))
