@@ -1,6 +1,8 @@
 package org.wartremover
 package warts
 
+import scala.annotation.nowarn
+
 object IsInstanceOf extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
@@ -8,6 +10,7 @@ object IsInstanceOf extends WartTraverser {
     val CanEqualName = TermName("canEqual")
     val EqualsName = TermName("equals")
     new u.Traverser {
+      @nowarn("msg=lineContent")
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {

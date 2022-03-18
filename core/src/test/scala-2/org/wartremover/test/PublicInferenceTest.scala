@@ -5,6 +5,7 @@ import org.wartremover.warts.PublicInference
 import org.scalatest.funsuite.AnyFunSuite
 import wartremover.test.PublicInferenceTestMacros
 
+// TODO Scala 3 ?
 class PublicInferenceTest extends AnyFunSuite with ResultAssertions {
   test("Non-public fields and methods are allowed") {
     case class X(i: Int)

@@ -87,51 +87,35 @@ object WartRemover extends sbt.AutoPlugin {
 
   def dependsOnLocalProjectWarts(p: Reference, configuration: Configuration = Compile): Def.SettingsDefinition = {
     autoImport.wartremoverClasspaths ++= {
-      if (isScala3.value) {
-        Nil
-      } else {
-        (p / configuration / fullClasspath).value.map(_.data).map { f =>
-          copyToCompilerPluginJarsDir(
-            src = f,
-            jarDir = autoImport.wartremoverPluginJarsDir.value,
-            base = (LocalRootProject / baseDirectory).value,
-            log = streams.value.log
-          ).map("file:" + _).getOrElse(f.toURI.toString)
-        }
+      (p / configuration / fullClasspath).value.map(_.data).map { f =>
+        copyToCompilerPluginJarsDir(
+          src = f,
+          jarDir = autoImport.wartremoverPluginJarsDir.value,
+          base = (LocalRootProject / baseDirectory).value,
+          log = streams.value.log
+        ).map("file:" + _).getOrElse(f.toURI.toString)
       }
     }
   }
 
-  private[this] val isScala3 = Def.setting(
-    CrossVersion.partialVersion(scalaVersion.value).exists(_._1 >= 3)
-  )
-
   override lazy val projectSettings: Seq[Def.Setting[_]] = Def.settings(
     libraryDependencies ++= {
-      if (isScala3.value) {
-        Nil
-      } else {
-        Seq(
-          compilerPlugin(
-            "org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value
-          )
+      Seq(
+        compilerPlugin(
+          "org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value
         )
-      }
+      )
     },
     scalacOptionSetting(scalacOptions),
     scalacOptionSetting(Compile / scalacOptions),
     scalacOptionSetting(Test / scalacOptions),
     scalacOptions ++= {
-      if (isScala3.value) {
-        Nil
-      } else {
-        // use relative path
-        // https://github.com/sbt/sbt/issues/6027
-        autoImport.wartremoverExcluded.value.distinct.map { c =>
-          val base = (LocalRootProject / baseDirectory).value
-          val x = base.toPath.relativize(c.toPath)
-          s"-P:wartremover:excluded:$x"
-        }
+      // use relative path
+      // https://github.com/sbt/sbt/issues/6027
+      autoImport.wartremoverExcluded.value.distinct.map { c =>
+        val base = (LocalRootProject / baseDirectory).value
+        val x = base.toPath.relativize(c.toPath)
+        s"-P:wartremover:excluded:$x"
       }
     },
     autoImport.wartremoverPluginJarsDir := {
@@ -168,31 +152,19 @@ object WartRemover extends sbt.AutoPlugin {
         },
         derive(
           scalacOptions ++= {
-            if (isScala3.value) {
-              Nil
-            } else {
-              autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")
-            }
+            autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")
           }
         ),
         derive(
           scalacOptions ++= {
-            if (isScala3.value) {
-              Nil
-            } else {
-              autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (
-                w => s"-P:wartremover:only-warn-traverser:${w.clazz}"
-              )
-            }
+            autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (
+              w => s"-P:wartremover:only-warn-traverser:${w.clazz}"
+            )
           }
         ),
         derive(
           scalacOptions ++= {
-            if (isScala3.value) {
-              Nil
-            } else {
-              autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp")
-            }
+            autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp")
           }
         )
       )

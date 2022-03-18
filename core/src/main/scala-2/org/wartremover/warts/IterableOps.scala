@@ -1,22 +1,15 @@
 package org.wartremover
 package warts
 
-object TraversableOps extends WartTraverser {
+object IterableOps extends WartTraverser {
 
   class Op(name: String, error: String) extends WartTraverser {
-    override lazy val className = "org.wartremover.warts.TraversableOps"
+    override lazy val className = "org.wartremover.warts.IterableOps"
 
     def apply(u: WartUniverse): u.Traverser = {
       import u.universe._
 
-      val symbol =
-        try {
-          rootMirror.staticClass("scala.collection.Traversable")
-        } catch {
-          case _: ScalaReflectionException =>
-            // Traversable removed since Scala 2.13
-            rootMirror.staticClass("scala.collection.Iterable")
-        }
+      val symbol = rootMirror.staticClass("scala.collection.Iterable")
       val Name = TermName(name)
       new u.Traverser {
         override def traverse(tree: Tree): Unit = {

@@ -8,7 +8,6 @@ class CaseClassTest extends AnyFunSuite with ResultAssertions {
   test("case classes still work") {
     val result = WartTestTraverser(Unsafe) {
       case class A(a: Int)
-      case class B[X](a: X)
     }
     assertEmpty(result)
   }

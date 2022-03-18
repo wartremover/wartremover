@@ -5,6 +5,7 @@ import scala.annotation.tailrec
 import org.wartremover.warts.Recursion
 import org.scalatest.funsuite.AnyFunSuite
 
+// TODO Scala 3 ?
 class RecursionTest extends AnyFunSuite with ResultAssertions {
 
   test("can't use recursion") {

@@ -3,6 +3,7 @@ package test
 
 import org.wartremover.warts.Null
 import org.scalatest.funsuite.AnyFunSuite
+import scala.annotation.nowarn
 
 class NullTest extends AnyFunSuite with ResultAssertions {
   test("can't use `null`") {
@@ -60,6 +61,7 @@ class NullTest extends AnyFunSuite with ResultAssertions {
   }
 
   test("can use null in conditions") {
+    @nowarn("msg=A pure expression does nothing in statement position")
     val result = WartTestTraverser(Null) {
       null == ""
       null != ""
@@ -87,13 +89,4 @@ class NullTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
-  test("Null wart obeys SuppressWarnings in classes with default arguments") {
-    val result = WartTestTraverser(Null) {
-      @SuppressWarnings(Array("org.wartremover.warts.Null"))
-      class ClassWithArgs(val foo: String = null)
-      @SuppressWarnings(Array("org.wartremover.warts.Null"))
-      case class CaseClassWithArgs(val foo: String = null)
-    }
-    assertEmpty(result)
-  }
 }

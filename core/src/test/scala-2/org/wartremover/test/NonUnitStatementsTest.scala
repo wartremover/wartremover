@@ -4,6 +4,7 @@ package test
 import org.wartremover.warts.NonUnitStatements
 import org.scalatest.funsuite.AnyFunSuite
 
+// TODO Scala 3 ?
 class NonUnitStatementsTest extends AnyFunSuite with ResultAssertions {
   test("non-unit statements are disabled") {
     val result = WartTestTraverser(NonUnitStatements) {

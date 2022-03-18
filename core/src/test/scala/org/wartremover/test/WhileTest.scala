@@ -3,6 +3,7 @@ package test
 
 import org.wartremover.warts.While
 import org.scalatest.funsuite.AnyFunSuite
+import scala.annotation.nowarn
 
 class WhileTest extends AnyFunSuite with ResultAssertions {
   test("while is disabled") {
@@ -15,6 +16,7 @@ class WhileTest extends AnyFunSuite with ResultAssertions {
   }
 
   test("do while is disabled") {
+    @nowarn("msg=no longer supported")
     val result = WartTestTraverser(While) {
       do {
         println()

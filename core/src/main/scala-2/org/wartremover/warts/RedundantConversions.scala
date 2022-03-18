@@ -1,8 +1,11 @@
 package org.wartremover
 package warts
 
+import scala.annotation.nowarn
+
 object RedundantConversions extends WartTraverser {
 
+  @nowarn("msg=Stream")
   override def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
     val values: Map[Name, (String, Type)] = Seq(

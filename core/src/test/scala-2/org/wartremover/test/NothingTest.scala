@@ -4,6 +4,7 @@ package test
 import org.wartremover.warts.Nothing
 import org.scalatest.funsuite.AnyFunSuite
 
+// TODO Scala 3
 class NothingTest extends AnyFunSuite with ResultAssertions {
   test("Nothing can't be inferred") {
     val result = WartTestTraverser(Nothing) {

@@ -13,27 +13,19 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 //
 // add more scala versions when found binary and/or source incompatibilities in scala-compiler
 lazy val allScalaVersions = Seq(
-  "2.11.12",
-  "2.12.10",
-  "2.12.11",
-  "2.12.12",
   "2.12.13",
   "2.12.14",
   "2.12.15",
-  "2.13.0",
-  "2.13.1",
-  "2.13.2",
-  "2.13.3",
-  "2.13.4",
-  "2.13.5",
   "2.13.6",
   "2.13.7",
   "2.13.8",
+  "3.1.1",
+  "3.1.2-RC2",
 )
 
-def latestScala211 = latest(11, allScalaVersions)
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
+def latestScala3 = allScalaVersions.last // TODO more better way
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
@@ -201,7 +193,7 @@ lazy val coreCrossBinary = Project(
   crossSrcSetting(Compile),
   Compile / scalaSource := (core / Compile / scalaSource).value,
   Compile / resourceDirectory := (core / Compile / resourceDirectory).value,
-  crossScalaVersions := Seq(latestScala211, latestScala212, latestScala213),
+  crossScalaVersions := Seq(latestScala212, latestScala213, latestScala3),
   crossVersion := CrossVersion.binary
 ).dependsOn(testMacros % "test->compile")
 
@@ -295,7 +287,7 @@ lazy val sbtPlug: Project = Project(
       warts.size == expectCount,
       s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"
     )
-    val wartsDir = core.base / "src" / "main" / "scala-2" / "org" / "wartremover" / "warts"
+    val wartsDir = core.base / "src" / "main" / "scala" / "org" / "wartremover" / "warts"
     val unsafeSource = IO.read(wartsDir / "Unsafe.scala")
     val unsafe = warts.filter(unsafeSource contains _)
     assert(unsafe.nonEmpty)
@@ -307,8 +299,8 @@ lazy val sbtPlug: Project = Project(
          |}
          |object Wart {
          |  val PluginVersion: String = "${version.value}"
-         |  private[wartremover] lazy val AllWarts = List(${warts mkString ", "})
-         |  private[wartremover] lazy val UnsafeWarts = List(${unsafe mkString ", "})
+         |  private[wartremover] lazy val AllWarts: List[Wart] = List(${warts mkString ", "})
+         |  private[wartremover] lazy val UnsafeWarts: List[Wart] = List(${unsafe mkString ", "})
          |  /** A fully-qualified class name of a custom Wart implementing `org.wartremover.WartTraverser`. */
          |  def custom(clazz: String): Wart = new Wart(clazz)
          |  private[this] def w(nm: String): Wart = new Wart(s"org.wartremover.warts.$$nm")

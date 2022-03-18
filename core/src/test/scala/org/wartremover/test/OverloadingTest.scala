@@ -5,17 +5,6 @@ import org.wartremover.warts.Overloading
 import org.scalatest.funsuite.AnyFunSuite
 
 class OverloadingTest extends AnyFunSuite with ResultAssertions {
-  test("Overloading is disabled") {
-    val result = WartTestTraverser(Overloading) {
-      class c {
-        def f(i: Int) = {}
-        def f(s: String) = {}
-        def wait(s: String) = {}
-      }
-    }
-    assertErrors(result)("Overloading is disabled", 3)
-  }
-
   test("Overriding is allowed") {
     trait t {
       def print(x: String): Unit

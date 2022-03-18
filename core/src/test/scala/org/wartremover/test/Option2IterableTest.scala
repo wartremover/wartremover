@@ -3,6 +3,7 @@ package test
 
 import org.wartremover.warts.Option2Iterable
 import org.scalatest.funsuite.AnyFunSuite
+import scala.annotation.nowarn
 
 class Option2IterableTest extends AnyFunSuite with ResultAssertions {
 
@@ -43,6 +44,7 @@ class Option2IterableTest extends AnyFunSuite with ResultAssertions {
     }
   }
   test("doesn't detect user defined option2Iterable functions") {
+    @nowarn("msg=method toIterable in trait Iterable is deprecated")
     def option2Iterable[A](o: Option[A]): Iterable[A] = o.toIterable
     val result = WartTestTraverser(Option2Iterable) {
       println(option2Iterable(Some(1)))

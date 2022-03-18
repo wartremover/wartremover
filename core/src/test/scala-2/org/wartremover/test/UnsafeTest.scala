@@ -4,6 +4,7 @@ package test
 import org.wartremover.warts.Unsafe
 import org.scalatest.funsuite.AnyFunSuite
 
+// TODO Scala 3 ?
 class UnsafeTest extends AnyFunSuite {
   test(
     "can't use `null`, `var`, non-unit statements, Option#get, LeftProjection#get, RightProjection#get, or any2stringadd"

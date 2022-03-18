@@ -2,13 +2,13 @@ package org.wartremover
 package warts
 
 object Unsafe extends WartTraverser {
-  val safeTraversers = List(
+  val safeTraversers: List[WartTraverser] = List(
     Any,
     AsInstanceOf,
     DefaultArguments,
     EitherProjectionPartial,
     IsInstanceOf,
-    TraversableOps,
+    IterableOps,
     NonUnitStatements,
     Null,
     OptionPartial,

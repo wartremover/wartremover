@@ -1,6 +1,8 @@
 package org.wartremover
 package warts
 
+import scala.annotation.nowarn
+
 object AsInstanceOf extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
@@ -14,6 +16,7 @@ object AsInstanceOf extends WartTraverser {
     //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
 
     new u.Traverser {
+      @nowarn("msg=lineContent")
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
         tree match {

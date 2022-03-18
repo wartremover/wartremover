@@ -9,10 +9,12 @@ order: 0
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.4.19")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "3.0.0-RC1")
 ```
 
 **NOTE**: `sbt-wartremover` requires sbt version 1.0+. [for sbt 0.13.x](https://github.com/wartremover/wartremover/blob/da1e629e3367c0ec/docs/_posts/2017-02-11-install-setup.md)
+
+**NOTE**: wartremover 3.x requires Scala 2.12.+. please use wartremover 2.x [for Scala 2.11](https://github.com/wartremover/wartremover/blob/9f69ec1b75e1350e098987602c5f94f75251f50b/docs/_posts/2017-02-11-install-setup.md)
 
 Now, you can proceed to configure the linter in your `build.sbt`. By default, all errors and warnings are turned off. To turn on all checks that are currently considered stable, use:
 
@@ -94,7 +96,7 @@ Compile the command-line tool via `sbt "++ 2.12.15" core/assembly` and then use 
 Add the following to `build.sbt`:
 
 ```scala
-addCompilerPlugin("org.wartremover" %% "wartremover" % "2.4.19" cross CrossVersion.full)
+addCompilerPlugin("org.wartremover" %% "wartremover" % "3.0.0-RC1" cross CrossVersion.full)
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
@@ -159,7 +161,7 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
           <compilerPlugin>
             <groupId>org.wartremover</groupId>
             <artifactId>wartremover_2.13</artifactId>
-            <version>2.4.19</version>
+            <version>3.0.0-RC1</version>
           </compilerPlugin>
         </compilerPlugins>
         <args>
