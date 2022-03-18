@@ -274,7 +274,7 @@ lazy val sbtPlug: Project = Project(
       warts.size == expectCount,
       s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"
     )
-    val wartsDir = core.base / "src" / "main" / "scala" / "org" / "wartremover" / "warts"
+    val wartsDir = core.base / "src" / "main" / "scala-2" / "org" / "wartremover" / "warts"
     val unsafe = warts.filter(IO.read(wartsDir / "Unsafe.scala") contains _)
     val content =
       s"""package wartremover
