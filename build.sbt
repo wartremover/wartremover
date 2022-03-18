@@ -137,6 +137,12 @@ val coreSettings = Def.settings(
   name := "wartremover",
   Test / fork := true,
   crossScalaVersions := allScalaVersions,
+  Test / scalacOptions += {
+    val hash = (Compile / sources).value.map { f =>
+      sbt.internal.inc.HashUtil.farmHash(f.toPath)
+    }.sum
+    s"-Dplease-recompile-because-main-source-files-changed-${hash}"
+  },
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
