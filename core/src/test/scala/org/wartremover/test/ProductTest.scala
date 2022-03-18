@@ -2,8 +2,6 @@ package org.wartremover
 package test
 
 import scala.util.Properties.versionNumberString
-
-
 import org.wartremover.warts.Product
 import org.scalatest.funsuite.AnyFunSuite
 

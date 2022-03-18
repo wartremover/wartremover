@@ -23,7 +23,7 @@ object ListUnapply extends WartTraverser {
 
         tree match {
           case t if hasWartAnnotation(u)(t) =>
-            // Ignore trees marked by SuppressWarnings
+          // Ignore trees marked by SuppressWarnings
           case m: Match =>
             if (m.selector.tpe.typeConstructor <:< listType) {
               // this is a list

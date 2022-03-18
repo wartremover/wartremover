@@ -19,20 +19,20 @@ object ImplicitParameter extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
 
           case DefDef(_, _, tparams, paramss, _, _) if !isSynthetic(u)(tree) && {
-            val parentTSymbols = if (tree.symbol.owner.isClass) {
-              val parentAbstractTSymbols = tree.symbol.owner.typeSignature.members.filter(_.isType).toList
-              tree.symbol.owner.asClass.typeParams ::: parentAbstractTSymbols
-            } else
-              Nil
-            val tsymbols = tparams.map(_.symbol) ::: parentTSymbols
+                val parentTSymbols = if (tree.symbol.owner.isClass) {
+                  val parentAbstractTSymbols = tree.symbol.owner.typeSignature.members.filter(_.isType).toList
+                  tree.symbol.owner.asClass.typeParams ::: parentAbstractTSymbols
+                } else
+                  Nil
+                val tsymbols = tparams.map(_.symbol) ::: parentTSymbols
 
-            def isManualImplicit(x: ValDef): Boolean =
-              x.symbol.isImplicit &&
-                !x.symbol.isSynthetic &&
-                !isImplicitParamTypeInTparams(x, tsymbols.toSet)
+                def isManualImplicit(x: ValDef): Boolean =
+                  x.symbol.isImplicit &&
+                    !x.symbol.isSynthetic &&
+                    !isImplicitParamTypeInTparams(x, tsymbols.toSet)
 
-            paramss.lastOption.fold(false)(_.exists(isManualImplicit))
-          } =>
+                paramss.lastOption.fold(false)(_.exists(isManualImplicit))
+              } =>
             error(u)(tree.pos, "Implicit parameters are disabled")
 
           case _ =>

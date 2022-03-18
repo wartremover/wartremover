@@ -12,10 +12,10 @@ object ToString extends WartTraverser {
     def notOverridden(t: Type): Boolean = {
       val toString = t.member(ToString)
       !isPrimitive(u)(t) && !(t <:< typeOf[String]) &&
-        (toString.fullName == "scala.Any.toString" ||
-          toString.fullName == "scala.AnyRef.toString" ||
-          toString.fullName == "java.lang.Object.toString" ||
-          toString.isSynthetic)
+      (toString.fullName == "scala.Any.toString" ||
+        toString.fullName == "scala.AnyRef.toString" ||
+        toString.fullName == "java.lang.Object.toString" ||
+        toString.isSynthetic)
     }
 
     new Traverser {
@@ -25,7 +25,10 @@ object ToString extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
 
           case Apply(Select(lhs, ToString), _) if notOverridden(lhs.tpe) =>
-            error(u)(tree.pos, s"${lhs.tpe.baseClasses.head} does not override toString and automatic toString is disabled")
+            error(u)(
+              tree.pos,
+              s"${lhs.tpe.baseClasses.head} does not override toString and automatic toString is disabled"
+            )
 
           case _ => super.traverse(tree)
 

@@ -3,10 +3,8 @@ package test
 
 import java.nio.charset.StandardCharsets
 import java.util.Locale
-
 import org.scalatest.funsuite.AnyFunSuite
 import org.wartremover.warts.PlatformDefault
-
 import scala.io.Codec
 
 class PlatformDefaultTest extends AnyFunSuite with ResultAssertions {
@@ -78,4 +76,3 @@ class PlatformDefaultTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 }
-

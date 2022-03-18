@@ -11,7 +11,7 @@ object AsInstanceOf extends WartTraverser {
     val allowedCasts = List(
       "scala.tools.nsc.interpreter.IMain" // REPL needs this
     ) // cannot do `map rootMirror.staticClass` here because then:
-      //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
+    //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
 
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
@@ -39,11 +39,12 @@ object AsInstanceOf extends WartTraverser {
 
           // Ignore allowed casts
           case TypeApply(Select(_, AsInstanceOfName), List(tt))
-            if tt.isType && allowedCasts.contains(tt.tpe.typeSymbol.fullName) =>
+              if tt.isType && allowedCasts.contains(tt.tpe.typeSymbol.fullName) =>
 
           // Otherwise it's verboten (except synthetic exprs and macro expansions)
-          case Select(e, AsInstanceOfName) if !isSynthetic(u)(e)
-              && tree.pos.lineContent.contains(AsInstanceOfName.toString) =>
+          case Select(e, AsInstanceOfName)
+              if !isSynthetic(u)(e)
+                && tree.pos.lineContent.contains(AsInstanceOfName.toString) =>
             error(u)(tree.pos, "asInstanceOf is disabled")
 
           case _ => super.traverse(tree)
@@ -53,5 +54,3 @@ object AsInstanceOf extends WartTraverser {
     }
   }
 }
-
-

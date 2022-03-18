@@ -2,7 +2,9 @@ package org.wartremover
 package test
 
 import org.wartremover.warts.TryPartial
-import scala.util.{Try, Success, Failure}
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 import org.scalatest.funsuite.AnyFunSuite
 
 class TryPartialTest extends AnyFunSuite with ResultAssertions {

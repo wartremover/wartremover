@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.Any
 import org.scalatest.funsuite.AnyFunSuite
 

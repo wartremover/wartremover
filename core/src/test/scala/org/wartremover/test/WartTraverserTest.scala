@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.ExplicitImplicitTypes
 import org.scalatest.funsuite.AnyFunSuite
 

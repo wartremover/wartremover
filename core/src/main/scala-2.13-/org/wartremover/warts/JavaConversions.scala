@@ -13,7 +13,10 @@ object JavaConversions extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case Select(tpt, _) if tpt.tpe.contains(javaConversions) => {
-            error(u)(tree.pos, "scala.collection.JavaConversions is disabled - use scala.collection.JavaConverters instead")
+            error(u)(
+              tree.pos,
+              "scala.collection.JavaConversions is disabled - use scala.collection.JavaConverters instead"
+            )
             super.traverse(tree)
           }
           case _ => super.traverse(tree)

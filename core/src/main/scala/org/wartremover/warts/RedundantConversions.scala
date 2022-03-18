@@ -22,7 +22,7 @@ object RedundantConversions extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case Select(obj, TermName("toString")) if obj.tpe <:< typeOf[String] =>
             error(u)(tree.pos, "redundant toString conversion")
-          case Select(obj, method)  =>
+          case Select(obj, method) =>
             values.get(method) match {
               case Some((name, tpe)) if obj.tpe.typeConstructor <:< tpe.typeConstructor =>
                 error(u)(tree.pos, s"redundant ${name} conversion")

@@ -8,7 +8,11 @@ object SizeIs extends WartTraverser {
     import u.universe._
     object Method {
       private[this] val values = Seq(
-        "<", "<=", "==", ">", ">="
+        "<",
+        "<=",
+        "==",
+        ">",
+        ">="
       ).map(NameTransformer.encode).map(TermName.apply(_))
 
       def unapply(t: Name): Boolean = values.contains(t)
@@ -20,7 +24,10 @@ object SizeIs extends WartTraverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
           case t if hasWartAnnotation(u)(t) =>
-          case Apply(Select(Select(IsScalaCollection(), a @ (TermName("size") | TermName("length"))), Method()), List(_)) if !isSynthetic(u)(tree) =>
+          case Apply(
+                Select(Select(IsScalaCollection(), a @ (TermName("size") | TermName("length"))), Method()),
+                List(_)
+              ) if !isSynthetic(u)(tree) =>
             error(u)(tree.pos, s"Maybe you can use `${a.decodedName}Is` instead of `${a.decodedName}`")
           case _ =>
             super.traverse(tree)

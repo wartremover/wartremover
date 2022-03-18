@@ -42,7 +42,10 @@ object PublicInference extends WartTraverser {
       tree match {
         case Block(Apply(q"scoverage.Invoker.invoked", Literal(_) :: Literal(_) :: Nil) :: Nil, Literal(c)) =>
           isAcceptLiteralType(c.tpe)
-        case Block(Apply(q"scoverage.Invoker.invoked", Literal(_) :: Literal(_) :: Literal(_) :: Nil) :: Nil, Literal(c)) =>
+        case Block(
+              Apply(q"scoverage.Invoker.invoked", Literal(_) :: Literal(_) :: Literal(_) :: Nil) :: Nil,
+              Literal(c)
+            ) =>
           isAcceptLiteralType(c.tpe)
         case _ =>
           false
@@ -60,9 +63,10 @@ object PublicInference extends WartTraverser {
 
           case ValDef(_, _, _, rhs) if scoverage(rhs) =>
 
-          case t: ValOrDefDef if isPublic(u)(t) && isInPublicClass(t) &&
-              !isConstructorOrOverrides(t) && !isAccessor(t) &&
-              !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) && !isMacroExpansion(t) =>
+          case t: ValOrDefDef
+              if isPublic(u)(t) && isInPublicClass(t) &&
+                !isConstructorOrOverrides(t) && !isAccessor(t) &&
+                !hasTypeAscription(u)(t) && !isSynthetic(u)(tree) && !isMacroExpansion(t) =>
             error(u)(tree.pos, "Public member must have an explicit type ascription")
 
           case _ =>

@@ -6,7 +6,6 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class TraversableOpsTest extends AnyFunSuite with ResultAssertions {
 
-
   implicit val ordering: Ordering[Any] = new Ordering[Any] {
     override def compare(x: Any, y: Any) = 0
   }

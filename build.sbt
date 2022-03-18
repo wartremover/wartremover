@@ -1,6 +1,7 @@
 import ReleaseTransformations._
 import com.jsuereth.sbtpgp.PgpKeys
-import xsbti.api.{ClassLike, DefinitionType}
+import xsbti.api.ClassLike
+import xsbti.api.DefinitionType
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
@@ -36,9 +37,13 @@ def latestScala213 = latest(13, allScalaVersions)
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
-  prefix + versions.filter(_ startsWith prefix).map(_.drop(prefix.length).toLong).reduceLeftOption(_ max _).getOrElse(
-    sys.error(s"not found Scala ${prefix}x version ${versions}")
-  )
+  prefix + versions
+    .filter(_ startsWith prefix)
+    .map(_.drop(prefix.length).toLong)
+    .reduceLeftOption(_ max _)
+    .getOrElse(
+      sys.error(s"not found Scala ${prefix}x version ${versions}")
+    )
 }
 
 lazy val baseSettings = Def.settings(
@@ -52,9 +57,11 @@ lazy val commonSettings = Def.settings(
   baseSettings,
   Seq(packageBin, packageDoc, packageSrc).flatMap {
     // include LICENSE file in all packaged artifacts
-    inTask(_)(Seq(
-      (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
-    ))
+    inTask(_)(
+      Seq(
+        (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
+      )
+    )
   },
   organization := "org.wartremover",
   licenses := Seq(
@@ -114,12 +121,14 @@ val coreId = "core"
 def crossSrcSetting(c: Configuration) = {
   c / unmanagedSourceDirectories ++= {
     val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
-    PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-      case Some((2, v)) if v >= 13 =>
-        dir / s"scala-2.13+"
-      case Some((2, _)) =>
-        dir / s"scala-2.13-"
-    }.toList
+    PartialFunction
+      .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+        case Some((2, v)) if v >= 13 =>
+          dir / s"scala-2.13+"
+        case Some((2, _)) =>
+          dir / s"scala-2.13-"
+      }
+      .toList
   }
 }
 
@@ -167,9 +176,7 @@ lazy val coreCrossBinary = Project(
   Compile / resourceDirectory := (core / Compile / resourceDirectory).value,
   crossScalaVersions := Seq(latestScala211, latestScala212, latestScala213),
   crossVersion := CrossVersion.binary
-)
-  .dependsOn(testMacros % "test->compile")
-
+).dependsOn(testMacros % "test->compile")
 
 lazy val core = Project(
   id = coreId,
@@ -184,7 +191,7 @@ lazy val core = Project(
     object ToInt {
       def unapply(s: String): Option[Int] = Some(s.toInt)
     }
-    Command.args("testPartial", ""){ case (state, Seq(ToInt(total), ToInt(index))) =>
+    Command.args("testPartial", "") { case (state, Seq(ToInt(total), ToInt(index))) =>
       assert(0 <= index, index)
       assert(0 < total, total)
       assert(index < total, (total, index))
@@ -205,14 +212,14 @@ lazy val core = Project(
     target.value / s"scala-${scalaVersion.value}"
   },
   assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
-)
-  .dependsOn(testMacros % "test->compile")
+).dependsOn(testMacros % "test->compile")
 
 val wartClasses = Def.task {
   val loader = (core / Test / testLoader).value
   val wartTraverserClass = Class.forName("org.wartremover.WartTraverser", false, loader)
-  Tests.allDefs((core / Compile / compile).value).collect{
-    case c: ClassLike =>
+  Tests
+    .allDefs((core / Compile / compile).value)
+    .collect { case c: ClassLike =>
       val decoded = c.name.split('.').map(NameTransformer.decode).mkString(".")
       c.definitionType match {
         case DefinitionType.Module =>
@@ -220,18 +227,19 @@ val wartClasses = Def.task {
         case _ =>
           decoded
       }
-  }
-  .flatMap(c =>
-    try {
-      List[Class[_]](Class.forName(c, false, loader))
-    } catch {
-      case _: ClassNotFoundException =>
-        Nil
     }
-  )
-  .filter(c => !Modifier.isAbstract(c.getModifiers) && wartTraverserClass.isAssignableFrom(c))
-  .map(_.getSimpleName.replace("$", ""))
-  .filterNot(Set("Unsafe", "ForbidInference")).sorted
+    .flatMap(c =>
+      try {
+        List[Class[_]](Class.forName(c, false, loader))
+      } catch {
+        case _: ClassNotFoundException =>
+          Nil
+      }
+    )
+    .filter(c => !Modifier.isAbstract(c.getModifiers) && wartTraverserClass.isAssignableFrom(c))
+    .map(_.getSimpleName.replace("$", ""))
+    .filterNot(Set("Unsafe", "ForbidInference"))
+    .sorted
 }
 
 lazy val sbtPlug: Project = Project(
@@ -247,9 +255,7 @@ lazy val sbtPlug: Project = Project(
       import scala.collection.JavaConverters._
       java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
     }
-    javaVmArgs.filter(
-      a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith)
-    )
+    javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   crossScalaVersions := Seq(latestScala212),
@@ -282,8 +288,7 @@ lazy val sbtPlug: Project = Project(
     IO.write(file, content)
     Seq(file)
   }
-)
-  .enablePlugins(ScriptedPlugin)
+).enablePlugins(ScriptedPlugin)
 
 lazy val testMacros: Project = Project(
   id = "test-macros",

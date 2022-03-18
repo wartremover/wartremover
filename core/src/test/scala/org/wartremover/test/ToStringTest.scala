@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.ToString
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -51,13 +50,13 @@ class ToStringTest extends AnyFunSuite with ResultAssertions {
   }
   test("can use toString method of primitives") {
     val result = WartTestTraverser(ToString) {
-     val x1 = 1.toString
-     val x2 = 1L.toString
-     val x3 = 1f.toString
-     val x4 = 1.0.toString
-     val x5 = true.toString
-     val x6 = 'a'.toString
-     val x7 = "a".toString
+      val x1 = 1.toString
+      val x2 = 1L.toString
+      val x3 = 1f.toString
+      val x4 = 1.0.toString
+      val x5 = true.toString
+      val x6 = 'a'.toString
+      val x7 = "a".toString
     }
     assertEmpty(result)
   }

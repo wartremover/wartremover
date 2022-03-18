@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.While
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -28,8 +27,7 @@ class WhileTest extends AnyFunSuite with ResultAssertions {
     val result = WartTestTraverser(While) {
       @SuppressWarnings(Array("org.wartremover.warts.While"))
       def f() = {
-        while (true) {
-        }
+        while (true) {}
       }
     }
     assertEmpty(result)

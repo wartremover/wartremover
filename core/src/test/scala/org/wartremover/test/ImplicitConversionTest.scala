@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.ImplicitConversion
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -27,8 +26,8 @@ class ImplicitConversionTest extends AnyFunSuite with ResultAssertions {
   test("Implicit evidence constructor is enabled") {
     val result = WartTestTraverser(ImplicitConversion) {
       implicit def ordering[A]: Ordering[A] = ???
-      implicit def ordering2[A](implicit ev : Ordering[A]) : Ordering[A] = ???
-      implicit def ordering3[A : Ordering] : Ordering[A] = ???
+      implicit def ordering2[A](implicit ev: Ordering[A]): Ordering[A] = ???
+      implicit def ordering3[A: Ordering]: Ordering[A] = ???
     }
     assertEmpty(result)
   }

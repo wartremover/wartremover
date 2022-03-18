@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.StringPlusAny
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -68,7 +67,7 @@ class StringPlusAnyTest extends AnyFunSuite with ResultAssertions {
 
   test("Adding float variables to an int value is allowed.") {
     val result = WartTestTraverser(StringPlusAny) {
-      val a:Float = 1
+      val a: Float = 1
       0 + a
     }
     assertEmpty(result)
@@ -96,4 +95,3 @@ class StringPlusAnyTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 }
-

@@ -25,7 +25,8 @@ trait ForbidInference[T] extends WartTraverser {
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {
         val synthetic = isSynthetic(u)(tree)
-        def error(tpe: Type) = ForbidInference.this.error(u)(tree.pos, s"Inferred type containing ${tSymbol.name}: $tpe")
+        def error(tpe: Type) =
+          ForbidInference.this.error(u)(tree.pos, s"Inferred type containing ${tSymbol.name}: $tpe")
 
         tree match {
           // Ignore trees marked by SuppressWarnings
@@ -52,7 +53,8 @@ trait ForbidInference[T] extends WartTraverser {
             // https://github.com/wartremover/wartremover/issues/294
             traverse(self)
             statements.foreach(traverse)
-          case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _) if synthetic =>
+          case DefDef(_, CanEqualName | EqualsName | ProductElementName | ProductIteratorName, _, _, _, _)
+              if synthetic =>
 
           case _ =>
             super.traverse(tree)

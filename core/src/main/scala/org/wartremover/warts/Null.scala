@@ -12,9 +12,10 @@ object Null extends WartTraverser {
     val Eq = TermName(NameTransformer.encode("eq"))
     val Ne = TermName(NameTransformer.encode("ne"))
     val xmlSymbols = List(
-      "scala.xml.Elem", "scala.xml.NamespaceBinding"
+      "scala.xml.Elem",
+      "scala.xml.NamespaceBinding"
     ) // cannot do `map rootMirror.staticClass` here because then:
-      //   scala.ScalaReflectionException: object scala.xml.Elem in compiler mirror not found.
+    //   scala.ScalaReflectionException: object scala.xml.Elem in compiler mirror not found.
 
     val optionSymbol = rootMirror.staticClass("scala.Option")
     val OrNull = TermName("orNull")
@@ -45,18 +46,18 @@ object Null extends WartTraverser {
               traverse(stat)
             }
 
-          //Ignore null == _, null != _
+          // Ignore null == _, null != _
           case Select(Literal(Constant(null)), Equals) =>
           case Select(Literal(Constant(null)), NotEquals) =>
-          //Ignore _ == null, _ != null
+          // Ignore _ == null, _ != null
           case Apply(Select(t, Equals), List(Literal(Constant(null)))) =>
             super.traverse(t)
           case Apply(Select(t, NotEquals), List(Literal(Constant(null)))) =>
             super.traverse(t)
-          //Ignore null eq _, null ne _
+          // Ignore null eq _, null ne _
           case Select(Literal(Constant(null)), Eq) =>
           case Select(Literal(Constant(null)), Ne) =>
-          //Ignore _ eq null, _ ne null
+          // Ignore _ eq null, _ ne null
           case Apply(Select(t, Eq), List(Literal(Constant(null)))) =>
             super.traverse(t)
           case Apply(Select(t, Ne), List(Literal(Constant(null)))) =>
@@ -66,9 +67,9 @@ object Null extends WartTraverser {
             error(u)(tree.pos, "null is disabled")
             super.traverse(tree)
 
-          //var s: String = _
+          // var s: String = _
           case ValDef(mods, name, t, _)
-            if mods.hasFlag(Flag.DEFAULTINIT) && !isPrimitive(u)(t.tpe) && !(t.tpe <:< typeOf[Unit]) =>
+              if mods.hasFlag(Flag.DEFAULTINIT) && !isPrimitive(u)(t.tpe) && !(t.tpe <:< typeOf[Unit]) =>
             error(u)(tree.pos, "null is disabled")
 
           // Option.orNull (which returns null) is disabled.
