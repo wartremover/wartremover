@@ -46,6 +46,16 @@ def latest(n: Int, versions: Seq[String]) = {
     )
 }
 
+val scalaCompilerDependency = Def.settings(
+  libraryDependencies += {
+    if (scalaBinaryVersion.value == "3") {
+      "org.scala-lang" %% "scala3-compiler" % scalaVersion.value
+    } else {
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value
+    }
+  },
+)
+
 lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
@@ -151,9 +161,7 @@ val coreSettings = Def.settings(
         libraryDependencies.value
     }
   },
-  libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value
-  ),
+  scalaCompilerDependency,
   libraryDependencies ++= {
     Seq("org.scalatest" %% "scalatest" % "3.2.11" % "test")
   },
@@ -308,7 +316,5 @@ lazy val testMacros: Project = Project(
   publishLocal := {},
   PgpKeys.publishSigned := {},
   PgpKeys.publishLocalSigned := {},
-  libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
-  )
+  scalaCompilerDependency,
 )
