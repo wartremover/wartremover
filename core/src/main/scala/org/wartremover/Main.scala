@@ -1,8 +1,10 @@
 package org.wartremover
 
-import tools.nsc.{Global, Settings}
+import tools.nsc.Global
+import tools.nsc.Settings
 import tools.nsc.io.VirtualDirectory
-import tools.nsc.reporters.{ConsoleReporter, Reporter}
+import tools.nsc.reporters.ConsoleReporter
+import tools.nsc.reporters.Reporter
 
 object Main {
   case class WartArgs(traversers: List[String], names: List[String], scalacArgs: List[String]) {

@@ -70,16 +70,14 @@ class PublicInferenceTest extends AnyFunSuite with ResultAssertions {
 
   test("Explicitly typed multiline should work correctly") {
     val result = WartTestTraverser(PublicInference) {
-      val a:
-        Int = 1
+      val a: Int = 1
     }
     assertEmpty(result)
   }
 
   test("Multiline should work correctly even if not explicitly typed") {
     val result = WartTestTraverser(PublicInference) {
-      val a
-        = 1
+      val a = 1
     }
     assertEmpty(result)
   }
@@ -88,8 +86,8 @@ class PublicInferenceTest extends AnyFunSuite with ResultAssertions {
     val res = WartTestTraverser(PublicInference) {
       object X {
         def f(
-               a: Int
-             ): Int = 1
+          a: Int
+        ): Int = 1
       }
     }
     assertEmpty(res)

@@ -26,7 +26,9 @@ object WartTestTraverser {
 
     traverser(MacroTestUniverse).traverse(a.tree)
 
-    c.Expr(q"_root_.org.wartremover.test.WartTestTraverser.Result(_root_.scala.List(..${errors.toList}), _root_.scala.List(..${warnings.toList}))")
+    c.Expr(
+      q"_root_.org.wartremover.test.WartTestTraverser.Result(_root_.scala.List(..${errors.toList}), _root_.scala.List(..${warnings.toList}))"
+    )
   }
 
   /**
@@ -42,13 +44,16 @@ object WartTestTraverser {
   def applyToFiles(t: WartTraverser)(paths: String*): Result = {
     var errors = List[String]()
     var warnings = List[String]()
-    Main.compile(Main.WartArgs(List(t.className), paths.toList, Nil), Some(new Reporter {
-      override protected def info0(pos: Position, msg: String, severity: Severity, force: Boolean) = severity match {
-        case ERROR => errors ::= msg
-        case WARNING => warnings ::= msg
-        case _ =>
-      }
-    }))
+    Main.compile(
+      Main.WartArgs(List(t.className), paths.toList, Nil),
+      Some(new Reporter {
+        override protected def info0(pos: Position, msg: String, severity: Severity, force: Boolean) = severity match {
+          case ERROR => errors ::= msg
+          case WARNING => warnings ::= msg
+          case _ =>
+        }
+      })
+    )
     Result(errors, warnings)
   }
 }

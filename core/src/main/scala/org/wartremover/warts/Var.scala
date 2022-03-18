@@ -8,10 +8,11 @@ object Var extends WartTraverser {
     val HashCodeName = TermName("hashCode")
 
     val allowedTypes = List(
-      "scala.xml.MetaData", "scala.xml.NamespaceBinding", // XML literals output vars
+      "scala.xml.MetaData",
+      "scala.xml.NamespaceBinding", // XML literals output vars
       "scala.tools.nsc.interpreter.IMain" // REPL needs this
     ) // cannot do `map rootMirror.staticClass` here because then:
-      //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
+    //   scala.ScalaReflectionException: object scala.tools.nsc.interpreter.IMain in compiler mirror not found.
 
     new u.Traverser {
       override def traverse(tree: Tree): Unit = {

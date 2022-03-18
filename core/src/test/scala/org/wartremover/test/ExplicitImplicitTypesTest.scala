@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.ExplicitImplicitTypes
 import org.scalatest.funsuite.AnyFunSuite
 import wartremover.test.ExplicitImplicitTypesTestMacros
@@ -40,7 +39,7 @@ class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
 
   test("can declare implicit classes") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
-      implicit class Foo(i : Int) {
+      implicit class Foo(i: Int) {
         def bar = 2
       }
     }

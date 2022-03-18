@@ -22,8 +22,7 @@ object NonUnitStatements extends WartTraverser {
     def isIgnoredStatement(tree: Tree) = tree match {
       // scala.xml.NodeBuffer#&+ returns NodeBuffer instead of Unit, so
       // val x = <x>5</x> desugars to a non-Unit statement; ignore.
-      case Apply(Select(qual, NodeBufferAddName), _)
-        if qual.tpe.typeSymbol.fullName == "scala.xml.NodeBuffer" => true
+      case Apply(Select(qual, NodeBufferAddName), _) if qual.tpe.typeSymbol.fullName == "scala.xml.NodeBuffer" => true
       // Scala creates synthetic blocks with <init> calls on classes.
       // The calls return Object so we need to ignore them.
       case t @ Apply(_, _) => isClassConstructor(t)
@@ -37,7 +36,8 @@ object NonUnitStatements extends WartTraverser {
         case Block((statements0, _)) =>
           checkUnitLike(statements0)
         case stat =>
-          val unitLike = stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
+          val unitLike =
+            stat.isEmpty || stat.tpe == null || stat.tpe =:= typeOf[Unit] || stat.isDef || isIgnoredStatement(stat)
           if (!unitLike)
             error(u)(stat.pos, s"Statements must return Unit")
       }

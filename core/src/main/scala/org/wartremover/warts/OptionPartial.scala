@@ -15,7 +15,7 @@ object OptionPartial extends WartTraverser {
           case Select(left, GetName) if left.tpe.baseType(optionSymbol) != NoType =>
             error(u)(tree.pos, "Option#get is disabled - use Option#fold instead")
           // TODO: This ignores a lot
-          case LabelDef(_, _, rhs) if isSynthetic(u)(tree)=>
+          case LabelDef(_, _, rhs) if isSynthetic(u)(tree) =>
           case _ =>
             super.traverse(tree)
         }

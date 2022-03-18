@@ -51,4 +51,3 @@ private class ExplicitImplicitTypesTestMacros(val c: blackbox.Context) {
     c.Expr(tree)
   }
 }
-

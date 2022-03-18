@@ -3,13 +3,25 @@ import Keys._
 import wartremover.WartRemover.autoImport
 
 package object wartremover {
-  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverErrors instead", since = "2.4.7")
+  @deprecated(
+    message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverErrors instead",
+    since = "2.4.7"
+  )
   val wartremoverErrors = autoImport.wartremoverErrors
-  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverWarnings instead", since = "2.4.7")
+  @deprecated(
+    message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverWarnings instead",
+    since = "2.4.7"
+  )
   val wartremoverWarnings = autoImport.wartremoverWarnings
-  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverExcluded instead", since = "2.4.7")
+  @deprecated(
+    message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverExcluded instead",
+    since = "2.4.7"
+  )
   val wartremoverExcluded = autoImport.wartremoverExcluded
-  @deprecated(message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverClasspaths instead", since = "2.4.7")
+  @deprecated(
+    message = "will be removed. use wartremover.WartRemover.autoImport.wartremoverClasspaths instead",
+    since = "2.4.7"
+  )
   val wartremoverClasspaths = autoImport.wartremoverClasspaths
 
   @deprecated(message = "will be removed. use wartremover.WartRemover.projectSettings", since = "2.4.7")

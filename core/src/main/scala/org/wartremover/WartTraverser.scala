@@ -77,26 +77,25 @@ trait WartTraverser {
 
   def isPrimitive(u: WartUniverse)(t: u.universe.Type): Boolean =
     t <:< u.universe.typeOf[Boolean] ||
-    t <:< u.universe.typeOf[Byte] ||
-    t <:< u.universe.typeOf[Short] ||
-    t <:< u.universe.typeOf[Char] ||
-    t <:< u.universe.typeOf[Int] ||
-    t <:< u.universe.typeOf[Long] ||
-    t <:< u.universe.typeOf[Float] ||
-    t <:< u.universe.typeOf[Double]
-
+      t <:< u.universe.typeOf[Byte] ||
+      t <:< u.universe.typeOf[Short] ||
+      t <:< u.universe.typeOf[Char] ||
+      t <:< u.universe.typeOf[Int] ||
+      t <:< u.universe.typeOf[Long] ||
+      t <:< u.universe.typeOf[Float] ||
+      t <:< u.universe.typeOf[Double]
 
   def hasTypeAscription(u: WartUniverse)(tree: u.universe.ValOrDefDef): Boolean = {
     import u.universe._
     tree.tpt.nonEmpty && (tree.tpt match {
-      case t@TypeTree() => !wasInferred(u)(t)
+      case t @ TypeTree() => !wasInferred(u)(t)
       case _ => false
     })
   }
 
   private def hasAccess(u: WartUniverse)(t: u.universe.ValOrDefDef, p: u.universe.Symbol => Boolean): Boolean = {
     // If this a field, then look at the getter's visibility
-    val symbol = if(!t.symbol.isMethod && (t.symbol.owner.isType || t.symbol.owner.isModule)) {
+    val symbol = if (!t.symbol.isMethod && (t.symbol.owner.isType || t.symbol.owner.isModule)) {
       t.symbol.asTerm.getter
     } else t.symbol
 
@@ -114,17 +113,17 @@ trait WartTraverser {
   def wasInferred(u: WartUniverse)(t: u.universe.TypeTree): Boolean =
     t.original == null
 
-  def isWartAnnotation(u: WartUniverse)(a : u.universe.Annotation) : Boolean = {
+  def isWartAnnotation(u: WartUniverse)(a: u.universe.Annotation): Boolean = {
     import u.universe._
     a.tree.tpe <:< typeTag[java.lang.SuppressWarnings].tpe &&
-      a.tree.children.tail.exists {
-        _.exists {
-          case Literal(Constant(arg)) =>
-            (arg == className) || (arg == "org.wartremover.warts.All")
-          case _ =>
-            false
-        }
+    a.tree.children.tail.exists {
+      _.exists {
+        case Literal(Constant(arg)) =>
+          (arg == className) || (arg == "org.wartremover.warts.All")
+        case _ =>
+          false
       }
+    }
   }
 
   def hasWartAnnotation(u: WartUniverse)(tree: u.universe.Tree) = {
@@ -132,8 +131,8 @@ trait WartTraverser {
     tree match {
       case t: ValOrDefDef =>
         t.symbol.annotations.exists(isWartAnnotation(u)) ||
-          (t.symbol != null && t.symbol.isTerm && t.symbol.asTerm.isAccessor &&
-            t.symbol.asTerm.accessed.annotations.exists(isWartAnnotation(u)))
+        (t.symbol != null && t.symbol.isTerm && t.symbol.asTerm.isAccessor &&
+          t.symbol.asTerm.accessed.annotations.exists(isWartAnnotation(u)))
       case t: ImplDef => t.symbol.annotations.exists(isWartAnnotation(u))
       case t => false
     }

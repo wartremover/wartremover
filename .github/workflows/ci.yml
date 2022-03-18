@@ -10,6 +10,9 @@ jobs:
     strategy:
       matrix:
         include:
+          - name: "format"
+            java: 8
+            os: ubuntu-latest
           - name: "test-cross"
             test_index: 0
             java: 8
@@ -52,6 +55,9 @@ jobs:
     - shell: bash
       run: |
         case ${{ matrix.name }} in
+          "format")
+            ./sbt -v scalafmtSbtCheck "+ scalafmtCheckAll"
+            ;;
           "test-cross")
             ./sbt -v "project core" "testPartial 4 ${{matrix.test_index}}"
             ;;

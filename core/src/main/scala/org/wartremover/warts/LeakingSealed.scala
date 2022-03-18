@@ -12,7 +12,8 @@ object LeakingSealed extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case t @ ClassDef(mods, _, _, _)
-            if !mods.hasFlag(FINAL) && !mods.hasFlag(SEALED) && t.symbol.asClass.baseClasses.exists(_.asClass.isSealed) =>
+              if !mods.hasFlag(FINAL) && !mods
+                .hasFlag(SEALED) && t.symbol.asClass.baseClasses.exists(_.asClass.isSealed) =>
             error(u)(tree.pos, "Descendants of a sealed type must be final or sealed")
             super.traverse(tree)
           case _ =>

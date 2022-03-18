@@ -1,9 +1,11 @@
 package org.wartremover
 
 import tools.nsc.plugins.PluginComponent
-import tools.nsc.{Global, Phase}
+import tools.nsc.Global
+import tools.nsc.Phase
 import java.io.File
-import java.net.{URL, URLClassLoader}
+import java.net.URL
+import java.net.URLClassLoader
 
 class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   import global._
@@ -32,14 +34,13 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     options.flatMap(prefixedOption(prefix))
 
   override def processOptions(options: List[String], error: String => Unit): Unit = {
-    val classPathEntries = filterOptions("cp", options).map {
-      c =>
-        val filePrefix = "file:"
-        if (c startsWith filePrefix) {
-          new File(c.drop(filePrefix.length)).getCanonicalFile.toURI.toURL
-        } else {
-          new URL(c)
-        }
+    val classPathEntries = filterOptions("cp", options).map { c =>
+      val filePrefix = "file:"
+      if (c startsWith filePrefix) {
+        new File(c.drop(filePrefix.length)).getCanonicalFile.toURI.toURL
+      } else {
+        new URL(c)
+      }
     }
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val mirror = reflect.runtime.universe.runtimeMirror(classLoader)
@@ -51,7 +52,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
-    excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+    excludedFiles =
+      filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
   }
 
   object Traverser extends PluginComponent {

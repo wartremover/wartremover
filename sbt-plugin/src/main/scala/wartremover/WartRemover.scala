@@ -4,7 +4,8 @@ import java.nio.file.Path
 import sbt._
 import sbt.Keys._
 import sbt.internal.librarymanagement.IvySbt
-import sbt.librarymanagement.{ UnresolvedWarningConfiguration, UpdateConfiguration }
+import sbt.librarymanagement.UnresolvedWarningConfiguration
+import sbt.librarymanagement.UpdateConfiguration
 import sbt.librarymanagement.ivy.IvyDependencyResolution
 
 object WartRemover extends sbt.AutoPlugin {
@@ -30,7 +31,12 @@ object WartRemover extends sbt.AutoPlugin {
     autoImport.wartremoverClasspaths := Nil
   )
 
-  private[this] def copyToCompilerPluginJarsDir(src: File, jarDir: Option[File], base: File, log: Logger): Option[Path] = {
+  private[this] def copyToCompilerPluginJarsDir(
+    src: File,
+    jarDir: Option[File],
+    base: File,
+    log: Logger
+  ): Option[Path] = {
     jarDir match {
       case Some(compilerPluginsDir) =>
         if (src.isFile) {
@@ -84,7 +90,7 @@ object WartRemover extends sbt.AutoPlugin {
       if (isScala3.value) {
         Nil
       } else {
-        (p / configuration / fullClasspath).value.map(_.data).map{ f =>
+        (p / configuration / fullClasspath).value.map(_.data).map { f =>
           copyToCompilerPluginJarsDir(
             src = f,
             jarDir = autoImport.wartremoverPluginJarsDir.value,
@@ -105,7 +111,11 @@ object WartRemover extends sbt.AutoPlugin {
       if (isScala3.value) {
         Nil
       } else {
-        Seq(compilerPlugin("org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value))
+        Seq(
+          compilerPlugin(
+            "org.wartremover" %% "wartremover" % Wart.PluginVersion cross autoImport.wartremoverCrossVersion.value
+          )
+        )
       }
     },
     scalacOptionSetting(scalacOptions),
@@ -131,54 +141,62 @@ object WartRemover extends sbt.AutoPlugin {
         None
       }
     },
-    inScope(Scope.ThisScope)(Seq(
-      autoImport.wartremoverClasspaths ++= {
-        val ivy = ivySbt.value
-        val s = streams.value
-        autoImport.wartremoverDependencies.value.map { m =>
-          val moduleId = CrossVersion(cross = m.crossVersion, fullVersion = scalaVersion.value, binaryVersion = scalaBinaryVersion.value) match {
-            case Some(f) =>
-              m.withName(f(Project.normalizeModuleID(m.name)))
-            case None =>
-              m
+    inScope(Scope.ThisScope)(
+      Seq(
+        autoImport.wartremoverClasspaths ++= {
+          val ivy = ivySbt.value
+          val s = streams.value
+          autoImport.wartremoverDependencies.value.map { m =>
+            val moduleId = CrossVersion(
+              cross = m.crossVersion,
+              fullVersion = scalaVersion.value,
+              binaryVersion = scalaBinaryVersion.value
+            ) match {
+              case Some(f) =>
+                m.withName(f(Project.normalizeModuleID(m.name)))
+              case None =>
+                m
+            }
+            val a = getArtifact(moduleId, ivy, s)
+            copyToCompilerPluginJarsDir(
+              src = a,
+              jarDir = autoImport.wartremoverPluginJarsDir.value,
+              base = (LocalRootProject / baseDirectory).value,
+              log = streams.value.log
+            ).map("file:" + _).getOrElse(a.toURI.toString)
           }
-          val a = getArtifact(moduleId, ivy, s)
-          copyToCompilerPluginJarsDir(
-            src = a,
-            jarDir = autoImport.wartremoverPluginJarsDir.value,
-            base = (LocalRootProject / baseDirectory).value,
-            log = streams.value.log
-          ).map("file:" + _).getOrElse(a.toURI.toString)
-        }
-      },
-      derive(
-        scalacOptions ++= {
-          if (isScala3.value) {
-            Nil
-          } else {
-            autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")
+        },
+        derive(
+          scalacOptions ++= {
+            if (isScala3.value) {
+              Nil
+            } else {
+              autoImport.wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")
+            }
           }
-        }
-      ),
-      derive(
-        scalacOptions ++= {
-          if (isScala3.value) {
-            Nil
-          } else {
-            autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (w => s"-P:wartremover:only-warn-traverser:${w.clazz}")
+        ),
+        derive(
+          scalacOptions ++= {
+            if (isScala3.value) {
+              Nil
+            } else {
+              autoImport.wartremoverWarnings.value.distinct filterNot (autoImport.wartremoverErrors.value contains _) map (
+                w => s"-P:wartremover:only-warn-traverser:${w.clazz}"
+              )
+            }
           }
-        }
-      ),
-      derive(
-        scalacOptions ++= {
-          if (isScala3.value) {
-            Nil
-          } else {
-            autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp")
+        ),
+        derive(
+          scalacOptions ++= {
+            if (isScala3.value) {
+              Nil
+            } else {
+              autoImport.wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp")
+            }
           }
-        }
+        )
       )
-    ))
+    )
   )
 
   // Workaround for https://github.com/wartremover/wartremover/issues/123
@@ -188,7 +206,17 @@ object WartRemover extends sbt.AutoPlugin {
     } catch {
       case _: LinkageError =>
         import scala.language.reflectiveCalls
-        Def.asInstanceOf[{def derive[T](setting: Setting[T], allowDynamic: Boolean, filter: Scope => Boolean, trigger: AttributeKey[_] => Boolean, default: Boolean): Setting[T]}]
+        Def
+          .asInstanceOf[{
+              def derive[T](
+                setting: Setting[T],
+                allowDynamic: Boolean,
+                filter: Scope => Boolean,
+                trigger: AttributeKey[_] => Boolean,
+                default: Boolean
+              ): Setting[T]
+            }
+          ]
           .derive(s, false, _ => true, _ => true, false)
     }
   }
@@ -197,20 +225,12 @@ object WartRemover extends sbt.AutoPlugin {
    * [[https://github.com/lightbend/mima/blob/723bd0046c0c6a4f52c91ddc752d08dce3b7ba37/sbtplugin/src/main/scala/com/typesafe/tools/mima/plugin/SbtMima.scala#L79-L100]]
    * @note avoid coursier for sbt 1.2.x compatibility
    */
-  private[this] def getArtifact(
-    m: ModuleID,
-    ivy: IvySbt,
-    s: TaskStreams): File = {
+  private[this] def getArtifact(m: ModuleID, ivy: IvySbt, s: TaskStreams): File = {
     val depRes = IvyDependencyResolution(ivy.configuration)
     val module = depRes.wrapDependencyInModule(m)
     val uc = UpdateConfiguration().withLogging(UpdateLogging.DownloadOnly)
     val uwc = UnresolvedWarningConfiguration()
-    val report = depRes
-      .update(module, uc, uwc, s.log)
-      .left
-      .map(_.resolveException)
-      .toTry
-      .get
+    val report = depRes.update(module, uc, uwc, s.log).left.map(_.resolveException).toTry.get
     val jars = (for {
       config <- report.configurations.iterator
       module <- config.modules

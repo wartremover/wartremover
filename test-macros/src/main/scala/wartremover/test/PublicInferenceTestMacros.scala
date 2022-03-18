@@ -42,4 +42,3 @@ private class PublicInferenceTestMacros(val c: blackbox.Context) {
     c.Expr[Int](tree)
   }
 }
-

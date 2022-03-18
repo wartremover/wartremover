@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.Unsafe
 import org.scalatest.funsuite.AnyFunSuite
 

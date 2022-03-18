@@ -18,7 +18,9 @@ object ArrayEquals extends WartTraverser {
             // https://github.com/wartremover/wartremover/issues/448
             super.traverse(tree)
           case Apply(Select(array, Equals), _)
-            if (array.tpe.typeSymbol.fullName == "scala.Array" || array.tpe <:< typeOf[Iterator[Any]]) && !isSynthetic(u)(tree) =>
+              if (array.tpe.typeSymbol.fullName == "scala.Array" || array.tpe <:< typeOf[
+                Iterator[Any]
+              ]) && !isSynthetic(u)(tree) =>
             error(u)(tree.pos, "== is disabled, use sameElements instead")
             super.traverse(tree)
           case _ =>

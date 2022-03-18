@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.JavaConversions
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -15,7 +14,7 @@ class JavaConversionsTest extends AnyFunSuite with ResultAssertions {
   test("disable scala.collection.JavaConversions when referenced in an import") {
     val result = WartTestTraverser(JavaConversions) {
       import scala.collection.JavaConversions._
-      val x: java.util.List[Int]= new java.util.ArrayList[Int]
+      val x: java.util.List[Int] = new java.util.ArrayList[Int]
       val y: Seq[Int] = x
     }
     assertError(result)("scala.collection.JavaConversions is disabled - use scala.collection.JavaConverters instead")

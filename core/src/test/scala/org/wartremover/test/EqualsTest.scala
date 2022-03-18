@@ -1,7 +1,6 @@
 package org.wartremover
 package test
 
-
 import org.wartremover.warts.Equals
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -63,7 +62,7 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
   }
 
   test("can't use overridden equals") {
-    class Foo(i:Int) {
+    class Foo(i: Int) {
       override def equals(obj: scala.Any) = false
     }
 
@@ -109,14 +108,17 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
     val result = WartTestTraverser(Equals) {
       Seq(1, 2, 3).exists(_ == 1)
       Seq(1, 2, 3).exists(n => n != 1)
-      Seq("a").collect{ case s if s eq "" => s ne "x" }
+      Seq("a").collect { case s if s eq "" => s ne "x" }
     }
-    assertResult(List(
-      "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead",
-      "[wartremover:Equals] eq is disabled - use === or equivalent instead",
-      "[wartremover:Equals] ne is disabled - use =/= or equivalent instead"),
-      "result.errors")(result.errors)
+    assertResult(
+      List(
+        "[wartremover:Equals] == is disabled - use === or equivalent instead",
+        "[wartremover:Equals] != is disabled - use =/= or equivalent instead",
+        "[wartremover:Equals] eq is disabled - use === or equivalent instead",
+        "[wartremover:Equals] ne is disabled - use =/= or equivalent instead"
+      ),
+      "result.errors"
+    )(result.errors)
   }
 
   test("Equals should work in explicit lambdas") {
@@ -131,12 +133,15 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
         override def isDefined(s: String) = s eq ""
       })
     }
-    assertResult(List(
-      "[wartremover:Equals] == is disabled - use === or equivalent instead",
-      "[wartremover:Equals] != is disabled - use =/= or equivalent instead",
-      "[wartremover:Equals] ne is disabled - use =/= or equivalent instead",
-      "[wartremover:Equals] eq is disabled - use === or equivalent instead"),
-      "result.errors")(result.errors)
+    assertResult(
+      List(
+        "[wartremover:Equals] == is disabled - use === or equivalent instead",
+        "[wartremover:Equals] != is disabled - use =/= or equivalent instead",
+        "[wartremover:Equals] ne is disabled - use =/= or equivalent instead",
+        "[wartremover:Equals] eq is disabled - use === or equivalent instead"
+      ),
+      "result.errors"
+    )(result.errors)
   }
 
 }

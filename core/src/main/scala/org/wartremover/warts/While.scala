@@ -11,7 +11,7 @@ object While extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
           case LabelDef(name, _, _)
-            if !isSynthetic(u)(tree) && (name.toString.startsWith("while") || name.toString.startsWith("doWhile")) =>
+              if !isSynthetic(u)(tree) && (name.toString.startsWith("while") || name.toString.startsWith("doWhile")) =>
             error(u)(tree.pos, "while is disabled")
             super.traverse(tree)
           case _ =>

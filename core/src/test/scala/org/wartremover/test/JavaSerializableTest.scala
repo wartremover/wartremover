@@ -5,7 +5,6 @@ import java.io.Serializable
 import org.wartremover.warts.JavaSerializable
 import org.scalatest.funsuite.AnyFunSuite
 
-
 object Foo extends Serializable
 
 class JavaSerializableTest extends AnyFunSuite with ResultAssertions {
