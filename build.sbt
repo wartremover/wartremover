@@ -180,6 +180,26 @@ lazy val core = Project(
   crossSrcSetting(Test),
   crossScalaVersions := allScalaVersions,
   crossVersion := CrossVersion.full,
+  commands += {
+    object ToInt {
+      def unapply(s: String): Option[Int] = Some(s.toInt)
+    }
+    Command.args("testPartial", ""){ case (state, Seq(ToInt(total), ToInt(index))) =>
+      assert(0 <= index, index)
+      assert(0 < total, total)
+      assert(index < total, (total, index))
+      val allVersions = Project.extract(state).get(crossScalaVersions)
+      val eachSize = math.ceil(allVersions.size / total.toDouble).toInt
+      val values = allVersions.sliding(eachSize, eachSize).toList
+      assert(values.size == total, values.toString)
+      assert(values.flatten == allVersions, values.toString)
+      val result = values(index).flatMap { v =>
+        s"++ ${v}!" :: "test" :: Nil
+      }.toList
+      println(result)
+      result ::: state
+    }
+  },
   crossTarget := {
     // workaround for https://github.com/sbt/sbt/issues/5097
     target.value / s"scala-${scalaVersion.value}"
