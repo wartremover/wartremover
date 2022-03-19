@@ -81,14 +81,18 @@ lazy val commonSettings = Def.settings(
   publishMavenStyle := true,
   Test / publishArtifact := false,
   (Compile / doc / scalacOptions) ++= {
-    val base = (LocalRootProject / baseDirectory).value.getAbsolutePath
-    val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
-    Seq(
-      "-sourcepath",
-      base,
-      "-doc-source-url",
-      "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
-    )
+    if (scalaBinaryVersion.value == "3") {
+      Nil // TODO
+    } else {
+      val base = (LocalRootProject / baseDirectory).value.getAbsolutePath
+      val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
+      Seq(
+        "-sourcepath",
+        base,
+        "-doc-source-url",
+        "https://github.com/wartremover/wartremover/tree/" + t + "€{FILE_PATH}.scala"
+      )
+    }
   },
   publishTo := sonatypePublishToBundle.value,
   homepage := Some(url("https://wartremover.org")),
