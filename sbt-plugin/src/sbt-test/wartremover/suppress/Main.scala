@@ -2,6 +2,9 @@ package example
 
 import scala.language.implicitConversions
 
+// https://github.com/wartremover/wartremover/commit/468900530493473f7b022d4da1ad17aa69571b67
+final case class B[X](a: X)
+
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 class Main {
   final val abc = 4
