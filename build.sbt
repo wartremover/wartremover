@@ -157,6 +157,13 @@ val coreSettings = Def.settings(
     }.sum
     s"-Dplease-recompile-because-main-source-files-changed-${hash}"
   },
+  Test / scalacOptions ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Seq("-source:3.0-migration")
+    } else {
+      Nil
+    }
+  },
   libraryDependencies := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
