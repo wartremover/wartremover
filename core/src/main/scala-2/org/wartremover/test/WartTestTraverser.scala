@@ -4,6 +4,7 @@ package test
 import language.experimental.macros
 import reflect.internal.util.Position
 import reflect.macros.blackbox.Context
+import scala.reflect.NameTransformer
 import tools.nsc.reporters.Reporter
 
 object WartTestTraverser {
@@ -13,7 +14,17 @@ object WartTestTraverser {
   def applyImpl(c: Context)(t: c.Expr[WartTraverser])(a: c.Expr[Any]) = {
     import c.universe._
 
-    val traverser = c.eval[WartTraverser](c.Expr(c.untypecheck(t.tree.duplicate)))
+    val traverser =
+      try {
+        val clazz = Class.forName(t.tree.toString + NameTransformer.MODULE_SUFFIX_STRING)
+        val field = clazz.getField(NameTransformer.MODULE_INSTANCE_NAME)
+        val instance = field.get(null)
+        instance.asInstanceOf[WartTraverser]
+      } catch {
+        case e: Throwable =>
+          // eval is too slow
+          c.eval[WartTraverser](c.Expr(c.untypecheck(t.tree.duplicate)))
+      }
 
     val errors = collection.mutable.ListBuffer[String]()
     val warnings = collection.mutable.ListBuffer[String]()
