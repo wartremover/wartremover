@@ -22,6 +22,14 @@ class LeakingSealedTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("allow parent is no-sealed") {
+    val result = WartTestTraverser(LeakingSealed) {
+      trait t
+      class c extends t
+    }
+    assertEmpty(result)
+  }
+
   test("LeakingSealed wart obeys SuppressWarnings") {
     val result = WartTestTraverser(LeakingSealed) {
       sealed trait t
