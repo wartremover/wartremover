@@ -42,8 +42,8 @@ class AsInstanceOfTest extends AnyFunSuite with ResultAssertions {
      */
 
     val result = WartTestTraverser(AsInstanceOf) {
+      import AsInstanceOfTest.~>
       class Task[A](value: A)
-      trait ~>[F[_], G[_]] { def apply[A](a: F[A]): G[A] }
       sealed trait ConsoleIO[A]
       case class PrintLn(message: String) extends ConsoleIO[Unit]
 
@@ -62,4 +62,8 @@ class AsInstanceOfTest extends AnyFunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+}
+
+object AsInstanceOfTest {
+  private trait ~>[F[_], G[_]] { def apply[A](a: F[A]): G[A] }
 }
