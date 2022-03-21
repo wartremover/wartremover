@@ -168,6 +168,8 @@ val coreSettings = Def.settings(
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
         Seq("org.scala-lang.modules" %% "scala-xml" % "2.0.1" % "test")
+      case Some((3, _)) =>
+        Seq("org.scala-lang.modules" %% "scala-xml" % "2.0.1" % "provided,test")
       case _ =>
         Nil
     }
