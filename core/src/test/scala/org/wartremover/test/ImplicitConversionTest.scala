@@ -14,6 +14,13 @@ class ImplicitConversionTest extends AnyFunSuite with ResultAssertions {
     assertError(result)("Implicit conversion is disabled")
   }
 
+  test("implicit class is enabled") {
+    val result = WartTestTraverser(ImplicitConversion) {
+      implicit class A(x: Int)
+    }
+    assertEmpty(result)
+  }
+
   test("Non-public implicit conversion is enabled") {
     val result = WartTestTraverser(ImplicitConversion) {
       class c {
