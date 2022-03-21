@@ -164,12 +164,12 @@ val coreSettings = Def.settings(
       Nil
     }
   },
-  libraryDependencies := {
+  libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
-        libraryDependencies.value :+ ("org.scala-lang.modules" %% "scala-xml" % "2.0.1" % "test")
+        Seq("org.scala-lang.modules" %% "scala-xml" % "2.0.1" % "test")
       case _ =>
-        libraryDependencies.value
+        Nil
     }
   },
   scalaCompilerDependency,
