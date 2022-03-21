@@ -10,20 +10,35 @@ import tools.nsc.reporters.Reporter
 object WartTestTraverser {
   case class Result(errors: List[String], warnings: List[String])
 
+  private[this] def getWartTraverserObjectOption(name: String): Option[WartTraverser] =
+    try {
+      Some(getWartTraverserObject(name))
+    } catch {
+      case e: Throwable =>
+        None
+    }
+
+  private[this] def getWartTraverserObject(name: String): WartTraverser = {
+    val clazz = Class.forName(name + NameTransformer.MODULE_SUFFIX_STRING)
+    val field = clazz.getField(NameTransformer.MODULE_INSTANCE_NAME)
+    val instance = field.get(null)
+    instance.asInstanceOf[WartTraverser]
+  }
+
   def apply(t: WartTraverser)(a: Any): Result = macro applyImpl
   def applyImpl(c: Context)(t: c.Expr[WartTraverser])(a: c.Expr[Any]) = {
     import c.universe._
 
     val traverser =
-      try {
-        val clazz = Class.forName(t.tree.toString + NameTransformer.MODULE_SUFFIX_STRING)
-        val field = clazz.getField(NameTransformer.MODULE_INSTANCE_NAME)
-        val instance = field.get(null)
-        instance.asInstanceOf[WartTraverser]
-      } catch {
-        case e: Throwable =>
-          // eval is too slow
-          c.eval[WartTraverser](c.Expr(c.untypecheck(t.tree.duplicate)))
+      getWartTraverserObjectOption(t.tree.toString).getOrElse {
+        try {
+          val name = t.tree.tpe.typeSymbol.fullName
+          getWartTraverserObject(name)
+        } catch {
+          case e: Throwable =>
+            // eval is too slow
+            c.eval[WartTraverser](c.Expr(c.untypecheck(t.tree.duplicate)))
+        }
       }
 
     val errors = collection.mutable.ListBuffer[String]()
