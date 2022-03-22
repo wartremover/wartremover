@@ -3,6 +3,8 @@ package org.wartremover
 import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.plugins.StandardPlugin
 import java.io.File
+import java.net.URL
+import java.net.URLClassLoader
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.reflect.NameTransformer
 
@@ -11,9 +13,9 @@ class Plugin extends StandardPlugin {
 
   override def description = "wartremover"
 
-  private def loadWart(name: String): Either[(String, Throwable), WartTraverser] = {
+  private def loadWart(name: String, classLoader: ClassLoader): Either[(String, Throwable), WartTraverser] = {
     try {
-      val clazz = Class.forName(name + NameTransformer.MODULE_SUFFIX_STRING)
+      val clazz = classLoader.loadClass(name + NameTransformer.MODULE_SUFFIX_STRING)
       val field = clazz.getField(NameTransformer.MODULE_INSTANCE_NAME)
       val instance = field.get(null)
       Right(instance.asInstanceOf[WartTraverser])
@@ -28,11 +30,19 @@ class Plugin extends StandardPlugin {
     val excluded = options.collect { case s"excluded:${path}" =>
       new File(path).getAbsolutePath
     }
+    val classPathEntries = options.collect {
+      case s"cp:file:${c}" =>
+        val f = new File(c)
+        f.getCanonicalFile.toURI.toURL
+      case s"cp:${c}" =>
+        new URL(c)
+    }
+    val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val (errors1, errorWarts) = options.collect { case s"traverser:${name}" =>
-      loadWart(name)
+      loadWart(name, classLoader)
     }.partitionMap(identity)
     val (errors2, warningWarts) = options.collect { case s"only-warn-traverser:${name}" =>
-      loadWart(name)
+      loadWart(name, classLoader)
     }.partitionMap(identity)
     val loglevel = options.collect { case s"loglevel:${level}" =>
       LogLevel.map.get(level)

@@ -3,8 +3,12 @@ lazy val commonSettings = Def.settings(
   wartremoverWarnings ++= Warts.all,
   wartremoverWarnings += Wart.custom("org.wartremover.contrib.warts.OldTime"),
   wartremoverCrossVersion := CrossVersion.binary,
-  wartremoverDependencies += {
-    "org.wartremover" %% "wartremover-contrib" % "1.3.11" cross wartremoverCrossVersion.value
+  wartremoverDependencies ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Nil // TODO https://github.com/wartremover/wartremover-contrib/issues/138
+    } else {
+      Seq("org.wartremover" %% "wartremover-contrib" % "1.3.11" cross wartremoverCrossVersion.value)
+    }
   },
 )
 
@@ -21,6 +25,13 @@ lazy val a1 = project.settings(
   commonSettings,
   wartremoverErrors += Wart.custom("mywarts.Unimplemented"),
   wartremoverExcluded ++= (Compile / managedSourceDirectories).value,
+  scalacOptions += "-P:wartremover:loglevel:debug",
+  TaskKey[Unit]("writeUnimplementedSource") := {
+    IO.write(
+      (Compile / scalaSource).value / "C.scala",
+      "object C { def c = ??? }"
+    )
+  },
   (Compile / sourceGenerators) += task {
     val dir = (Compile / sourceManaged).value
     val b = dir / "B.scala"
