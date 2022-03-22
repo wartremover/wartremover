@@ -17,21 +17,6 @@ class AsInstanceOfTest extends AnyFunSuite with ResultAssertions {
     }
     assertError(result)("asInstanceOf is disabled")
   }
-  test("issue 264 TypeTag") {
-    val result = WartTestTraverser(AsInstanceOf) {
-      import scala.reflect.runtime.universe.TypeTag
-
-      def takesTypeTag[A: TypeTag](a: A): String = {
-        val tt = implicitly[TypeTag[A]]
-        s"The tt of A is $tt"
-      }
-
-      def exerciseIt(): String = {
-        takesTypeTag("Hello")
-      }
-    }
-    assertEmpty(result)
-  }
   test("issue 266 GADTs") {
     /* scalac generate following AST
 

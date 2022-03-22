@@ -7,11 +7,10 @@ import org.scalatest.funsuite.AnyFunSuite
 class StringPlusAnyTest extends AnyFunSuite with ResultAssertions {
   test("Implicit conversion to string is disabled") {
     val result = WartTestTraverser(StringPlusAny) {
-      {} + "lol"
       "lol" + 1
       "" + (if (true) 5 else "")
     }
-    assertErrors(result)("Implicit conversion to string is disabled", 3)
+    assertErrors(result)("Implicit conversion to string is disabled", 2)
   }
 
   test("Primitive conversion to string is disabled") {
