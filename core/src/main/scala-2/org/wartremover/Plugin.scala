@@ -33,7 +33,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   def filterOptions(prefix: String, options: List[String]): List[String] =
     options.flatMap(prefixedOption(prefix))
 
-  override def processOptions(options: List[String], error: String => Unit): Unit = {
+  override def init(options: List[String], error: String => Unit): Boolean = {
     val classPathEntries = filterOptions("cp", options).map { c =>
       val filePrefix = "file:"
       if (c startsWith filePrefix) {
@@ -54,6 +54,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     onlyWarnTraversers = ts("only-warn-traverser")
     excludedFiles =
       filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+
+    true
   }
 
   object Traverser extends PluginComponent {
