@@ -3,12 +3,8 @@ lazy val commonSettings = Def.settings(
   wartremoverWarnings ++= Warts.all,
   wartremoverWarnings += Wart.custom("org.wartremover.contrib.warts.OldTime"),
   wartremoverCrossVersion := CrossVersion.binary,
-  wartremoverDependencies ++= {
-    if (scalaBinaryVersion.value == "3") {
-      Nil // TODO https://github.com/wartremover/wartremover-contrib/issues/138
-    } else {
-      Seq("org.wartremover" %% "wartremover-contrib" % "1.3.11" cross wartremoverCrossVersion.value)
-    }
+  wartremoverDependencies += {
+    "org.wartremover" %% "wartremover-contrib" % "2.0.0-RC1" cross wartremoverCrossVersion.value
   },
 )
 
