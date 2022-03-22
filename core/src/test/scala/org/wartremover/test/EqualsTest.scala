@@ -5,18 +5,6 @@ import org.wartremover.warts.Equals
 import org.scalatest.funsuite.AnyFunSuite
 
 class EqualsTest extends AnyFunSuite with ResultAssertions {
-  test("can't use == or != method on primitives") {
-    val result1 = WartTestTraverser(Equals) {
-      5 == "foo"
-    }
-    assertError(result1)("== is disabled - use === or equivalent instead")
-
-    val result2 = WartTestTraverser(Equals) {
-      5 != "foo"
-    }
-    assertError(result2)("!= is disabled - use =/= or equivalent instead")
-  }
-
   test("can't use == or != on classes") {
     class Foo(i: Int)
 
@@ -43,11 +31,6 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
       Foo(5) != Foo(4)
     }
     assertError(result2)("!= is disabled - use =/= or equivalent instead")
-
-    val result3 = WartTestTraverser(Equals) {
-      "abc" == Foo(4)
-    }
-    assertError(result3)("== is disabled - use === or equivalent instead")
   }
 
   test("can't use equals") {
