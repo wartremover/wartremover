@@ -20,7 +20,7 @@ lazy val allScalaVersions = Seq(
   "2.13.7",
   "2.13.8",
   "3.1.1",
-  "3.1.2-RC2",
+  "3.1.2-RC3",
 )
 
 def latestScala212 = latest(12, allScalaVersions)
