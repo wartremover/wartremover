@@ -32,7 +32,7 @@ class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel, val quotes: Quotes)
         .exists(hasWartAnnotationSymbol)
     }
 
-    private[this] def hasWartAnnotationSymbol(s: Symbol): Boolean = {
+    protected[this] def hasWartAnnotationSymbol(s: Symbol): Boolean = {
       val SuppressWarningsSymbol = TypeTree.of[SuppressWarnings].symbol
 
       val args: Set[String] = s
