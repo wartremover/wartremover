@@ -9,7 +9,7 @@ order: 0
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "3.0.0-RC1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "3.0.0-RC2")
 ```
 
 **NOTE**: `sbt-wartremover` requires sbt version 1.0+. [for sbt 0.13.x](https://github.com/wartremover/wartremover/blob/da1e629e3367c0ec/docs/_posts/2017-02-11-install-setup.md)
@@ -96,7 +96,7 @@ Compile the command-line tool via `sbt "++ 2.12.15" core/assembly` and then use 
 Add the following to `build.sbt`:
 
 ```scala
-addCompilerPlugin("org.wartremover" %% "wartremover" % "3.0.0-RC1" cross CrossVersion.full)
+addCompilerPlugin("org.wartremover" %% "wartremover" % "3.0.0-RC2" cross CrossVersion.full)
 
 scalacOptions += "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
 ```
@@ -161,7 +161,7 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
           <compilerPlugin>
             <groupId>org.wartremover</groupId>
             <artifactId>wartremover_2.13</artifactId>
-            <version>3.0.0-RC1</version>
+            <version>3.0.0-RC2</version>
           </compilerPlugin>
         </compilerPlugins>
         <args>
