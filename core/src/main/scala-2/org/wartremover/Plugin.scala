@@ -16,6 +16,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   private[this] var traversers: List[WartTraverser] = List.empty
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
   private[this] var excludedFiles: List[String] = List.empty
+  private[this] var logLevel: LogLevel = LogLevel.Disable
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -49,10 +50,30 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
       traverserNames.map(getTraverser(mirror))
     }
 
+    filterOptions("loglevel", options).flatMap(LogLevel.map.get).headOption.foreach { loglevel =>
+      this.logLevel = loglevel
+    }
+
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
     excludedFiles =
       filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+
+    logLevel match {
+      case LogLevel.Debug | LogLevel.Info =>
+        if (traversers.nonEmpty) {
+          global.reporter.echo("error warts = " + traversers.map(_.getClass.getName.dropRight(1)).mkString(", "))
+        }
+        if (onlyWarnTraversers.nonEmpty) {
+          global.reporter.echo(
+            "warning warts = " + onlyWarnTraversers.map(_.getClass.getName.dropRight(1)).mkString(", ")
+          )
+        }
+        if (excludedFiles.nonEmpty) {
+          global.reporter.echo("exclude = " + excludedFiles.mkString(", "))
+        }
+      case LogLevel.Disable =>
+    }
 
     true
   }
@@ -72,18 +93,40 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
       override def apply(unit: CompilationUnit) = {
         val isExcluded = excludedFiles exists unit.source.file.absolute.path.startsWith
 
-        if (!isExcluded) {
+        if (isExcluded) {
+          logLevel match {
+            case LogLevel.Debug =>
+              reporter.echo("skip wartremover " + unit.source.path)
+            case _ =>
+          }
+        } else {
           def wartUniverse(onlyWarn: Boolean) = new WartUniverse {
             val universe: global.type = global
             def error(pos: Position, message: String) =
               if (onlyWarn) global.reporter.warning(pos, message)
               else global.reporter.error(pos, message)
             def warning(pos: Position, message: String) = global.reporter.warning(pos, message)
+            override val logLevel: LogLevel = Plugin.this.logLevel
           }
 
-          def go(ts: List[WartTraverser], onlyWarn: Boolean) =
-            ts.foreach(_(wartUniverse(onlyWarn)).traverse(unit.body))
+          def go(ts: List[WartTraverser], onlyWarn: Boolean) = {
+            ts.foreach { traverser =>
+              try {
+                traverser.apply(wartUniverse(onlyWarn)).traverse(unit.body)
+              } catch {
+                case e: Throwable =>
+                  val message = s"error wartremover ${traverser.className} ${unit.source.path} '${e.getMessage}'"
+                  global.reporter.error(unit.targetPos, message)
+                  throw e
+              }
+            }
+          }
 
+          logLevel match {
+            case LogLevel.Debug =>
+              global.reporter.echo(s"run wartremover ${unit.source.path}")
+            case _ =>
+          }
           go(traversers, onlyWarn = false)
           go(onlyWarnTraversers, onlyWarn = true)
         }
