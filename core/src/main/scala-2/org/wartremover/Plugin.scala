@@ -8,7 +8,6 @@ import java.net.URL
 import java.net.URLClassLoader
 
 class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
-  import global._
 
   val name = "wartremover"
   val description = "Linting library and plugin. Allows rules to run inside a plugin or inside macros."
