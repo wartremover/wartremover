@@ -151,6 +151,7 @@ trait WartUniverse {
   type TypeTag[T] = universe.TypeTag[T]
   protected def error(pos: universe.Position, message: String): Unit
   protected def warning(pos: universe.Position, message: String): Unit
+  def logLevel: LogLevel = LogLevel.Disable
   def error(pos: universe.Position, message: String, wartName: String): Unit =
     error(pos, s"[wartremover:$wartName] $message")
   def warning(pos: universe.Position, message: String, wartName: String): Unit =
