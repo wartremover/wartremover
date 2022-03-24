@@ -64,7 +64,7 @@ class WartremoverPhase(
     val c2 = QuotesCache.init(c.fresh)
     val q = scala.quoted.runtime.impl.QuotesImpl()(using c2)
     def runWart(w: WartTraverser, onlyWarning: Boolean): Unit = {
-      val universe = new WartUniverse(
+      val universe = WartUniverse(
         onlyWarning = onlyWarning,
         logLevel = logLevel,
         quotes = q,

@@ -61,7 +61,7 @@ object WartTestTraverser {
       val clazz = Class.forName(name + NameTransformer.MODULE_SUFFIX_STRING)
       clazz.getField(NameTransformer.MODULE_INSTANCE_NAME).get(null).asInstanceOf[WartTraverser]
     }
-    val universe = new WartUniverse(
+    val universe = WartUniverse(
       onlyWarning = false,
       logLevel = LogLevel.Info,
       quotes = q1
