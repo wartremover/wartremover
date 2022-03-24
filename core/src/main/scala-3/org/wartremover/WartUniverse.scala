@@ -6,7 +6,23 @@ import scala.quoted.Quotes
 import scala.quoted.Type
 import java.lang.SuppressWarnings
 
-class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel, val quotes: Quotes) { self =>
+object WartUniverse {
+  type Aux[X <: Quotes] = WartUniverse { type Q = X }
+
+  def apply[Q <: Quotes](onlyWarning: Boolean, logLevel: LogLevel, quotes: Q): Aux[Q] = {
+    type X = Q
+    val q = quotes
+    new WartUniverse(onlyWarning, logLevel) {
+      override type Q = X
+      override val quotes = q
+    }
+  }
+}
+
+sealed abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
+  type Q <: Quotes
+  val quotes: Q
+
   import quotes.reflect.*
   abstract class Traverser(traverser: WartTraverser) extends TreeTraverser {
     final implicit val q: self.quotes.type = self.quotes
