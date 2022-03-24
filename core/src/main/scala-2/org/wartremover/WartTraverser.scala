@@ -1,9 +1,7 @@
 package org.wartremover
 
-import tools.nsc.Global
 import reflect.api.Universe
 import reflect.macros.blackbox.Context
-import scala.util.matching.Regex
 
 trait WartTraverser {
   def apply(u: WartUniverse): u.Traverser
@@ -12,7 +10,6 @@ trait WartTraverser {
   lazy val wartName = className.substring(className.lastIndexOf('.') + 1)
 
   def asMacro(c: Context)(expr: c.Expr[Any]): c.Expr[Any] = {
-    import c.universe._
 
     object MacroUniverse extends WartUniverse {
       val universe: c.universe.type = c.universe
