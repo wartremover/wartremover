@@ -76,6 +76,7 @@ sealed abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { s
     def sourceCodeContains(t: Tree, src: String): Boolean = {
       // avoid StringIndexOutOfBoundsException
       // Don't use `def sourceCode: Option[String]`
+      // https://github.com/lampepfl/dotty/issues/14785
       // https://github.com/lampepfl/dotty/blob/58b59a5f88508bb4b3/compiler/src/scala/quoted/runtime/impl/QuotesImpl.scala#L2791-L2793
       t.pos.sourceFile.content.exists { content =>
         val sliced = content.slice(t.pos.start, t.pos.end)
