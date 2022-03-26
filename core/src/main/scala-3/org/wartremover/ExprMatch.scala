@@ -1,5 +1,4 @@
 package org.wartremover
-package warts
 
 import scala.quoted.Expr
 import scala.quoted.Quotes
