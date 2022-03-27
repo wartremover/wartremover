@@ -23,21 +23,28 @@ sealed abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { s
   type Q <: Quotes
   val quotes: Q
 
-  import quotes.reflect.*
+  import quotes.reflect.{report => _, *}
+
+  protected def onWarn(msg: String, pos: Position): Unit =
+    quotes.reflect.report.warning(msg = msg, pos = pos)
+
+  protected def onError(msg: String, pos: Position): Unit =
+    quotes.reflect.report.error(msg = msg, pos = pos)
+
   abstract class Traverser(traverser: WartTraverser) extends TreeTraverser {
     final implicit val q: self.quotes.type = self.quotes
 
     private[this] def withPrefix(name: String): String = s"[wartremover:${name}] "
 
     protected final def warning(pos: Position, message: String): Unit =
-      report.warning(msg = withPrefix(traverser.simpleName) + message, pos = pos)
+      onWarn(msg = withPrefix(traverser.simpleName) + message, pos = pos)
 
     protected final def error(pos: Position, message: String): Unit = {
       if (onlyWarning) {
         warning(pos, message)
       } else {
         val msg = withPrefix(traverser.simpleName) + message
-        report.error(msg = msg, pos = pos)
+        onError(msg = msg, pos = pos)
       }
     }
 
