@@ -120,6 +120,7 @@ sealed abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { s
         tree match {
           case _: tpd.Template =>
           case _: tpd.Typed =>
+          case _: tpd.InlineMatch => // https://github.com/lampepfl/dotty/issues/14789
           case _ =>
             super.foldOverTree(x, tree)(owner)
         }
