@@ -19,7 +19,7 @@ object WartUniverse {
   }
 }
 
-sealed abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
+abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
   type Q <: Quotes
   val quotes: Q
 
