@@ -52,6 +52,7 @@ lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
   ),
+  run / fork := true,
   scalaVersion := latestScala212,
 )
 
