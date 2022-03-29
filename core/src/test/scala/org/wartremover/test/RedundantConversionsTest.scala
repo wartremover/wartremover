@@ -5,6 +5,78 @@ import org.wartremover.warts.RedundantConversions
 import org.scalatest.funsuite.AnyFunSuite
 
 class RedundantConversionsTest extends AnyFunSuite with ResultAssertions {
+  test("redundant toInt disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def int: Int = ???
+      int.toInt
+    }
+    assertError(result)("redundant toInt conversion")
+  }
+  test("redundant toLong disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def long: Long = ???
+      long.toLong
+    }
+    assertError(result)("redundant toLong conversion")
+  }
+  test("redundant toFloat disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def float: Float = ???
+      float.toFloat
+    }
+    assertError(result)("redundant toFloat conversion")
+  }
+  test("redundant toDouble disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def double: Double = ???
+      double.toDouble
+    }
+    assertError(result)("redundant toDouble conversion")
+  }
+  test("redundant toByte disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def byte: Byte = ???
+      byte.toByte
+    }
+    assertError(result)("redundant toByte conversion")
+  }
+  test("redundant toShort disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def short: Short = 99
+      short.toShort
+    }
+    assertError(result)("redundant toShort conversion")
+  }
+  test("redundant toChar disabled") {
+    val result = WartTestTraverser(RedundantConversions) {
+      def char: Char = ???
+      char.toChar
+    }
+    assertError(result)("redundant toChar conversion")
+  }
+  test("no error another AnyVal type conversions") {
+    def i: Int = ???
+    def b: Byte = ???
+    def s: Short = ???
+    def c: Char = ???
+    def l: Long = ???
+    def f: Float = ???
+    def d: Double = ???
+
+    val result = WartTestTraverser(RedundantConversions) {
+      // format: off
+      Seq(()     , i.toByte, i.toShort, i.toChar, i.toLong, i.toFloat, i.toDouble)
+      Seq(b.toInt, ()      , b.toShort, b.toChar, b.toLong, b.toFloat, b.toDouble)
+      Seq(s.toInt, s.toByte, ()       , s.toChar, s.toLong, s.toFloat, s.toDouble)
+      Seq(c.toInt, c.toByte, c.toShort, ()      , c.toLong, c.toFloat, c.toDouble)
+      Seq(l.toInt, l.toByte, l.toShort, l.toChar, ()      , l.toFloat, l.toDouble)
+      Seq(f.toInt, f.toByte, f.toShort, f.toChar, f.toLong, ()       , f.toDouble)
+      Seq(d.toInt, d.toByte, d.toShort, d.toChar, d.toLong, d.toFloat, ()        )
+      // format: on
+    }
+    assertEmpty(result)
+  }
+
   test("redundant toString disabled") {
     val result = WartTestTraverser(RedundantConversions) {
       "x".toString
