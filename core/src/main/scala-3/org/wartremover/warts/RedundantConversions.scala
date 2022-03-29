@@ -25,4 +25,18 @@ object RedundantConversions
         "redundant toIndexedSeq conversion"
       case '{ ($x: String).toString } =>
         "redundant toString conversion"
+      case '{ ($x: Int).toInt } =>
+        "redundant toInt conversion"
+      case '{ ($x: Long).toLong } =>
+        "redundant toLong conversion"
+      case '{ ($x: Float).toFloat } =>
+        "redundant toFloat conversion"
+      case '{ ($x: Double).toDouble } =>
+        "redundant toDouble conversion"
+      case '{ ($x: Byte).toByte } =>
+        "redundant toByte conversion"
+      case '{ ($x: Short).toShort } =>
+        "redundant toShort conversion"
+      case '{ ($x: Char).toChar } =>
+        "redundant toChar conversion"
     })
