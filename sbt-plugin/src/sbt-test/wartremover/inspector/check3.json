@@ -1,0 +1,19 @@
+{
+  "errors" : [],
+  "warnings" : [
+    {
+      "message" : "[wartremover:Return] return is disabled",
+      "wart" : "org.wartremover.warts.Return",
+      "position" : {
+        "startLine" : 3,
+        "path" : "src/test/scala/Test.scala",
+        "endLine" : 3,
+        "end" : 53,
+        "start" : 45,
+        "startColumn" : 15,
+        "sourceCode" : "return 3",
+        "endColumn" : 23
+      }
+    }
+  ]
+}

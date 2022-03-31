@@ -1,0 +1,33 @@
+> show wartremoverInspect
+$ must-mirror warts-main.json check1.json
+$ exists target/scala-3.1.2/classes
+-$ exists target/scala-3.1.2/test-classes
+
+> set Compile / wartremoverInspect / wartremoverWarnings := Nil
+> set Compile / wartremoverInspect / wartremoverErrors := Warts.all
+-> show wartremoverInspect
+$ must-mirror warts-main.json check2.json
+
+> set Test / wartremoverInspect / wartremoverErrors := Nil
+> set Test / wartremoverInspect / wartremoverWarnings := Warts.all
+-$ exists warts-test.json
+> show Test/wartremoverInspect
+$ must-mirror warts-test.json check3.json
+$ exists target/scala-3.1.2/test-classes
+
+# test wartremoverFailIfWartLoadError
+> set Compile / wartremoverInspect / wartremoverWarnings := Warts.all
+> set Compile / wartremoverInspect / wartremoverErrors := Nil
+> show Compile/wartremoverInspect
+> set Compile / wartremoverFailIfWartLoadError := true
+-> show Compile/wartremoverInspect
+
+# reset
+> set Compile / wartremoverFailIfWartLoadError := false
+> Compile/wartremoverInspect
+
+# test wartremoverInspectFailOnErrors
+> set Compile / wartremoverInspect / wartremoverErrors := Warts.all
+-> show Compile/wartremoverInspect
+> set wartremoverInspectFailOnErrors := false
+> show Compile/wartremoverInspect
