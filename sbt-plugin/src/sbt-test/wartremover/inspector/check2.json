@@ -1,0 +1,33 @@
+{
+  "errors" : [
+    {
+      "message" : "[wartremover:ScalaApp] Don't use scala.App. https://docs.scala-lang.org/scala3/book/methods-main-methods.html",
+      "wart" : "org.wartremover.warts.ScalaApp",
+      "position" : {
+        "startLine" : 2,
+        "path" : "src/main/scala/Main.scala",
+        "endLine" : 2,
+        "end" : 40,
+        "start" : 37,
+        "startColumn" : 20,
+        "sourceCode" : "App",
+        "endColumn" : 23
+      }
+    },
+    {
+      "message" : "[wartremover:Null] null is disabled",
+      "wart" : "org.wartremover.warts.Null",
+      "position" : {
+        "startLine" : 3,
+        "path" : "src/main/scala/Main.scala",
+        "endLine" : 3,
+        "end" : 59,
+        "start" : 55,
+        "startColumn" : 12,
+        "sourceCode" : "null",
+        "endColumn" : 16
+      }
+    }
+  ],
+  "warnings" : []
+}
