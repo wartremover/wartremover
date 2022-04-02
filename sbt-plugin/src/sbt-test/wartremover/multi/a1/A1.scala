@@ -1,2 +1,1 @@
-class A1 {
-}
+class A1 {}

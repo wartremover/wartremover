@@ -1,6 +1,7 @@
 package mywarts
 
-import org.wartremover.{ WartTraverser, WartUniverse }
+import org.wartremover.WartTraverser
+import org.wartremover.WartUniverse
 
 object Unimplemented extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
