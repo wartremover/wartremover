@@ -4,6 +4,7 @@ package test
 import org.wartremover.warts.ExplicitImplicitTypes
 import org.scalatest.funsuite.AnyFunSuite
 import wartremover.test.ExplicitImplicitTypesTestMacros
+import scala.language.implicitConversions
 
 class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
   test("can't declare implicit vals without a type ascription") {
