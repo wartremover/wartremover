@@ -3,6 +3,7 @@ package test
 
 import org.wartremover.warts.ImplicitConversion
 import org.scalatest.funsuite.AnyFunSuite
+import scala.language.implicitConversions
 
 class ImplicitConversionTest extends AnyFunSuite with ResultAssertions {
   test("Implicit conversion is disabled") {

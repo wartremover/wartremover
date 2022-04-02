@@ -60,6 +60,14 @@ lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
   ),
+  scalacOptions ++= {
+    scalaBinaryVersion.value match {
+      case "2.12" =>
+        Seq("-language:higherKinds")
+      case _ =>
+        Nil
+    }
+  },
   scalaVersion := latestScala212,
 )
 
