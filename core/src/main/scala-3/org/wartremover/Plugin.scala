@@ -52,11 +52,18 @@ class Plugin extends StandardPlugin {
     val loglevel = options.collect { case s"loglevel:${level}" =>
       LogLevel.map.get(level)
     }.flatten.headOption.getOrElse(LogLevel.Disable)
-    val parallel = options.toSet.contains("parallelism:parallel")
+    val optionsSet = options.toSet
+    val parallel = optionsSet.contains("parallelism:parallel")
+    val throwIfLoadFail = optionsSet.contains("on-wart-load-error:failure")
+    val loadFailureWarts = errors1 ++ errors2
+    if (throwIfLoadFail && loadFailureWarts.nonEmpty) {
+      println(loadFailureWarts.mkString("load failure warts = ", ", ", ""))
+      throw loadFailureWarts.head._2
+    }
     val newPhase = new WartremoverPhase(
       errorWarts = errorWarts,
       warningWarts = warningWarts,
-      loadFailureWarts = errors1 ++ errors2,
+      loadFailureWarts = loadFailureWarts,
       excluded = excluded,
       logLevel = loglevel,
       initialLog = initialLog,
