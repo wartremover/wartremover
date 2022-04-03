@@ -8,12 +8,11 @@ import java.net.URLClassLoader
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.reflect.NameTransformer
 
-class Plugin extends StandardPlugin {
-  override def name = "wartremover"
-
-  override def description = "wartremover"
-
-  private def loadWart(name: String, classLoader: ClassLoader): Either[(String, Throwable), WartTraverser] = {
+object Plugin {
+  private[wartremover] def loadWart(
+    name: String,
+    classLoader: ClassLoader
+  ): Either[(String, Throwable), WartTraverser] = {
     try {
       val clazz = classLoader.loadClass(name + NameTransformer.MODULE_SUFFIX_STRING)
       val field = clazz.getField(NameTransformer.MODULE_INSTANCE_NAME)
@@ -23,6 +22,12 @@ class Plugin extends StandardPlugin {
       case e: Throwable => Left((name, e))
     }
   }
+}
+
+class Plugin extends StandardPlugin {
+  override def name = "wartremover"
+
+  override def description = "wartremover"
 
   private[this] val initialLog = new AtomicBoolean(true)
 
@@ -39,10 +44,10 @@ class Plugin extends StandardPlugin {
     }
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val (errors1, errorWarts) = options.collect { case s"traverser:${name}" =>
-      loadWart(name, classLoader)
+      Plugin.loadWart(name, classLoader)
     }.partitionMap(identity)
     val (errors2, warningWarts) = options.collect { case s"only-warn-traverser:${name}" =>
-      loadWart(name, classLoader)
+      Plugin.loadWart(name, classLoader)
     }.partitionMap(identity)
     val loglevel = options.collect { case s"loglevel:${level}" =>
       LogLevel.map.get(level)
