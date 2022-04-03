@@ -116,7 +116,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
             override val logLevel: LogLevel = Plugin.this.logLevel
           }
 
-          def go(ts: List[WartTraverser], onlyWarn: Boolean) = {
+          def go(ts: List[WartTraverser], onlyWarn: Boolean): Unit = {
             ts.foreach { traverser =>
               try {
                 traverser.apply(wartUniverse(onlyWarn)).traverse(unit.body)
