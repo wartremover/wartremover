@@ -6,6 +6,8 @@ import tools.nsc.Phase
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import scala.reflect.internal.util.NoPosition
+import scala.util.control.NonFatal
 
 class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
@@ -45,9 +47,29 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val mirror = reflect.runtime.universe.runtimeMirror(classLoader)
 
-    def ts(p: String) = {
+    val optionsSet = options.toSet
+    val throwIfLoadFail = optionsSet.contains("on-wart-load-error:failure")
+
+    def ts(p: String): List[WartTraverser] = {
       val traverserNames = filterOptions(p, options)
-      traverserNames.map(getTraverser(mirror))
+      val success = List.newBuilder[WartTraverser]
+      val failure = List.newBuilder[(String, Throwable)]
+      traverserNames.foreach { name =>
+        try {
+          success += getTraverser(mirror)(name)
+        } catch {
+          case NonFatal(e) =>
+            failure += ((name, e))
+        }
+      }
+      val loadFail = failure.result()
+      if (loadFail.nonEmpty) {
+        global.reporter.warning(NoPosition, loadFail.mkString("load failure warts = ", ", ", ""))
+        if (throwIfLoadFail) {
+          throw loadFail.head._2
+        }
+      }
+      success.result()
     }
 
     filterOptions("loglevel", options).flatMap(LogLevel.map.get).headOption.foreach { loglevel =>
