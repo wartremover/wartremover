@@ -6,6 +6,8 @@ import tools.nsc.Phase
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
@@ -17,6 +19,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
   private[this] var excludedFiles: List[String] = List.empty
   private[this] var logLevel: LogLevel = LogLevel.Disable
+  private[this] var parallel: Boolean = false
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -52,6 +55,10 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     filterOptions("loglevel", options).flatMap(LogLevel.map.get).headOption.foreach { loglevel =>
       this.logLevel = loglevel
+    }
+
+    if (options.toSet.contains("parallelism:parallel")) {
+      parallel = true
     }
 
     traversers = ts("traverser")
@@ -127,8 +134,15 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
               global.reporter.echo(s"run wartremover ${unit.source.path}")
             case _ =>
           }
-          go(traversers, onlyWarn = false)
-          go(onlyWarnTraversers, onlyWarn = true)
+          def run(): Unit = {
+            go(traversers, onlyWarn = false)
+            go(onlyWarnTraversers, onlyWarn = true)
+          }
+          if (parallel) {
+            Future(run())(ExecutionContext.global)
+          } else {
+            run()
+          }
         }
       }
     }

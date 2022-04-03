@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.quoted.Quotes
 import scala.util.control.NonFatal
 import scala.reflect.NameTransformer
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class WartremoverPhase(
   errorWarts: List[WartTraverser],
@@ -20,7 +22,8 @@ class WartremoverPhase(
   loadFailureWarts: List[(String, Throwable)],
   excluded: List[String],
   logLevel: LogLevel,
-  initialLog: AtomicBoolean
+  initialLog: AtomicBoolean,
+  parallel: Boolean,
 ) extends PluginPhase {
   override def phaseName = "wartremover"
 
@@ -61,6 +64,17 @@ class WartremoverPhase(
   override val runsAfter = Set(TyperPhase.name)
 
   override def prepareForUnit(tree: tpd.Tree)(using c: Context): Context = {
+    if (parallel) {
+      Future(
+        run(tree)
+      )(ExecutionContext.global)
+      c
+    } else {
+      run(tree)
+    }
+  }
+
+  private[this] def run(tree: tpd.Tree)(using c: Context): Context = {
     val c2 = QuotesCache.init(c.fresh)
     val q = scala.quoted.runtime.impl.QuotesImpl()(using c2)
     def runWart(w: WartTraverser, onlyWarning: Boolean): Unit = {

@@ -52,6 +52,7 @@ class Plugin extends StandardPlugin {
     val loglevel = options.collect { case s"loglevel:${level}" =>
       LogLevel.map.get(level)
     }.flatten.headOption.getOrElse(LogLevel.Disable)
+    val parallel = options.toSet.contains("parallelism:parallel")
     val newPhase = new WartremoverPhase(
       errorWarts = errorWarts,
       warningWarts = warningWarts,
@@ -59,6 +60,7 @@ class Plugin extends StandardPlugin {
       excluded = excluded,
       logLevel = loglevel,
       initialLog = initialLog,
+      parallel = parallel,
     )
     newPhase :: Nil
   }
