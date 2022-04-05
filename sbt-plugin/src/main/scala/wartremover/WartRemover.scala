@@ -35,22 +35,6 @@ object WartRemover extends sbt.AutoPlugin {
   }
   import autoImport._
 
-  private[this] def sequentialAndAggregate[A](
-    tasks: List[Def.Initialize[Task[A]]],
-    acc: List[A]
-  ): Def.Initialize[Task[List[A]]] = {
-    tasks match {
-      case Nil =>
-        Def.task {
-          acc
-        }
-      case x :: xs =>
-        Def.taskDyn {
-          sequentialAndAggregate(xs, x.value :: acc)
-        }
-    }
-  }
-
   override def globalSettings = Seq(
     wartremoverInspectScalaVersion := {
       // need NIGHTLY version because there are some bugs in old tasty-inspector.
