@@ -4,7 +4,6 @@ import java.nio.file.Path
 import java.net.URL
 import org.wartremover.InspectParam
 import org.wartremover.InspectResult
-import sbt.LocalProject
 import sbt.*
 import sbt.Keys.*
 import sbt.internal.librarymanagement.IvySbt
