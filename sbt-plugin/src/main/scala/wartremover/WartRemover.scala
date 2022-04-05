@@ -38,7 +38,7 @@ object WartRemover extends sbt.AutoPlugin {
   override def globalSettings = Seq(
     wartremoverInspectScalaVersion := {
       // need NIGHTLY version because there are some bugs in old tasty-inspector.
-      "3.1.3-RC1-bin-20220401-4a96ce7-NIGHTLY"
+      "3.1.3-RC1-bin-20220403-a26a2c3-NIGHTLY"
     },
     excludeLintKeys += wartremoverInspectOutputFile,
     wartremoverCrossVersion := CrossVersion.full,
