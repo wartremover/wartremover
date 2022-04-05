@@ -3,11 +3,35 @@ package org.wartremover
 import argonaut.DecodeJson
 import argonaut.EncodeJson
 import java.net.URLClassLoader
+import scala.io.Source
 import scala.quoted.Quotes
 import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
+import java.io.File
 import java.net.URL
+import java.nio.file.Files
+import java.nio.charset.StandardCharsets
+
+object WartRemoverInspector {
+  def main(args: Array[String]): Unit = {
+    val inputOpt = args.collectFirst { case s"--input=${i}" =>
+      i
+    }
+    val outputOpt = args.collectFirst { case s"--output=${o}" =>
+      o
+    }
+    (inputOpt, outputOpt) match {
+      case (Some(input), Some(output)) =>
+        val inputFile = new File(input)
+        val json = Source.fromFile(inputFile, "UTF-8").getLines().mkString("\n")
+        val result = new WartRemoverInspector().runFromJson(json)
+        Files.write(new File(output).toPath, result.getBytes(StandardCharsets.UTF_8))
+      case _ =>
+        throw new IllegalArgumentException("invalid args " + args.mkString(", "))
+    }
+  }
+}
 
 final class WartRemoverInspector {
   private[this] implicit val inspectParamInstance: DecodeJson[InspectParam] =

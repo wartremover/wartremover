@@ -2,6 +2,7 @@ package wartremover
 
 import java.nio.file.Path
 import java.net.URL
+import java.nio.charset.StandardCharsets
 import org.wartremover.InspectParam
 import org.wartremover.InspectResult
 import sbt.*
@@ -48,33 +49,58 @@ object WartRemover extends sbt.AutoPlugin {
     wartremoverClasspaths := Nil
   )
 
-  private[this] lazy val generateProject = {
-    val id = "wartremover-inspector-project"
-    Project(id = id, base = file("target") / id).settings(
-      run / fork := true,
-      fork := true,
-      autoScalaLibrary := false,
-      scalaVersion := wartremoverInspectScalaVersion.value,
-      libraryDependencies := {
-        if (scalaBinaryVersion.value == "3") {
-          Seq(
-            "org.scala-lang" % "scala3-tasty-inspector_3" % wartremoverInspectScalaVersion.value,
-            "org.wartremover" % "wartremover-inspector_3" % Wart.PluginVersion,
-          )
-        } else {
-          Nil
-        }
-      }
-    )
-  }
+  private[this] def runInspector(
+    projectName: String,
+    base: File,
+    param: InspectParam,
+    scalaV: String,
+    launcher: File,
+    scalaSources: Seq[File],
+    forkOptions: ForkOptions,
+  ): Either[Int, String] = {
+    val buildSbt =
+      s"""autoScalaLibrary := false
+         |name := "${projectName}"
+         |logLevel := Level.Warn
+         |scalaVersion := "${scalaV}"
+         |libraryDependencies := Seq(
+         |  "org.scala-lang" % "scala3-tasty-inspector_3" % "${scalaV}",
+         |  "org.wartremover" % "wartremover-inspector_3" % "${Wart.PluginVersion}",
+         |)
+         |Compile / sources := Nil
+         |""".stripMargin
 
-  // avoid extraProjects https://github.com/sbt/sbt/issues/4947
-  override def derivedProjects(proj: ProjectDefinition[?]): Seq[Project] = {
-    proj.projectOrigin match {
-      case ProjectOrigin.DerivedProject =>
-        Nil
-      case _ =>
-        Seq(generateProject)
+    IO.withTemporaryDirectory { dir =>
+      val forkOpt = forkOptions.withWorkingDirectory(dir)
+      val out = dir / "out.json"
+      val in = dir / "in.json"
+      IO.copy(
+        scalaSources.flatMap { f =>
+          IO.relativize(base, f).map { x =>
+            f -> (dir / x)
+          }
+        }
+      )
+      IO.write(dir / "build.sbt", buildSbt.getBytes(StandardCharsets.UTF_8))
+      IO.write(in, param.toJsonString.getBytes(StandardCharsets.UTF_8))
+      val ret = Fork.java.apply(
+        forkOpt,
+        Seq(
+          "-jar",
+          launcher.getCanonicalPath,
+          Seq(
+            "runMain",
+            "org.wartremover.WartRemoverInspector",
+            s"--input=${in.getCanonicalPath}",
+            s"--output=${out.getCanonicalPath}",
+          ).mkString(" ")
+        )
+      )
+      if (ret == 0) {
+        Right(IO.read(out))
+      } else {
+        Left(ret)
+      }
     }
   }
 
@@ -225,13 +251,7 @@ object WartRemover extends sbt.AutoPlugin {
             if ((x / tastyFiles).value.isEmpty) {
               skipLog(s"${tastyFiles.key.label} is empty")
             } else {
-              import scala.language.reflectiveCalls
-              val loader = (generateProject / Test / testLoader).value
-              val clazz = loader.loadClass("org.wartremover.WartRemoverInspector")
-              val instance =
-                clazz.getConstructor().newInstance().asInstanceOf[{ def runFromJson(json: String): String }]
-
-              val dependenciesClasspath = (x / fullClasspath).value
+              val dependenciesClasspath = (x / dependencyClasspath).value
 
               val logStr = {
                 def names(xs: Seq[Wart]): List[String] = {
@@ -281,7 +301,20 @@ object WartRemover extends sbt.AutoPlugin {
                 failIfWartLoadError = (x / wartremoverFailIfWartLoadError).value,
                 outputStandardReporter = (x / wartremoverInspectOutputStandardReporter).value
               )
-              val resultJson = instance.runFromJson(param.toJsonString)
+              val launcher = getArtifact(
+                "org.scala-sbt" % "sbt-launch" % (wartremoverInspect / sbtVersion).value,
+                ivySbt.value,
+                streams.value
+              )
+              val resultJson = runInspector(
+                projectName = thisTaskName,
+                base = (LocalRootProject / baseDirectory).value,
+                param = param,
+                scalaV = wartremoverInspectScalaVersion.value,
+                launcher = launcher,
+                (x / sources).value,
+                forkOptions = (wartremoverInspect / forkOptions).value
+              ).fold(e => sys.error(s"${thisTaskName} failed ${e}"), identity)
               val result = {
                 val r = resultJson.decodeFromJsonString[InspectResult]
                 new InspectResult(errors = r.errors, warnings = r.warnings) {
