@@ -2,8 +2,10 @@ package org.wartremover
 
 import dotty.tools.dotc.ast.tpd
 import scala.annotation.nowarn
+import scala.quoted.Exprs
 import scala.quoted.Quotes
 import scala.quoted.Type
+import scala.quoted.Varargs
 import java.lang.SuppressWarnings
 
 object WartUniverse {
@@ -60,19 +62,11 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
 
       val args: Set[String] = s
         .getAnnotation(SuppressWarningsSymbol)
-        .collect {
-          case a1 if a1.isExpr =>
-            PartialFunction
-              .condOpt(a1.asExpr) { case '{ new SuppressWarnings($a2: Array[String]) } =>
-                PartialFunction
-                  .condOpt(a2.asTerm) { case Apply(Apply(_, Typed(e, _) :: Nil), _) =>
-                    e.asExprOf[Seq[String]].value
-                  }
-                  .flatten
-              }
-              .flatten
+        .filter(_.isExpr)
+        .map(_.asExpr)
+        .collect { case '{ new SuppressWarnings(Array[String](${ Varargs(Exprs(values)) }: _*)($classTag)) } =>
+          values
         }
-        .flatten
         .toList
         .flatten
         .toSet
