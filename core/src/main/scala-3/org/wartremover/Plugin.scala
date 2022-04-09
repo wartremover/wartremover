@@ -53,7 +53,6 @@ class Plugin extends StandardPlugin {
       LogLevel.map.get(level)
     }.flatten.headOption.getOrElse(LogLevel.Disable)
     val optionsSet = options.toSet
-    val parallel = optionsSet.contains("parallelism:parallel")
     val throwIfLoadFail = optionsSet.contains("on-wart-load-error:failure")
     val loadFailureWarts = errors1 ++ errors2
     if (throwIfLoadFail && loadFailureWarts.nonEmpty) {
@@ -67,7 +66,6 @@ class Plugin extends StandardPlugin {
       excluded = excluded,
       logLevel = loglevel,
       initialLog = initialLog,
-      parallel = parallel,
     )
     newPhase :: Nil
   }
