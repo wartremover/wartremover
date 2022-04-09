@@ -40,7 +40,7 @@ object WartRemover extends sbt.AutoPlugin {
     Global / concurrentRestrictions += Tags.limit(WartremoverTag, 2),
     wartremoverInspectScalaVersion := {
       // need NIGHTLY version because there are some bugs in old tasty-inspector.
-      "3.1.3-RC1-bin-20220403-a26a2c3-NIGHTLY"
+      "3.1.3-RC1-bin-20220408-f3cca47-NIGHTLY"
     },
     excludeLintKeys += wartremoverInspectOutputFile,
     wartremoverCrossVersion := CrossVersion.full,
