@@ -66,6 +66,9 @@ lazy val baseSettings = Def.settings(
 
 lazy val commonSettings = Def.settings(
   baseSettings,
+  libraryDependencies ++= {
+    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.11" % "test")
+  },
   Seq(packageBin, packageDoc, packageSrc).flatMap {
     // include LICENSE file in all packaged artifacts
     inTask(_)(
@@ -176,9 +179,6 @@ val coreSettings = Def.settings(
     }
   },
   scalaCompilerDependency,
-  libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.11" % "test")
-  },
   pomPostProcess := { node =>
     import scala.xml._
     import scala.xml.transform._
@@ -227,6 +227,8 @@ lazy val inspector = Project(
   libraryDependencies ++= {
     if (scalaBinaryVersion.value == "3") {
       Seq(
+        "org.scala-sbt" %% "io" % "1.6.0" % Test,
+        "io.get-coursier" % "coursier" % "2.1.0-M5" % Test cross CrossVersion.for3Use2_13 exclude ("io.argonaut", "*") exclude ("org.scala-lang.modules", "scala-xml_2.13"),
         "io.argonaut" %% "argonaut" % "6.3.8",
         "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
       )
