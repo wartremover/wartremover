@@ -2,17 +2,13 @@ package org.wartremover
 
 import dotty.tools.dotc.ast.tpd
 import dotty.tools.dotc.core.Contexts.Context
-import dotty.tools.dotc.core.Contexts.ctx
-import dotty.tools.dotc.core.Symbols.defn
 import dotty.tools.dotc.plugins.PluginPhase
-import dotty.tools.dotc.quoted.PickledQuotes
 import dotty.tools.dotc.quoted.QuotesCache
 import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.dotc.report
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.quoted.Quotes
 import scala.util.control.NonFatal
-import scala.reflect.NameTransformer
 
 class WartremoverPhase(
   errorWarts: List[WartTraverser],
