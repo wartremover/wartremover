@@ -3,22 +3,16 @@ package org.wartremover.test
 import org.wartremover.LogLevel
 import org.wartremover.WartTraverser
 import org.wartremover.WartUniverse
-import dotty.tools.dotc.ast.tpd
-import dotty.tools.dotc.ast.tpd.TypeTree
-import dotty.tools.dotc.ast.tpd.TreeTraverser
 import dotty.tools.dotc.core.Contexts.Context
-import dotty.tools.dotc.quoted.PickledQuotes
 import dotty.tools.dotc.core.Contexts.FreshContext
 import dotty.tools.dotc.reporting.Diagnostic
 import dotty.tools.dotc.reporting.Reporter
 import dotty.tools.dotc.interfaces.Diagnostic as DiagnosticInterface
 import scala.collection.mutable.ListBuffer
 import scala.quoted.Expr
-import scala.quoted.FromExpr
 import scala.quoted.Quotes
 import scala.quoted.ToExpr
 import scala.quoted.Type
-import scala.quoted.runtime.impl.ExprImpl
 import scala.quoted.runtime.impl.QuotesImpl
 import scala.reflect.NameTransformer
 
