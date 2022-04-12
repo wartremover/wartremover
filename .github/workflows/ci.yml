@@ -28,10 +28,6 @@ jobs:
             test_index: 2
             java: 8
             os: ubuntu-latest
-          - name: "test-cross"
-            test_index: 3
-            java: 8
-            os: ubuntu-latest
           - name: "scripted"
             java: 8
             os: ubuntu-latest
@@ -56,7 +52,7 @@ jobs:
             sbt -v scalafmtSbtCheck "+ scalafmtCheckAll"
             ;;
           "test-cross")
-            sbt -v "project core" "testPartial 4 ${{matrix.test_index}}"
+            sbt -v "project core" "testPartial 3 ${{matrix.test_index}}"
             ;;
           "scripted")
             sbt -v "+ publishLocal" "+ sbt-plugin/scripted"
