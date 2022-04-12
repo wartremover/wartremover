@@ -39,8 +39,8 @@ object WartRemover extends sbt.AutoPlugin {
   override def globalSettings = Seq(
     Global / concurrentRestrictions += Tags.limit(WartremoverTag, 2),
     wartremoverInspectScalaVersion := {
-      // need NIGHTLY version because there are some bugs in old tasty-inspector.
-      "3.1.3-RC1-bin-20220408-f3cca47-NIGHTLY"
+      // need RC version because there are some bugs in old tasty-inspector.
+      "3.1.3-RC2"
     },
     excludeLintKeys += wartremoverInspectOutputFile,
     wartremoverCrossVersion := CrossVersion.full,
