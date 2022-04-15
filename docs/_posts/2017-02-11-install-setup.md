@@ -172,7 +172,7 @@ You can use WartRemover in Maven by employing it as a compilerPlugin to scala-ma
 
 See the notes on the compiler plugin above for options to pass as `<arg>`s.
 
-### Macros
+### Scala 2 Macros
 
 You can make any wart into a macro, like so:
 
