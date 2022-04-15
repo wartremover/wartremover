@@ -126,9 +126,6 @@ Support for Gradle is provided by the [Gradle-Wartremover plugin](https://github
 
 ```gradle
 buildscript {
-    repositories {
-        jcenter()
-    }
     dependencies {
       classpath 'cz.augi:gradle-wartremover:putCurrentVersionHere'
     }
