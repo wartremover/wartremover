@@ -31,6 +31,11 @@ jobs:
           - name: "scripted"
             java: 8
             os: ubuntu-latest
+            test_index: 1
+          - name: "scripted"
+            java: 8
+            os: ubuntu-latest
+            test_index: 2
           - name: "test"
             java: 11
             os: ubuntu-latest
@@ -55,7 +60,7 @@ jobs:
             sbt -v "project core" "testPartial 3 ${{matrix.test_index}}"
             ;;
           "scripted")
-            sbt -v "+ publishLocal" "+ sbt-plugin/scripted"
+            sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of2"
             ;;
           "inspector")
             sbt -J-Xmx7G -v '++ 3.1.3-RC2!' inspector/test
