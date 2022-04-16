@@ -39,7 +39,12 @@ object Null extends WartTraverser {
                     case '{ new scala.xml.NamespaceBinding(null, $x1, $x2) } =>
                       false
                     case _ =>
-                      true
+                      t match {
+                        case Apply(Select(New(a), _), _) if a.tpe <:< TypeRepr.of[scala.xml.Elem] =>
+                          false
+                        case _ =>
+                          true
+                      }
                   }
                 } else {
                   true
