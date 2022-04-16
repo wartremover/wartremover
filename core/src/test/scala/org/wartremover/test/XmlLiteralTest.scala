@@ -8,6 +8,9 @@ class XmlLiteralTest extends AnyFunSuite with ResultAssertions {
   test("can use xml literals") {
     val result = WartTestTraverser(Unsafe) {
       val x = <foo />
+      val x2 = <a>b</a>
+      val x3 = <a>{List(2).sum}ccc</a>
+      val x4 = <a>{List(2).sum}ccc{9}</a>
     }
     assertEmpty(result)
   }
