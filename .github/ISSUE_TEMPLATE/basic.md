@@ -1,3 +1,6 @@
+- Scala version:
+- wartremover version:
+
 <!--
 
 If you're filing a bug report
