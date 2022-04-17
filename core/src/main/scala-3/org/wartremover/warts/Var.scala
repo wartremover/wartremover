@@ -3,23 +3,12 @@ package warts
 
 object Var extends WartTraverser {
 
-  private[this] val xmlClasses: List[Class[?]] =
-    try {
-      List(
-        "scala.xml.MetaData",
-        "scala.xml.NamespaceBinding"
-      ).map(c => Class.forName(c))
-    } catch {
-      case _: ClassNotFoundException =>
-        Nil
-    }
-
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
 
       private def notXmlTypes(t: ValDef): Boolean = {
-        !xmlClasses.map(TypeRepr.typeConstructorOf).exists(t.tpt.tpe =:= _)
+        !t.tpt.tpe.typeSymbol.fullName.startsWith("scala.xml.")
       }
 
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {

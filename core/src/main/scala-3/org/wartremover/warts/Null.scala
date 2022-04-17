@@ -2,15 +2,6 @@ package org.wartremover
 package warts
 
 object Null extends WartTraverser {
-  private[this] val existsScalaXML: Boolean = {
-    try {
-      Class.forName("scala.xml.Elem")
-      true
-    } catch {
-      case _: ClassNotFoundException =>
-        false
-    }
-  }
 
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
@@ -32,31 +23,20 @@ object Null extends WartTraverser {
               case '{ ($x: Option[t]).orNull } =>
                 error(tree.pos, "Option#orNull is disabled")
               case _ =>
-                val continue = if (existsScalaXML) {
-                  e match {
-                    case '{ new scala.xml.Elem(null, $x1, $x2, $x3, $x4) } =>
-                      false
-                    case '{ new scala.xml.NamespaceBinding(null, $x1, $x2) } =>
-                      false
-                    case _ =>
-                      t match {
-                        case Apply(Select(New(a), _), _) if a.tpe <:< TypeRepr.of[scala.xml.Elem] =>
-                          false
-                        case _ =>
-                          true
-                      }
-                  }
-                } else {
-                  true
-                }
-
-                if (continue) {
-                  e match {
-                    case '{ null } =>
-                      error(tree.pos, "null is disabled")
-                    case _ =>
-                      super.traverseTree(tree)(owner)
-                  }
+                tree.match {
+                  case Apply(Select(left, _), _) =>
+                    !left.tpe.typeSymbol.fullName.startsWith("scala.xml.")
+                  case _ =>
+                    true
+                }.match {
+                  case true =>
+                    e match {
+                      case '{ null } =>
+                        error(tree.pos, "null is disabled")
+                      case _ =>
+                        super.traverseTree(tree)(owner)
+                    }
+                  case _ =>
                 }
             }
           case t @ ValDef(_, _, Some(Wildcard()))
