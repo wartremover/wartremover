@@ -1,3 +1,11 @@
+---
+name: "bug report"
+about: ''
+title: ''
+assignees: ''
+
+---
+
 - Scala version:
 - wartremover version:
 
