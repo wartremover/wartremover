@@ -98,6 +98,21 @@ class ListUnapplyTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("issue 487 type alias") {
+    class Foo
+    type MyListOfFoo = List[Foo]
+    def x: MyListOfFoo = ???
+    val result = WartTestTraverser(ListUnapply) {
+      x match {
+        case _ :: _ =>
+          1
+        case _ =>
+          2
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("wart obeys SuppressWarnings") {
     val result = WartTestTraverser(ListUnapply) {
       @SuppressWarnings(Array("org.wartremover.warts.ListUnapply"))
