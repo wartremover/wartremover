@@ -7,10 +7,6 @@ import org.wartremover.InspectParam
 import org.wartremover.InspectResult
 import sbt.*
 import sbt.Keys.*
-import sbt.internal.librarymanagement.IvySbt
-import sbt.librarymanagement.UnresolvedWarningConfiguration
-import sbt.librarymanagement.UpdateConfiguration
-import sbt.librarymanagement.ivy.IvyDependencyResolution
 import sjsonnew.JsonFormat
 import sjsonnew.support.scalajson.unsafe.CompactPrinter
 
@@ -306,11 +302,17 @@ object WartRemover extends sbt.AutoPlugin {
                   failIfWartLoadError = (x / wartremoverFailIfWartLoadError).value,
                   outputStandardReporter = (x / wartremoverInspectOutputStandardReporter).value
                 )
-                val launcher = getArtifact(
-                  "org.scala-sbt" % "sbt-launch" % (wartremoverInspect / sbtVersion).value,
-                  ivySbt.value,
-                  streams.value
-                )
+                val Seq(launcher) = dependencyResolution.value
+                  .retrieve(
+                    dependencyId = "org.scala-sbt" % "sbt-launch" % (wartremoverInspect / sbtVersion).value,
+                    scalaModuleInfo = scalaModuleInfo.value,
+                    retrieveDirectory = csrCacheDirectory.value,
+                    log = streams.value.log
+                  )
+                  .left
+                  .map(e => throw e.resolveException)
+                  .merge
+                  .distinct
                 val resultJson = runInspector(
                   projectName = thisTaskName,
                   base = (LocalRootProject / baseDirectory).value,
@@ -382,9 +384,8 @@ object WartRemover extends sbt.AutoPlugin {
     inScope(Scope.ThisScope)(
       Seq(
         wartremoverClasspaths ++= {
-          val ivy = ivySbt.value
-          val s = streams.value
-          wartremoverDependencies.value.map { m =>
+          val d = dependencyResolution.value
+          val jars = wartremoverDependencies.value.flatMap { m =>
             val moduleId = CrossVersion(
               cross = m.crossVersion,
               fullVersion = scalaVersion.value,
@@ -395,7 +396,16 @@ object WartRemover extends sbt.AutoPlugin {
               case None =>
                 m
             }
-            val a = getArtifact(moduleId, ivy, s)
+            d.retrieve(
+              dependencyId = moduleId,
+              scalaModuleInfo = scalaModuleInfo.value,
+              retrieveDirectory = csrCacheDirectory.value,
+              log = streams.value.log
+            ).left
+              .map(e => throw e.resolveException)
+              .merge
+          }.distinct
+          jars.map { a =>
             copyToCompilerPluginJarsDir(
               src = a,
               jarDir = wartremoverPluginJarsDir.value,
@@ -455,33 +465,4 @@ object WartRemover extends sbt.AutoPlugin {
           .derive(s, false, _ => true, _ => true, false)
     }
   }
-
-  /**
-   * [[https://github.com/lightbend/mima/blob/723bd0046c0c6a4f52c91ddc752d08dce3b7ba37/sbtplugin/src/main/scala/com/typesafe/tools/mima/plugin/SbtMima.scala#L79-L100]]
-   * @note avoid coursier for sbt 1.2.x compatibility
-   */
-  private[this] def getArtifact(m: ModuleID, ivy: IvySbt, s: TaskStreams): File = {
-    val depRes = IvyDependencyResolution(ivy.configuration)
-    val module = depRes.wrapDependencyInModule(m)
-    val uc = UpdateConfiguration().withLogging(UpdateLogging.DownloadOnly)
-    val uwc = UnresolvedWarningConfiguration()
-    val report = depRes.update(module, uc, uwc, s.log).left.map(_.resolveException).toTry.get
-    val jars = (for {
-      config <- report.configurations.iterator
-      module <- config.modules
-      (artifact, file) <- module.artifacts
-      if artifact.name == m.name
-      if artifact.classifier.isEmpty
-    } yield file).toList.distinct
-    jars match {
-      case jar :: Nil =>
-        jar
-      case Nil =>
-        sys.error(s"Could not resolve: $m $jars")
-      case jar :: _ =>
-        s.log.info(s"multiple jar found $jars")
-        jar
-    }
-  }
-
 }
