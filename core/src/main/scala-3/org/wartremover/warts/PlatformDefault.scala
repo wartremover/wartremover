@@ -25,7 +25,7 @@ object PlatformDefault extends WartTraverser {
             t.asExpr match {
               case '{ ($x: String).getBytes } =>
                 error(tree.pos, getByte)
-              case '{ (${ _ }: String).toLowerCase } | '{ (${ _ }: String).toUpperCase } =>
+              case '{ ($_ : String).toLowerCase } | '{ ($_ : String).toUpperCase } =>
                 error(tree.pos, upperLowerCase)
               case '{ new String(($x: Array[Byte])) } =>
                 error(tree.pos, newString)
