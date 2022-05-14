@@ -38,11 +38,11 @@ object RedundantConversions extends WartTraverser {
             error(u)(tree.pos, "redundant toString conversion")
           case Select(obj, method) =>
             collectionValues.get(method) match {
-              case Some((name, tpe)) if obj.tpe.typeConstructor <:< tpe.typeConstructor =>
+              case Some(name, tpe) if obj.tpe.typeConstructor <:< tpe.typeConstructor =>
                 error(u)(tree.pos, s"redundant ${name} conversion")
               case _ =>
                 anyValValues.get(method) match {
-                  case Some((name, tpe)) if obj.tpe =:= tpe =>
+                  case Some(name, tpe) if obj.tpe =:= tpe =>
                     error(u)(tree.pos, s"redundant ${name} conversion")
                   case _ =>
                     super.traverse(tree)

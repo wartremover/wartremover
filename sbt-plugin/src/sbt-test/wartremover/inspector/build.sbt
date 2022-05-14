@@ -2,7 +2,7 @@ Compile / wartremoverInspect / wartremoverWarnings ++= Warts.all
 
 scalaVersion := "3.1.2"
 
-wartremoverExcluded += (baseDirectory.value / "src/main/scala/ignore")
+wartremoverExcluded += baseDirectory.value / "src/main/scala/ignore"
 
 ThisBuild / wartremoverCrossVersion := CrossVersion.binary
 

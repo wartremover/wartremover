@@ -30,6 +30,6 @@ object PublicInferenceTestMacros {
       }
     }
 
-    new generated().a_val
+    new generated.a_val
   }
 }

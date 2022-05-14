@@ -33,7 +33,7 @@ object NonUnitStatements extends WartTraverser {
 
     def checkUnitLike(statements: List[Tree]): Unit = {
       statements.foreach {
-        case Block((statements0, _)) =>
+        case Block(statements0, _) =>
           checkUnitLike(statements0)
         case stat =>
           val unitLike =
@@ -51,10 +51,10 @@ object NonUnitStatements extends WartTraverser {
           case Block(statements, _) =>
             checkUnitLike(statements)
             super.traverse(tree)
-          case ClassDef(_, _, _, Template((_, _, statements))) =>
+          case ClassDef(_, _, _, Template(_, _, statements)) =>
             checkUnitLike(statements)
             super.traverse(tree)
-          case ModuleDef(_, _, Template((_, _, statements))) =>
+          case ModuleDef(_, _, Template(_, _, statements)) =>
             checkUnitLike(statements)
             super.traverse(tree)
           case _ => super.traverse(tree)

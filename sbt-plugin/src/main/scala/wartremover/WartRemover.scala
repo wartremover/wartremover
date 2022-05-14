@@ -75,7 +75,7 @@ object WartRemover extends sbt.AutoPlugin {
       IO.copy(
         scalaSources.flatMap { f =>
           IO.relativize(base, f).map { x =>
-            f -> (dir / x)
+            f -> dir / x
           }
         }
       )

@@ -74,7 +74,7 @@ lazy val commonSettings = Def.settings(
     // include LICENSE file in all packaged artifacts
     inTask(_)(
       Seq(
-        (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
+        Compile / mappings += (ThisBuild / baseDirectory).value / "LICENSE" -> "LICENSE"
       )
     )
   },
@@ -85,7 +85,7 @@ lazy val commonSettings = Def.settings(
   ),
   publishMavenStyle := true,
   Test / publishArtifact := false,
-  (Compile / doc / scalacOptions) ++= {
+  Compile / doc / scalacOptions ++= {
     if (scalaBinaryVersion.value == "3") {
       Nil // TODO
     } else {
@@ -142,9 +142,9 @@ def crossSrcSetting(c: Configuration) = {
     val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
     PartialFunction
       .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-        case Some((2, v)) if v >= 13 =>
+        case Some(2, v) if v >= 13 =>
           dir / s"scala-2.13+"
-        case Some((2, _)) =>
+        case Some(2, _) =>
           dir / s"scala-2.13-"
       }
       .toList
@@ -205,7 +205,7 @@ lazy val inspectorCommon = Project(
   base = file("inspector-common")
 ).settings(
   commonSettings,
-  publish / skip := (scalaBinaryVersion.value == "2.13"),
+  publish / skip := scalaBinaryVersion.value == "2.13",
   crossScalaVersions := Seq(latestScala3, latestScala212),
   name := "wartremover-inspector-common",
 )
@@ -217,7 +217,7 @@ lazy val inspector = Project(
   commonSettings,
   name := "wartremover-inspector",
   crossScalaVersions := Seq(latestScala3),
-  publish / skip := (scalaBinaryVersion.value != "3"),
+  publish / skip := scalaBinaryVersion.value != "3",
   libraryDependencies ++= {
     if (scalaBinaryVersion.value == "3") {
       Seq(
@@ -314,9 +314,9 @@ lazy val sbtPlug: Project = Project(
     }
     javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
-  scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
+  scriptedLaunchOpts += "-Dplugin.version=" + version.value,
   crossScalaVersions := Seq(latestScala212),
-  (Compile / sourceGenerators) += Def.task {
+  Compile / sourceGenerators += Def.task {
     val base = (Compile / sourceManaged).value
     val file = base / "wartremover" / "Wart.scala"
     val warts = wartClasses.value

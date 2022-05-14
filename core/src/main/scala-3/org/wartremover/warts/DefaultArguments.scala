@@ -9,7 +9,7 @@ object DefaultArguments extends WartTraverser {
         tree match {
           case t if hasWartAnnotation(t) =>
           case t @ DefDef(name, _, _, _)
-              if (name != "copy") &&
+              if name != "copy" &&
                 t.termParamss
                   .flatMap(_.params)
                   .exists(p =>

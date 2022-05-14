@@ -30,7 +30,7 @@ lazy val a1 = project.settings(
       "object C { def c = ??? }"
     )
   },
-  (Compile / sourceGenerators) += task {
+  Compile / sourceGenerators += task {
     val dir = (Compile / sourceManaged).value
     val b = dir / "B.scala"
     IO.write(

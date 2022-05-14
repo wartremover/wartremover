@@ -24,7 +24,7 @@ object AsInstanceOf extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case t if hasWartAnnotation(u)(t) =>
 
-          case ClassDef(_, _, _, Template((_, _, statements))) if isSyntheticPartialFunction(u)(tree) =>
+          case ClassDef(_, _, _, Template(_, _, statements)) if isSyntheticPartialFunction(u)(tree) =>
             statements.foreach {
               case DefDef(_, IsDefinedAt, _, _, _, _) =>
               case t =>

@@ -25,7 +25,7 @@ object WartRemoverInspector {
       case (Some(input), Some(output)) =>
         val inputFile = new File(input)
         val json = Source.fromFile(inputFile, "UTF-8").getLines().mkString("\n")
-        val result = new WartRemoverInspector().runFromJson(json)
+        val result = new WartRemoverInspector.runFromJson(json)
         Files.write(new File(output).toPath, result.getBytes(StandardCharsets.UTF_8))
       case _ =>
         throw new IllegalArgumentException("invalid args " + args.mkString(", "))
