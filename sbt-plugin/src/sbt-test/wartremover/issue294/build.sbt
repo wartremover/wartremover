@@ -18,7 +18,7 @@ wartremoverErrors += Wart.Serializable
 
 scalacOptions ++= {
   CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 11)) =>
+    case Some(2, 11) =>
       Seq("-Xexperimental")
     case _ =>
       Nil

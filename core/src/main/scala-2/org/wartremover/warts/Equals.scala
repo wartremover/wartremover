@@ -22,7 +22,7 @@ object Equals extends WartTraverser {
 
           case Function(_, body) => traverse(body)
 
-          case ClassDef(_, _, _, Template((_, _, statements))) if isSyntheticPartialFunction(u)(tree) =>
+          case ClassDef(_, _, _, Template(_, _, statements)) if isSyntheticPartialFunction(u)(tree) =>
             statements.foreach {
               case DefDef(_, IsDefinedAt, _, _, _, _) =>
               case t =>

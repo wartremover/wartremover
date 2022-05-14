@@ -77,7 +77,7 @@ lazy val commonSettings = Def.settings(
     // include LICENSE file in all packaged artifacts
     inTask(_)(
       Seq(
-        (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
+        Compile / mappings += (ThisBuild / baseDirectory).value / "LICENSE" -> "LICENSE"
       )
     )
   },
@@ -88,7 +88,7 @@ lazy val commonSettings = Def.settings(
   ),
   publishMavenStyle := true,
   Test / publishArtifact := false,
-  (Compile / doc / scalacOptions) ++= {
+  Compile / doc / scalacOptions ++= {
     if (scalaBinaryVersion.value == "3") {
       Nil // TODO
     } else {
@@ -145,9 +145,9 @@ def crossSrcSetting(c: Configuration) = {
     val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
     PartialFunction
       .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-        case Some((2, v)) if v >= 13 =>
+        case Some(2, v) if v >= 13 =>
           dir / s"scala-2.13+"
-        case Some((2, _)) =>
+        case Some(2, _) =>
           dir / s"scala-2.13-"
       }
       .toList
@@ -174,9 +174,9 @@ val coreSettings = Def.settings(
   },
   libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, v)) if v >= 13 =>
+      case Some(2, v) if v >= 13 =>
         Seq("org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test")
-      case Some((3, _)) =>
+      case Some(3, _) =>
         Seq("org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "provided,test")
       case _ =>
         Nil
@@ -292,9 +292,9 @@ lazy val sbtPlug: Project = Project(
     }
     javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
-  scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
+  scriptedLaunchOpts += "-Dplugin.version=" + version.value,
   crossScalaVersions := Seq(latestScala212),
-  (Compile / sourceGenerators) += Def.task {
+  Compile / sourceGenerators += Def.task {
     val base = (Compile / sourceManaged).value
     val file = base / "wartremover" / "Wart.scala"
     val warts = wartClasses.value

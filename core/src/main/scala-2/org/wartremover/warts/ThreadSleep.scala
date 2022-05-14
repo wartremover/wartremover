@@ -10,7 +10,7 @@ object ThreadSleep extends WartTraverser {
         tree match {
           case t if hasWartAnnotation(u)(t) =>
           case Apply(Select(obj, Sleep), List(arg))
-              if (obj.tpe.typeSymbol.fullName == "java.lang.Thread") && (arg.tpe weak_<:< typeOf[Long]) =>
+              if obj.tpe.typeSymbol.fullName == "java.lang.Thread" && (arg.tpe weak_<:< typeOf[Long]) =>
             error(u)(
               tree.pos,
               "don't use Thread.sleep"

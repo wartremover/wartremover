@@ -50,7 +50,7 @@ trait WartTraverser {
   def isSyntheticPartialFunction(u: WartUniverse)(tree: u.universe.Tree): Boolean = {
     import u.universe._
     tree match {
-      case ClassDef(_, className, _, Template((parents, _, _))) =>
+      case ClassDef(_, className, _, Template(parents, _, _)) =>
         isAnonymousFunctionName(u)(className) && isSynthetic(u)(tree) && parents.exists {
           case t @ TypeTree() =>
             t.symbol.fullName == "scala.runtime.AbstractPartialFunction"
@@ -69,7 +69,7 @@ trait WartTraverser {
     // Unfortunately, Scala does not mark accessors as Synthetic (even though the documentation claims that they do).
     // A manually crafted getter/setter does not deserve a GETTER/SETTER flag in Scala compiler's eyes, so we can
     // "safely" rely on this
-    Option(t.symbol).exists(s => s.isSynthetic || s.isImplementationArtifact || (s.isTerm && s.asTerm.isAccessor))
+    Option(t.symbol).exists(s => s.isSynthetic || s.isImplementationArtifact || s.isTerm && s.asTerm.isAccessor)
   }
 
   def isPrimitive(u: WartUniverse)(t: u.universe.Type): Boolean =
@@ -100,7 +100,7 @@ trait WartTraverser {
   }
 
   def isPublic(u: WartUniverse)(t: u.universe.ValOrDefDef): Boolean = {
-    hasAccess(u)(t, s => s.isPublic && (s != u.universe.NoSymbol))
+    hasAccess(u)(t, s => s.isPublic && s != u.universe.NoSymbol)
   }
 
   def isPrivate(u: WartUniverse)(t: u.universe.ValOrDefDef): Boolean = {
@@ -116,7 +116,7 @@ trait WartTraverser {
     a.tree.children.tail.exists {
       _.exists {
         case Literal(Constant(arg)) =>
-          (arg == className) || (arg == "org.wartremover.warts.All")
+          arg == className || arg == "org.wartremover.warts.All"
         case _ =>
           false
       }
@@ -128,8 +128,8 @@ trait WartTraverser {
     tree match {
       case t: ValOrDefDef =>
         t.symbol.annotations.exists(isWartAnnotation(u)) ||
-        (t.symbol != null && t.symbol.isTerm && t.symbol.asTerm.isAccessor &&
-          t.symbol.asTerm.accessed.annotations.exists(isWartAnnotation(u)))
+        t.symbol != null && t.symbol.isTerm && t.symbol.asTerm.isAccessor &&
+        t.symbol.asTerm.accessed.annotations.exists(isWartAnnotation(u))
       case t: ImplDef => t.symbol.annotations.exists(isWartAnnotation(u))
       case t => false
     }

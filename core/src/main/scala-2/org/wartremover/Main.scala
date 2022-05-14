@@ -25,7 +25,7 @@ object Main {
   }
 
   def compile(args: WartArgs, reporter: Option[Reporter] = None) = {
-    val settings = new Settings()
+    val settings = new Settings
     val virtualDirectory = new VirtualDirectory("(memory)", None)
     settings.outputDirs.setSingleOutput(virtualDirectory)
     settings.usejavacp.value = true
@@ -35,7 +35,7 @@ object Main {
     val global = new Global(settings, reporter.getOrElse(new ConsoleReporter(settings))) {
       override protected def loadRoughPluginsList() = List(new Plugin(this))
     }
-    val run = new global.Run()
+    val run = new global.Run
     run.compile(args.names)
 
     !global.reporter.hasErrors

@@ -41,15 +41,15 @@ trait ForbidInference[T] extends WartTraverser {
             }
 
           // Ignore case classes generated methods
-          case ModuleDef(_, _, Template((parents, self, statements))) =>
+          case ModuleDef(_, _, Template(parents, self, statements)) =>
             explicitParents(parents).foreach(traverse)
             traverse(self)
             statements.foreach(traverse)
-          case ClassDef(_, _, _, Template((parents, self, statements))) if synthetic =>
+          case ClassDef(_, _, _, Template(parents, self, statements)) if synthetic =>
             explicitParents(parents).foreach(traverse)
             traverse(self)
             statements.foreach(traverse)
-          case ClassDef(_, className, _, Template((_, self, statements))) if isAnonymousFunctionName(u)(className) =>
+          case ClassDef(_, className, _, Template(_, self, statements)) if isAnonymousFunctionName(u)(className) =>
             // https://github.com/wartremover/wartremover/issues/294
             traverse(self)
             statements.foreach(traverse)

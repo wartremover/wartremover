@@ -15,7 +15,7 @@ object Throw extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case dd @ DefDef(_, ProductElementName | ProductElementNameName, _, _, _, _) if isSynthetic(u)(dd) =>
           case t @ u.universe.Throw(Apply(Select(New(exception), _), _))
-              if (exception.tpe <:< typeOf[scala.MatchError]) && isSynthetic(u)(t) =>
+              if exception.tpe <:< typeOf[scala.MatchError] && isSynthetic(u)(t) =>
           case u.universe.Throw(_) =>
             error(u)(tree.pos, "throw is disabled")
             super.traverse(tree)

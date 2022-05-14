@@ -23,7 +23,7 @@ lazy val a1 = project.settings(
   commonSettings,
   wartremoverErrors += Wart.custom("mywarts.Unimplemented"),
   wartremoverExcluded ++= (Compile / managedSourceDirectories).value,
-  (Compile / sourceGenerators) += task {
+  Compile / sourceGenerators += task {
     val dir = (Compile / sourceManaged).value
     val b = dir / "B.scala"
     IO.write(

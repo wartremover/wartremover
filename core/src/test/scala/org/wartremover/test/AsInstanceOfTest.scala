@@ -32,7 +32,7 @@ class AsInstanceOfTest extends AnyFunSuite with ResultAssertions {
       sealed trait ConsoleIO[A]
       case class PrintLn(message: String) extends ConsoleIO[Unit]
 
-      new (ConsoleIO ~> Task) {
+      new ConsoleIO ~> Task {
         def apply[A](c: ConsoleIO[A]): Task[A] = c match {
           case PrintLn(_) => new Task(())
         }

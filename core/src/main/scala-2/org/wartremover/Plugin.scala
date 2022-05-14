@@ -79,7 +79,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
     excludedFiles =
-      filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+      filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map new java.io.File(_).getAbsolutePath
 
     logLevel match {
       case LogLevel.Debug | LogLevel.Info =>
