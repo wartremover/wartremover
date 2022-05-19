@@ -32,6 +32,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     org.wartremover.warts.AnyVal,
     org.wartremover.warts.ArrayEquals,
     org.wartremover.warts.AsInstanceOf,
+    org.wartremover.warts.AutoUnboxing,
     org.wartremover.warts.CollectHeadOption,
     org.wartremover.warts.DefaultArguments,
     org.wartremover.warts.DropTakeToSlice,
