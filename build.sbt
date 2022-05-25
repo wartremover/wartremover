@@ -178,7 +178,7 @@ val coreSettings = Def.settings(
     import scala.xml.transform._
     val strip = new RewriteRule {
       override def transform(n: Node) =
-        if ((n \ "groupId").text == "test-macros" && (n \ "artifactId").text.startsWith("test-macros_"))
+        if ((n \ "groupId").text == "test-macros" && n \ "artifactId".text.startsWith("test-macros_"))
           NodeSeq.Empty
         else
           n

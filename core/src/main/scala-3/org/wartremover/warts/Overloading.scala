@@ -19,7 +19,7 @@ object Overloading extends WartTraverser {
             val overloads = methods
               .groupBy(_.name)
               .map(_._2.filterNot(t => hasWartAnnotation(t)).filterNot(_.symbol.flags.is(Flags.Override)))
-              .filter(f => (f.sizeIs > 1))
+              .filter(f => f.sizeIs > 1)
 
             overloads.flatten.foreach { method =>
               error(method.pos, "Overloading is disabled")
