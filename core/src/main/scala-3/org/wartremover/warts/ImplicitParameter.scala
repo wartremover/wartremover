@@ -10,7 +10,7 @@ object ImplicitParameter extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t: DefDef if !t.symbol.flags.is(Flags.Synthetic) =>
             val params = t.paramss.collect { case c: TermParamClause => c }
-              .filter(p => (p.isImplicit || p.isGiven))
+              .filter(p => p.isImplicit || p.isGiven)
               .flatMap(_.params)
             val hasTypeParams = params.map(_.tpt.tpe).collect { case p: AppliedType => p }
             if (params.sizeIs != hasTypeParams.size) {
