@@ -27,7 +27,7 @@ object PlatformDefault extends WartTraverser {
                 error(tree.pos, getByte)
               case '{ ($_ : String).toLowerCase } | '{ ($_ : String).toUpperCase } =>
                 error(tree.pos, upperLowerCase)
-              case '{ new String(($x: Array[Byte])) } =>
+              case '{ new String($x: Array[Byte]) } =>
                 error(tree.pos, newString)
               case '{ scala.io.Codec.fallbackSystemCodec } =>
                 error(tree.pos, fallbackSystemCodec)
