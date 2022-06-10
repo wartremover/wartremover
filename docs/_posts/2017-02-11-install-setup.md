@@ -78,9 +78,9 @@ Apart from using the sbt plugin to set it up for your project, WartRemover can a
 
 ### Command-line
 
-Compile the command-line tool via `sbt "++ 2.12.15" core/assembly` and then use the provided `wartremover` shell script:
+Compile the command-line tool via `sbt "++ 2.12.16" core/assembly` and then use the provided `wartremover` shell script:
 
-    $ sbt "++ 2.12.15" core/assembly
+    $ sbt "++ 2.12.16" core/assembly
     
       ...
     
