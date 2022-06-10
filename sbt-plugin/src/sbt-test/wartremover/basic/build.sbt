@@ -4,6 +4,7 @@ crossScalaVersions := Seq(
   "2.12.13",
   "2.12.14",
   "2.12.15",
+  "2.12.16",
   "2.13.2",
   "2.13.3",
   "2.13.4",
@@ -20,6 +21,6 @@ wartremoverWarnings += Wart.JavaConversions
 
 commands += Command.command("changeBinary") {
   "set wartremoverCrossVersion := CrossVersion.binary" ::
-    """set crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8")""" :: // set latest versions
+    """set crossScalaVersions := Seq("2.11.12", "2.12.16", "2.13.8")""" :: // set latest versions
     _
 }
