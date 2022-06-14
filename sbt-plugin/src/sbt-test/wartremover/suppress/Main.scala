@@ -53,7 +53,7 @@ class Main {
 
         Nil.head
 
-        null.isInstanceOf[Int] // IsInstanceOf
+        (null: Any).isInstanceOf[Int] // IsInstanceOf
 
         scala.util.Try(9).get
 
