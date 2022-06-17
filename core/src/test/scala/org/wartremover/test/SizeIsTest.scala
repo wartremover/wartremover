@@ -25,6 +25,16 @@ class SizeIsTest extends AnyFunSuite with ResultAssertions {
     assertErrors(result)("Maybe you can use `lengthIs` instead of `length`", 3)
   }
 
+  test("don't suggest if Long") {
+    def long: Long = 7
+    val result = WartTestTraverser(SizeIs) {
+      List(3).length == 5L
+      Vector(3).length <= 6L
+      IndexedSeq(1).length >= long
+    }
+    assertEmpty(result)
+  }
+
   test("don't suggest if not scala collection types") {
     object MyObj {
       def length: Int = 3
