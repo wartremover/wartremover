@@ -26,8 +26,8 @@ object SizeIs extends WartTraverser {
           case t if hasWartAnnotation(u)(t) =>
           case Apply(
                 Select(Select(IsScalaCollection(), a @ (TermName("size") | TermName("length"))), Method()),
-                List(_)
-              ) if !isSynthetic(u)(tree) =>
+                List(value)
+              ) if !isSynthetic(u)(tree) && (value.tpe weak_<:< typeOf[Int]) =>
             error(u)(tree.pos, s"Maybe you can use `${a.decodedName}Is` instead of `${a.decodedName}`")
           case _ =>
             super.traverse(tree)
