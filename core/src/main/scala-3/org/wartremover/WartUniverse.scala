@@ -62,10 +62,16 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
 
       val args: Set[String] = s
         .getAnnotation(SuppressWarningsSymbol)
-        .filter(_.isExpr)
-        .map(_.asExpr)
-        .collect { case '{ new SuppressWarnings(Array[String](${ Varargs(Exprs(values)) }: _*)($classTag)) } =>
-          values
+        .collect {
+          case Apply(
+                Select(_, "<init>"),
+                Apply(Apply(_, Typed(Repeated(values, _), _) :: Nil), Apply(_, _ :: Nil) :: Nil) :: Nil
+              ) =>
+            // "-Yexplicit-nulls"
+            // https://github.com/wartremover/wartremover/issues/660
+            values.collect { case Literal(StringConstant(str)) =>
+              str
+            }
         }
         .toList
         .flatten
