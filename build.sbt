@@ -28,7 +28,7 @@ lazy val allScalaVersions = Seq(
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
-def latestScala3 = allScalaVersions.last // TODO more better way
+def latestScala3 = allScalaVersions.filterNot(_ contains "-RC").last // TODO more better way
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
