@@ -185,7 +185,7 @@ val coreSettings = Def.settings(
   },
   scalaCompilerDependency,
   libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.12" % "test")
+    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.13" % "test")
   },
   pomPostProcess := { node =>
     import scala.xml._
