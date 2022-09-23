@@ -6,7 +6,7 @@ on:
   - cron: '0 7 * * *'
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 90
     strategy:
       matrix:
         include:
