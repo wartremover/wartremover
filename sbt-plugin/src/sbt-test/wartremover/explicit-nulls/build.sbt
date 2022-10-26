@@ -1,4 +1,4 @@
-scalaVersion := "3.2.0"
+scalaVersion := "3.2.1"
 
 scalacOptions += "-Yexplicit-nulls"
 

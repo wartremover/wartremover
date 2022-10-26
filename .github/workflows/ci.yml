@@ -64,7 +64,7 @@ jobs:
             sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of2"
             ;;
           "inspector")
-            sbt -J-Xmx7G -v '++ 3.2.0!' inspector/test
+            sbt -J-Xmx7G -v '++ 3.2.1!' inspector/test
             ;;
           "test")
             sbt -v test
