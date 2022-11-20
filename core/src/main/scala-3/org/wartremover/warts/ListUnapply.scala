@@ -26,7 +26,7 @@ object ListUnapply extends WartTraverser {
               // this is a list
             } else {
               m.cases.map(_.pattern).withFilter(isListConsUnapply).foreach { x =>
-                error(x.pos, "Don't use `::` unapply method")
+                error(x.pos, message)
               }
             }
           case _ =>
