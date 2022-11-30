@@ -16,7 +16,7 @@ object NoNeedImport extends WartTraverser {
                 acc.copy(existsWildCard = true)
               case (acc, OmitSelector(_)) =>
                 acc.copy(existsNameToWildCard = true)
-              case (acc, RenameSelector(_, _)) =>
+              case (acc, RenameSelector(_, _) | GivenSelector(_)) =>
                 acc
               case (acc, _) =>
                 acc.copy(existsRegular = true)
