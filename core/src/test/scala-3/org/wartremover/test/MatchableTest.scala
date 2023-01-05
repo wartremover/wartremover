@@ -3,6 +3,7 @@ package test
 
 import org.wartremover.warts.Matchable
 import org.scalatest.funsuite.AnyFunSuite
+import org.mockito.Mockito
 
 class MatchableTest extends AnyFunSuite with ResultAssertions {
   test("Matchable can't be inferred") {
@@ -10,6 +11,13 @@ class MatchableTest extends AnyFunSuite with ResultAssertions {
       List("a", true)
     }
     assertError(result)("Inferred type containing Matchable: Matchable")
+  }
+
+  test("mockito thenAnswer") {
+    val result = WartTestTraverser(Matchable) {
+      Mockito.when("a".length).thenAnswer(a => 3)
+    }
+    assertEmpty(result)
   }
 
   test("Matchable wart obeys SuppressWarnings") {
