@@ -15,7 +15,8 @@ abstract class ForbidInference[A](using getType: Quotes ?=> Type[A]) extends War
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
-          case a: Inferred if a.tpe =:= A && a.isInstanceOf[InferredTypeTree] =>
+          case a: Inferred
+              if a.tpe =:= A && a.isInstanceOf[InferredTypeTree] && !a.symbol.flags.is(Flags.JavaDefined) =>
             val name = A.show.split('.').last // TODO more better way?
             error(tree.pos, s"Inferred type containing ${name}: ${name}")
           case _ =>

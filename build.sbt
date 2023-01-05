@@ -177,7 +177,10 @@ val coreSettings = Def.settings(
     }
   },
   libraryDependencies ++= {
-    Seq("org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test")
+    Seq(
+      "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test",
+      "org.mockito" % "mockito-core" % "4.11.0" % "test",
+    )
   },
   scalaCompilerDependency,
   pomPostProcess := { node =>
