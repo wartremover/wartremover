@@ -13,8 +13,11 @@ object ListUnapplySeq extends WartTraverser {
       val List(listUnapplySeq) = TypeRepr.of[scala.collection.immutable.List.type].typeSymbol.methodMember("unapplySeq")
 
       def isListUnapplySeq(t: Tree): Boolean =
-        PartialFunction.cond(t) { case TypedOrTest(Unapply(f: TypeApply, _, _), _) =>
-          f.fun.symbol == listUnapplySeq
+        PartialFunction.cond(t) {
+          case TypedOrTest(Unapply(f: TypeApply, _, _), _) =>
+            f.fun.symbol == listUnapplySeq
+          case Bind(_, t @ TypedOrTest(Unapply(f: TypeApply, _, _), _)) =>
+            f.fun.symbol == listUnapplySeq
         }
 
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
