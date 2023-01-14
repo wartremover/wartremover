@@ -9,12 +9,11 @@ object ListUnapplySeq extends WartTraverser {
 
     new Traverser {
       def isListConsUnapply(t: Tree): Boolean = {
-        t match {
-          case CaseDef(UnApply(Apply(TypeApply(Select(list, TermName("unapplySeq")), _), _), _), _, _)
-              if list.tpe <:< typeOf[List.type] =>
-            true
-          case _ =>
-            false
+        PartialFunction.cond(t) {
+          case CaseDef(UnApply(Apply(TypeApply(Select(list, TermName("unapplySeq")), _), _), _), _, _) =>
+            list.tpe <:< typeOf[List.type]
+          case CaseDef(Bind(_, UnApply(Apply(TypeApply(Select(list, TermName("unapplySeq")), _), _), _)), _, _) =>
+            list.tpe <:< typeOf[List.type]
         }
       }
 

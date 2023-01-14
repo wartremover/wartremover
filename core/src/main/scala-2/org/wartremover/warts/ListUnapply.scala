@@ -9,11 +9,11 @@ object ListUnapply extends WartTraverser {
 
     new Traverser {
       def isListConsUnapply(t: Tree): Boolean = {
-        t match {
-          case CaseDef(Apply(a: TypeTree, List(_, _)), _, _) if a.original.tpe =:= typeOf[::.type] =>
-            true
-          case _ =>
-            false
+        PartialFunction.cond(t) {
+          case CaseDef(Apply(a: TypeTree, List(_, _)), _, _) =>
+            a.original.tpe =:= typeOf[::.type]
+          case CaseDef(Bind(_, Apply(a: TypeTree, List(_, _))), _, _) =>
+            a.original.tpe =:= typeOf[::.type]
         }
       }
 
