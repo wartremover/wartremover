@@ -2,7 +2,7 @@ package org.wartremover
 package warts
 
 object SortedMaxMinOption
-    extends ExprMatch({
+    extends ExprMatch {
       case '{
             type t1
             ($x: collection.Seq[`t1`]).sorted($o: Ordering[`t1`]).headOption
@@ -25,4 +25,4 @@ object SortedMaxMinOption
             ($x: collection.Seq[`t1`]).sortBy($f: Function1[`t1`, `t2`])($o: Ordering[`t2`]).lastOption
           } =>
         "You can use maxByOption instead of sortBy.lastOption"
-    })
+    }

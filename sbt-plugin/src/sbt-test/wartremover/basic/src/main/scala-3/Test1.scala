@@ -1,3 +1,4 @@
-import Predef.{*, given}
+import Predef.*
+import Predef.given
 
 class Test1

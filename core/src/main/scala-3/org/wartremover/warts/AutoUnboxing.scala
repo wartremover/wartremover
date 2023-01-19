@@ -3,7 +3,7 @@ package org.wartremover.warts
 import org.wartremover.ExprMatch
 
 object AutoUnboxing
-    extends ExprMatch({
+    extends ExprMatch {
       case '{ Byte2byte($x) } =>
         "java.lang.Byte to scala.Byte auto unboxing"
       case '{ Short2short($x) } =>
@@ -20,4 +20,4 @@ object AutoUnboxing
         "java.lang.Double to scala.Double auto unboxing"
       case '{ Boolean2boolean($x) } =>
         "java.lang.Boolean to scala.Boolean auto unboxing"
-    })
+    }

@@ -2,7 +2,7 @@ package org.wartremover
 package warts
 
 object SortFilter
-    extends ExprMatch({
+    extends ExprMatch {
       case '{
             type t1
             ($x: collection.Seq[`t1`]).sorted($o: Ordering[`t1`]).filter($p)
@@ -19,4 +19,4 @@ object SortFilter
             ($x: collection.Seq[`t1`]).sortWith($f: Function2[`t1`, `t1`, Boolean]).filter($p)
           } =>
         "Change order of `sortWith` and `filter`"
-    })
+    }

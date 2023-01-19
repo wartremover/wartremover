@@ -5,7 +5,7 @@ import scala.annotation.nowarn
 
 @nowarn("msg=LazyList")
 object RedundantConversions
-    extends ExprMatch({
+    extends ExprMatch {
       case '{ ($x: List[t]).toList } =>
         "redundant toList conversion"
       case '{ ($x: collection.immutable.Seq[t]).toSeq } =>
@@ -39,4 +39,4 @@ object RedundantConversions
         "redundant toShort conversion"
       case '{ ($x: Char).toChar } =>
         "redundant toChar conversion"
-    })
+    }
