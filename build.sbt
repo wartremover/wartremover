@@ -29,6 +29,7 @@ lazy val allScalaVersions = Seq(
   "3.2.0",
   "3.2.1",
   "3.2.2",
+  "3.3.0-RC1",
 )
 
 def latestScala212 = latest(12, allScalaVersions)
@@ -272,6 +273,18 @@ lazy val core = Project(
       }.toList
       println(result)
       result ::: state
+    }
+  },
+  Test / sources := {
+    if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
+      // maybe https://github.com/lampepfl/dotty/pull/15642
+      val exclude = Set[String](
+        "Matchable",
+        "AnyVal",
+      ).map(_ + "Test.scala")
+      (Test / sources).value.filterNot(f => exclude(f.getName))
+    } else {
+      (Test / sources).value
     }
   },
   crossTarget := {
