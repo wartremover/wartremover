@@ -55,7 +55,8 @@ jobs:
       run: |
         case ${{ matrix.name }} in
           "format")
-            sbt -v scalafmtSbtCheck "+ scalafmtCheckAll"
+            sbt -v scalafmtSbt "+ scalafmtAll"
+            git diff --exit-code
             ;;
           "test-cross")
             sbt -v "project core" "testPartial 3 ${{matrix.test_index}}"
@@ -73,5 +74,9 @@ jobs:
             echo "unknown job"
             exit 1
         esac
+    - uses: reviewdog/action-suggester@8f83d27e749053b2029600995c115026a010408e # v1.6.0
+      if: ${{ failure() && matrix.name == 'format' }}
+      with:
+        tool_name: scalafmt
     - shell: bash
       run: rm -rf "$HOME/.ivy2/local" || true
