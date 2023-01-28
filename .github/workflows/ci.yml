@@ -55,7 +55,8 @@ jobs:
       run: |
         case ${{ matrix.name }} in
           "format")
-            sbt -v scalafmtSbtCheck "+ scalafmtCheckAll"
+            sbt -v scalafmtSbt "+ scalafmtAll"
+            git diff --exit-code
             ;;
           "test-cross")
             sbt -v "project core" "testPartial 3 ${{matrix.test_index}}"
