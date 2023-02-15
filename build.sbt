@@ -276,7 +276,9 @@ lazy val core = Project(
     }
   },
   Test / sources := {
-    if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
+    if (scalaBinaryVersion.value != "3") {
+      (Test / sources).value
+    } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
       // maybe https://github.com/lampepfl/dotty/pull/15642
       val exclude = Set[String](
         "Matchable",
@@ -284,7 +286,10 @@ lazy val core = Project(
       ).map(_ + "Test.scala")
       (Test / sources).value.filterNot(f => exclude(f.getName))
     } else {
-      (Test / sources).value
+      val exclude = Set[String](
+        "OrTypeLeastUpperBound",
+      ).map(_ + "Test.scala")
+      (Test / sources).value.filterNot(f => exclude(f.getName))
     }
   },
   crossTarget := {
