@@ -51,8 +51,11 @@ object WartTestTraverser {
     val reporter = new WartReporter
     q2.ctx.asInstanceOf[FreshContext].setReporter(reporter)
     val wart = {
-      val name = q1.reflect.TypeRepr.of[A].show
-      val clazz = Class.forName(name + NameTransformer.MODULE_SUFFIX_STRING)
+      val name = q1.reflect.TypeRepr
+        .of[A]
+        .classSymbol
+        .fold(q1.reflect.TypeRepr.of[A].show + NameTransformer.MODULE_SUFFIX_STRING)(_.fullName.replace("$.", "$"))
+      val clazz = Class.forName(name)
       clazz.getField(NameTransformer.MODULE_INSTANCE_NAME).get(null).asInstanceOf[WartTraverser]
     }
     val universe = WartUniverse(
