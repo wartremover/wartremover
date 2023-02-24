@@ -276,20 +276,21 @@ lazy val core = Project(
     }
   },
   Test / sources := {
+    val src = (Test / sources).value
     if (scalaBinaryVersion.value != "3") {
-      (Test / sources).value
+      src
     } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
       // maybe https://github.com/lampepfl/dotty/pull/15642
       val exclude = Set[String](
         "Matchable",
         "AnyVal",
       ).map(_ + "Test.scala")
-      (Test / sources).value.filterNot(f => exclude(f.getName))
+      src.filterNot(f => exclude(f.getName))
     } else {
       val exclude = Set[String](
         "OrTypeLeastUpperBound",
       ).map(_ + "Test.scala")
-      (Test / sources).value.filterNot(f => exclude(f.getName))
+      src.filterNot(f => exclude(f.getName))
     }
   },
   crossTarget := {
