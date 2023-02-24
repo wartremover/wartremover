@@ -150,10 +150,10 @@ def crossSrcSetting(c: Configuration) = {
     val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
     PartialFunction
       .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-        case Some((2, v)) if v >= 13 =>
-          dir / s"scala-2.13+"
-        case Some((2, _)) =>
+        case Some((2, v)) if v <= 12 =>
           dir / s"scala-2.13-"
+        case _ =>
+          dir / s"scala-2.13+"
       }
       .toList
   }
