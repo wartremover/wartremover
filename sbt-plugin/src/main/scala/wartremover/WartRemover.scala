@@ -20,6 +20,7 @@ object WartRemover extends sbt.AutoPlugin {
     val wartremoverInspectOutputStandardReporter = settingKey[Boolean]("")
     val wartremoverInspectFailOnErrors = settingKey[Boolean]("")
     val wartremoverInspectScalaVersion = settingKey[String]("scala version for wartremoverInspect task")
+    val wartremoverInspectSettings = settingKey[Seq[String]]("extra settings for run inspector")
     val wartremoverErrors = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation errors.")
     val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
     val wartremoverExcluded = taskKey[Seq[File]]("List of files to be excluded from all checks.")
@@ -37,6 +38,7 @@ object WartRemover extends sbt.AutoPlugin {
     wartremoverInspectScalaVersion := {
       "3.2.2"
     },
+    wartremoverInspectSettings := Nil,
     excludeLintKeys += wartremoverInspectOutputFile,
     wartremoverCrossVersion := CrossVersion.full,
     wartremoverDependencies := Nil,
@@ -54,6 +56,7 @@ object WartRemover extends sbt.AutoPlugin {
     launcher: File,
     scalaSources: Seq[File],
     forkOptions: ForkOptions,
+    extraSettings: Seq[String],
   ): Either[Int, String] = {
     val buildSbt =
       s"""autoScalaLibrary := false
@@ -65,6 +68,7 @@ object WartRemover extends sbt.AutoPlugin {
          |  "org.wartremover" % "wartremover-inspector_3" % "${Wart.PluginVersion}",
          |)
          |Compile / sources := Nil
+         |${extraSettings.mkString("\n\n")}
          |""".stripMargin
 
     IO.withTemporaryDirectory { dir =>
@@ -319,7 +323,8 @@ object WartRemover extends sbt.AutoPlugin {
                   scalaV = wartremoverInspectScalaVersion.value,
                   launcher = launcher,
                   (x / sources).value,
-                  forkOptions = (wartremoverInspect / forkOptions).value
+                  forkOptions = (wartremoverInspect / forkOptions).value,
+                  extraSettings = wartremoverInspectSettings.value,
                 ).fold(e => sys.error(s"${thisTaskName} failed ${e}"), identity)
                 val result = {
                   val r = resultJson.decodeFromJsonString[InspectResult]
