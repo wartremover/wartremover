@@ -44,6 +44,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     org.wartremover.warts.FilterSize,
     org.wartremover.warts.FinalCaseClass,
     org.wartremover.warts.FinalVal,
+    org.wartremover.warts.ForeachEntry,
     org.wartremover.warts.GetGetOrElse,
     org.wartremover.warts.GetOrElseNull,
     org.wartremover.warts.GlobalExecutionContext,
@@ -54,6 +55,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     org.wartremover.warts.LeakingSealed,
     org.wartremover.warts.ListAppend,
     org.wartremover.warts.ListUnapply,
+    org.wartremover.warts.ListUnapplySeq,
     org.wartremover.warts.Matchable,
     org.wartremover.warts.MutableDataStructures,
     org.wartremover.warts.NoNeedImport,
@@ -78,6 +80,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     org.wartremover.warts.ThreadSleep,
     org.wartremover.warts.Throw,
     org.wartremover.warts.ToString,
+    org.wartremover.warts.TripleQuestionMark,
     org.wartremover.warts.TryPartial,
     org.wartremover.warts.Var,
     org.wartremover.warts.While,
@@ -109,13 +112,17 @@ class WartRemoverInspectorTest extends AnyFunSuite {
   }
 
   test("cats") {
-    val result = inspectLibrary("org.typelevel" %% "cats-core" % "2.7.0")
+    val result = inspectLibrary("org.typelevel" %% "cats-core" % "2.9.0")
     assert(
-      result("cats-kernel_3-2.7.0.jar") === Map(
-        ("Equals", 54),
+      result("cats-kernel_3-2.9.0.jar") === Map(
+        ("AsInstanceOf", 5),
+        ("Equals", 64),
+        ("ForeachEntry", 2),
+        ("ImplicitConversion", 1),
         ("ImplicitParameter", 2),
         ("IterableOps", 2),
         ("MutableDataStructures", 24),
+        ("OptionPartial", 2),
         ("Overloading", 8),
         ("Return", 12),
         ("SizeIs", 8),
@@ -125,57 +132,57 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       )
     )
     assert(
-      result("cats-core_3-2.7.0.jar") === Map(
-        ("AsInstanceOf", 85),
+      result("cats-core_3-2.9.0.jar") === Map(
+        ("AsInstanceOf", 94),
         ("DefaultArguments", 22),
-        ("Equals", 187),
+        ("Equals", 197),
         ("FinalVal", 1),
-        ("ImplicitConversion", 234),
+        ("ForeachEntry", 2),
+        ("ImplicitConversion", 239),
         ("ImplicitParameter", 10),
         ("IterableOps", 60),
         ("LeakingSealed", 7),
         ("ListAppend", 3),
-        ("MutableDataStructures", 93),
+        ("MutableDataStructures", 99),
         ("Null", 19),
         ("Option2Iterable", 1),
         ("OptionPartial", 22),
-        ("Overloading", 42),
-        ("Return", 5),
+        ("Overloading", 44),
+        ("Return", 8),
         ("SizeIs", 3),
         ("StringPlusAny", 1),
-        ("ToString", 4),
+        ("ToString", 3),
+        ("TripleQuestionMark", 2),
         ("Var", 61),
-        ("While", 25)
+        ("While", 28)
       )
     )
     assert(
-      result("scala3-library_3-3.0.2.jar") === Map(
-        ("AsInstanceOf", 450),
+      result("scala3-library_3-3.2.1.jar") === Map(
+        ("AsInstanceOf", 505),
         ("DefaultArguments", 12),
-        ("Equals", 23),
+        ("Equals", 14),
         ("FinalVal", 9),
         ("ImplicitConversion", 13),
-        ("ImplicitParameter", 144),
+        ("ImplicitParameter", 145),
+        ("IterableOps", 2),
         ("LeakingSealed", 2),
-        ("MutableDataStructures", 5),
-        ("Null", 12),
+        ("MutableDataStructures", 20),
+        ("Null", 1),
         ("Option2Iterable", 5),
-        ("OptionPartial", 1),
+        ("OptionPartial", 3),
         ("Overloading", 115),
-        ("RedundantConversions", 7),
+        ("RedundantConversions", 8),
         ("Return", 5),
-        ("StringPlusAny", 1),
+        ("SizeIs", 2),
+        ("StringPlusAny", 2),
         ("ToString", 2),
-        ("Var", 14),
-        ("While", 10)
+        ("TripleQuestionMark", 11),
+        ("Var", 18),
+        ("While", 12)
       )
     )
-    assert(
-      result("simulacrum-scalafix-annotations_3-0.5.4.jar") === Map(
-        ("DefaultArguments", 2)
-      )
-    )
-    assert(result("scala-library-2.13.6.jar") === Map.empty)
-    assert(result.size === 5)
+    assert(result("scala-library-2.13.10.jar") === Map.empty)
+    assert(result.size === 4)
   }
 }
