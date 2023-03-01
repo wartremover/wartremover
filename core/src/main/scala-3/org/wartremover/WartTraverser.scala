@@ -1,7 +1,15 @@
 package org.wartremover
 
 abstract class WartTraverser { self =>
-  private[wartremover] val simpleName: String = this.getClass.getSimpleName.dropRight(1)
+  private[wartremover] val simpleName: String = {
+    Iterator
+      .unfold[Class[?], Class[?]](this.getClass)(c => Option(c).map(x => c -> x.getDeclaringClass))
+      .toList
+      .reverseIterator
+      .map(_.getSimpleName)
+      .map(s => if (s.endsWith("$")) s.dropRight(1) else s)
+      .mkString(".")
+  }
   private[wartremover] val fullName: String = this.getClass.getName.dropRight(1)
 
   def apply(u: WartUniverse): u.Traverser
