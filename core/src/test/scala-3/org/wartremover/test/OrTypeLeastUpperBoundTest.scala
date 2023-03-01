@@ -11,14 +11,27 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
   test("All") {
     val result = WartTestTraverser(OrTypeLeastUpperBound.All) {
       List(IArray(1), false)
-      List(A1(1), B(2))
+      def x1 = List(A1(1), B(2))
       List("a", true)
-      List(Right[Int, Int](1), Option("a"))
+      val x2 = List(Right[Int, Int](1), Option("a"))
     }
     assert(result.errors.size == 4)
     assert(result.errors.forall(_.contains("least upper bound is")), result)
 
     val mustEmpty = WartTestTraverser(OrTypeLeastUpperBound.All) {
+      for {
+        x1 <- Option(5)
+        x2 <- x1 match {
+          case 2 =>
+            Option(L(3))
+          case _ =>
+            Option(R("a"))
+        }
+      } yield ()
+      Tuple2(
+        _2 = 3,
+        _1 = if (true) None else Some(2)
+      )
       List(Right(1), Left(2))
       List(Some(77), None)
     }
@@ -85,4 +98,8 @@ object OrTypeLeastUpperBoundTest {
   case class A2(x: Int) extends A
 
   case class B(x: Int)
+
+  sealed abstract class E[+A, +B] extends Product with Serializable
+  final case class L[+A](a: A) extends E[A, Nothing]
+  final case class R[+B](b: B) extends E[Nothing, B]
 }

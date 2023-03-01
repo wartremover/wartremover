@@ -47,6 +47,11 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
+          case a: ValDef if a.symbol.flags.is(Flags.Synthetic) =>
+          // skip due to false positive
+          // https://github.com/wartremover/wartremover/issues/787
+          // TODO more better way
+          case a: DefDef if a.symbol.flags.is(Flags.Synthetic) =>
           case a: Inferred =>
             a.tpe match {
               case t: OrType =>
