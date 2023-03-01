@@ -380,7 +380,7 @@ object WartRemover extends sbt.AutoPlugin {
     },
     wartremoverPluginJarsDir := {
       if (VersionNumber(sbtVersion.value).matchesSemVer(SemanticSelector(">=1.4.0"))) {
-        Some((LocalRootProject / target).value / "compiler_plugins")
+        Some((LocalRootProject / crossTarget).value / "compiler_plugins")
       } else {
         None
       }
