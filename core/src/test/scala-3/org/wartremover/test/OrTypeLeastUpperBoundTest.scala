@@ -34,6 +34,7 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
       )
       List(Right(1), Left(2))
       List(Some(77), None)
+      List(false, 1.5)
     }
     assertEmpty(mustEmpty)
   }
@@ -52,6 +53,10 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
     assertError(result)(
       "least upper bound is `java.lang.Object & scala.Product & java.io.Serializable`. `org.wartremover.test.OrTypeLeastUpperBoundTest.A1 | org.wartremover.test.OrTypeLeastUpperBoundTest.B`"
     )
+    val mustEmpty = WartTestTraverser(OrTypeLeastUpperBound.AnyRef) {
+      List(4L, 9)
+    }
+    assertEmpty(mustEmpty)
   }
 
   test("Matchable") {
@@ -59,6 +64,10 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
       List("a", true)
     }
     assertError(result)("least upper bound is `scala.Matchable`. `java.lang.String | scala.Boolean`")
+    val mustEmpty = WartTestTraverser(OrTypeLeastUpperBound.Matchable) {
+      List(2L, 3.5)
+    }
+    assertEmpty(mustEmpty)
   }
 
   test("Product") {

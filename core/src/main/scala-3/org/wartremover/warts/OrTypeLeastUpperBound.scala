@@ -44,14 +44,18 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
 
       val types = getTypes[A]
 
+      def andTypes(t: TypeRepr): List[TypeRepr] = {
+        t match {
+          case x: AndType =>
+            andTypes(x.left) ::: andTypes(x.right)
+          case _ =>
+            t :: Nil
+        }
+      }
+
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
-          case a: ValDef if a.symbol.flags.is(Flags.Synthetic) =>
-          // skip due to false positive
-          // https://github.com/wartremover/wartremover/issues/787
-          // TODO more better way
-          case a: DefDef if a.symbol.flags.is(Flags.Synthetic) =>
           case a: Inferred =>
             a.tpe match {
               case t: OrType =>
@@ -59,7 +63,8 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
                   implicit val ctx = q.asInstanceOf[QuotesImpl].ctx
                   t.asInstanceOf[DottyType].widenUnion.asInstanceOf[TypeRepr]
                 }
-                if (types.exists(lub <:< _)) {
+                val lubAndTypes = andTypes(lub)
+                if (types.exists(x => lubAndTypes.exists(x =:= _))) {
                   val left = t.left.show
                   val right = t.right.show
                   error(tree.pos, s"least upper bound is `${lub.show}`. `${left} | ${right}`")
