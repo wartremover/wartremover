@@ -15,3 +15,11 @@ scalacOptions ++= Seq(
   "-language:existentials",
   "-deprecation",
 )
+
+if (sys.env.isDefinedAt("GITHUB_ACTION")) {
+  Def.settings(
+    addSbtPlugin("net.virtual-void" % "sbt-hackers-digest" % "0.1.2")
+  )
+} else {
+  Nil
+}
