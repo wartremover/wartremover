@@ -69,6 +69,7 @@ lazy val baseSettings = Def.settings(
         Nil
     }
   },
+  Test / javaOptions ++= Seq("-Xmx5G"),
   run / fork := true,
   scalaVersion := latestScala212,
 )
@@ -229,6 +230,18 @@ lazy val inspector = Project(
   name := "wartremover-inspector",
   crossScalaVersions := Seq(latestScala3),
   publish / skip := (scalaBinaryVersion.value != "3"),
+  Test / fork := true,
+  Test / baseDirectory := target.value / "test-base-dir",
+  Test / testOptions ++= List(
+    Tests.Setup { () =>
+      val dir = (Test / baseDirectory).value
+      IO.delete(dir)
+      dir.mkdirs()
+    },
+    Tests.Cleanup { () =>
+      IO.delete((Test / baseDirectory).value)
+    }
+  ),
   libraryDependencies ++= {
     if (scalaBinaryVersion.value == "3") {
       Seq(
