@@ -9,14 +9,27 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
   import OrTypeLeastUpperBoundTest.*
 
   test("All") {
-    val result = WartTestTraverser(OrTypeLeastUpperBound.All) {
-      List(IArray(1), false)
-      def x1 = List(A1(1), B(2))
-      List("a", true)
-      val x2 = List(Right[Int, Int](1), Option("a"))
+    val results = Seq(
+      WartTestTraverser(OrTypeLeastUpperBound.All) {
+        List(IArray(1), false)
+      },
+      WartTestTraverser(OrTypeLeastUpperBound.All) {
+        List(A1(1), B(2))
+      },
+      WartTestTraverser(OrTypeLeastUpperBound.All) {
+        List("a", true)
+      },
+      WartTestTraverser(OrTypeLeastUpperBound.All) {
+        List(Right[Int, Int](1), Option("a"))
+      },
+      WartTestTraverser(OrTypeLeastUpperBound.All) {
+        Seq(Option(8), Option("V"))
+      }
+    )
+    results.foreach { result =>
+      assert(result.errors.size == 1)
+      assert(result.errors.forall(_.contains("least upper bound is")), result)
     }
-    assert(result.errors.size == 4)
-    assert(result.errors.forall(_.contains("least upper bound is")), result)
 
     val mustEmpty = WartTestTraverser(OrTypeLeastUpperBound.All) {
       for {
