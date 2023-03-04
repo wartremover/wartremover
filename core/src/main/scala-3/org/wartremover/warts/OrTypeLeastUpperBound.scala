@@ -69,6 +69,8 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
                   val right = t.right.show
                   error(tree.pos, s"least upper bound is `${lub.show}`. `${left} | ${right}`")
                 }
+              case t: AppliedType =>
+                t.args.foreach(arg => traverseTree(TypeTree.of(using arg.asType))(owner))
               case _ =>
             }
             super.traverseTree(tree)(owner)
