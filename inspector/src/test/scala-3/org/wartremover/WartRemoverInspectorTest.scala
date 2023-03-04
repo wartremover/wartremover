@@ -1,11 +1,13 @@
 package org.wartremover
 
+import java.io.File
 import org.scalatest.funsuite.AnyFunSuite
 import sbt.io.IO
 import scala.quoted.Quotes
 import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
+import scala.sys.process.Process
 
 class WartRemoverInspectorTest extends AnyFunSuite {
   extension (groupId: String) {
@@ -86,24 +88,66 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     org.wartremover.warts.While,
   )
 
-  private def inspectLibrary(module: coursier.core.Dependency): Map[String, Map[String, Int]] = {
+  final case class Repo(githubUser: String, githubName: String, ref: String) {
+    def cloneTo(dir: File): Unit = {
+      val args = Seq[String](
+        "git",
+        "-c",
+        "advice.detachedHead=false",
+        "clone",
+        s"https://github.com/${githubUser}/${githubName}.git",
+        "-b",
+        ref,
+        "--depth",
+        "1",
+        dir.getAbsolutePath
+      )
+      println(s"run '${args.mkString(" ")}'")
+      Process(args).!
+    }
+    def withSources[A](dir: File): (() => A) => A = { action =>
+      try {
+        IO.delete(dir)
+        cloneTo(dir)
+        action.apply()
+      } finally {
+        IO.delete(dir)
+      }
+    }
+  }
+
+  private def inspectLibrary(
+    module: coursier.core.Dependency,
+    sources: Map[String, Repo]
+  ): Map[String, Map[String, Int]] = {
     val jars = coursier.Fetch().addDependencies(module).run()
     jars.map { jar =>
       println("start " + jar)
       val result = IO.withTemporaryDirectory { dir =>
-        val tastyFiles = IO.unzip(jar, dir, _ endsWith ".tasty").map(_.getAbsolutePath).toList
-        println("tasty files count = " + tastyFiles.size)
-        val param = InspectParam(
-          tastyFiles = tastyFiles,
-          dependenciesClasspath = jars.map(_.getAbsolutePath).toList,
-          wartClasspath = Nil,
-          errorWarts = Nil,
-          warningWarts = allWarts.map(_.fullName),
-          exclude = Nil,
-          failIfWartLoadError = true,
-          outputStandardReporter = true
-        )
-        inspector.run(param)
+        sources
+          .get(jar.getName)
+          .match {
+            case Some(repo) =>
+              repo.withSources[InspectResult](new File("."))
+            case None =>
+              println(s"source not found for = ${jar.getName}")
+              (a: (() => InspectResult)) => a.apply()
+          }
+          .apply { () =>
+            val tastyFiles = IO.unzip(jar, dir, _ endsWith ".tasty").map(_.getAbsolutePath).toList
+            println("tasty files count = " + tastyFiles.size)
+            val param = InspectParam(
+              tastyFiles = tastyFiles,
+              dependenciesClasspath = jars.map(_.getAbsolutePath).toList,
+              wartClasspath = Nil,
+              errorWarts = Nil,
+              warningWarts = allWarts.map(_.fullName),
+              exclude = Nil,
+              failIfWartLoadError = true,
+              outputStandardReporter = true
+            )
+            inspector.run(param)
+          }
       }
       jar.getName -> result.warnings.map(_.wart.replace(packagePrefix, "")).groupBy(identity).map { case (k, v) =>
         k -> v.size
@@ -112,27 +156,42 @@ class WartRemoverInspectorTest extends AnyFunSuite {
   }
 
   test("cats") {
-    val result = inspectLibrary("org.typelevel" %% "cats-core" % "2.9.0")
+    val catsVersion = "2.9.0"
+    val catsRepo = Repo(
+      githubUser = "typelevel",
+      githubName = "cats",
+      ref = s"v${catsVersion}"
+    )
+    val scala3version = "3.2.1"
+    val result = inspectLibrary(
+      "org.typelevel" %% "cats-core" % catsVersion,
+      Map(
+        s"cats-kernel_3-${catsVersion}.jar" -> catsRepo,
+        s"cats-core_3-${catsVersion}.jar" -> catsRepo,
+        s"scala3-library_3-${scala3version}.jar" -> Repo("lampepfl", "dotty", scala3version)
+      )
+    )
     assert(
-      result("cats-kernel_3-2.9.0.jar") === Map(
+      result(s"cats-kernel_3-${catsVersion}.jar") === Map(
         ("AsInstanceOf", 5),
         ("Equals", 64),
         ("ForeachEntry", 2),
-        ("ImplicitConversion", 1),
         ("ImplicitParameter", 2),
+        ("IsInstanceOf", 2),
         ("IterableOps", 2),
         ("MutableDataStructures", 24),
         ("OptionPartial", 2),
         ("Overloading", 8),
         ("Return", 12),
         ("SizeIs", 8),
+        ("Throw", 3),
         ("ToString", 1),
         ("Var", 31),
         ("While", 8)
       )
     )
     assert(
-      result("cats-core_3-2.9.0.jar") === Map(
+      result(s"cats-core_3-${catsVersion}.jar") === Map(
         ("AsInstanceOf", 94),
         ("DefaultArguments", 22),
         ("Equals", 197),
@@ -140,6 +199,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("ForeachEntry", 2),
         ("ImplicitConversion", 239),
         ("ImplicitParameter", 10),
+        ("IsInstanceOf", 3),
         ("IterableOps", 60),
         ("LeakingSealed", 7),
         ("ListAppend", 3),
@@ -151,6 +211,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Return", 8),
         ("SizeIs", 3),
         ("StringPlusAny", 1),
+        ("Throw", 13),
         ("ToString", 3),
         ("TripleQuestionMark", 2),
         ("Var", 61),
@@ -158,13 +219,14 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       )
     )
     assert(
-      result("scala3-library_3-3.2.1.jar") === Map(
+      result(s"scala3-library_3-${scala3version}.jar") === Map(
         ("AsInstanceOf", 505),
         ("DefaultArguments", 12),
         ("Equals", 14),
         ("FinalVal", 9),
         ("ImplicitConversion", 13),
         ("ImplicitParameter", 145),
+        ("IsInstanceOf", 46),
         ("IterableOps", 2),
         ("LeakingSealed", 2),
         ("MutableDataStructures", 20),
@@ -176,6 +238,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Return", 5),
         ("SizeIs", 2),
         ("StringPlusAny", 2),
+        ("Throw", 32),
         ("ToString", 2),
         ("TripleQuestionMark", 11),
         ("Var", 18),
