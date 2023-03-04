@@ -192,7 +192,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     )
     assert(
       result(s"cats-core_3-${catsVersion}.jar") === Map(
-        ("AsInstanceOf", 94),
+        ("AsInstanceOf", 86),
         ("DefaultArguments", 22),
         ("Equals", 197),
         ("FinalVal", 1),
@@ -220,7 +220,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     )
     assert(
       result(s"scala3-library_3-${scala3version}.jar") === Map(
-        ("AsInstanceOf", 505),
+        ("AsInstanceOf", 176),
         ("DefaultArguments", 12),
         ("Equals", 14),
         ("FinalVal", 9),
