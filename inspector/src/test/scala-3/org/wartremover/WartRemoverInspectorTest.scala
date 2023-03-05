@@ -3,6 +3,7 @@ package org.wartremover
 import java.io.File
 import org.scalatest.funsuite.AnyFunSuite
 import sbt.io.IO
+import scala.io.Source
 import scala.quoted.Quotes
 import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
@@ -29,64 +30,43 @@ class WartRemoverInspectorTest extends AnyFunSuite {
 
   private val inspector = new WartRemoverInspector
   private def packagePrefix = "org.wartremover.warts."
-  private val allWarts: List[WartTraverser] = List(
-    org.wartremover.warts.Any,
-    org.wartremover.warts.AnyVal,
-    org.wartremover.warts.ArrayEquals,
-    org.wartremover.warts.AsInstanceOf,
-    org.wartremover.warts.AutoUnboxing,
-    org.wartremover.warts.CollectHeadOption,
-    org.wartremover.warts.DefaultArguments,
-    org.wartremover.warts.DropTakeToSlice,
-    org.wartremover.warts.EitherProjectionPartial,
-    org.wartremover.warts.Enumeration,
-    org.wartremover.warts.Equals,
-    org.wartremover.warts.FilterEmpty,
-    org.wartremover.warts.FilterHeadOption,
-    org.wartremover.warts.FilterSize,
-    org.wartremover.warts.FinalCaseClass,
-    org.wartremover.warts.FinalVal,
-    org.wartremover.warts.ForeachEntry,
-    org.wartremover.warts.GetGetOrElse,
-    org.wartremover.warts.GetOrElseNull,
-    org.wartremover.warts.GlobalExecutionContext,
-    org.wartremover.warts.ImplicitConversion,
-    org.wartremover.warts.ImplicitParameter,
-    org.wartremover.warts.IsInstanceOf,
-    org.wartremover.warts.IterableOps,
-    org.wartremover.warts.LeakingSealed,
-    org.wartremover.warts.ListAppend,
-    org.wartremover.warts.ListUnapply,
-    org.wartremover.warts.ListUnapplySeq,
-    org.wartremover.warts.Matchable,
-    org.wartremover.warts.MutableDataStructures,
-    org.wartremover.warts.NoNeedImport,
-    org.wartremover.warts.NonUnitStatements,
-    org.wartremover.warts.Nothing,
-    org.wartremover.warts.Null,
-    org.wartremover.warts.Option2Iterable,
-    org.wartremover.warts.OptionPartial,
-    org.wartremover.warts.Overloading,
-    org.wartremover.warts.PlatformDefault,
-    org.wartremover.warts.Product,
-    org.wartremover.warts.RedundantConversions,
-    org.wartremover.warts.Return,
-    org.wartremover.warts.ReverseFind,
-    org.wartremover.warts.ReverseIterator,
-    org.wartremover.warts.ReverseTakeReverse,
-    org.wartremover.warts.ScalaApp,
-    org.wartremover.warts.Serializable,
-    org.wartremover.warts.SizeIs,
-    org.wartremover.warts.SortFilter,
-    org.wartremover.warts.StringPlusAny,
-    org.wartremover.warts.ThreadSleep,
-    org.wartremover.warts.Throw,
-    org.wartremover.warts.ToString,
-    org.wartremover.warts.TripleQuestionMark,
-    org.wartremover.warts.TryPartial,
-    org.wartremover.warts.Var,
-    org.wartremover.warts.While,
-  )
+  private val allWarts: List[Class[?]] = {
+    val suffix = ".class"
+    val exclude: Set[Class[?]] = Set[org.wartremover.WartTraverser](
+      org.wartremover.warts.Recursion, // too slow?
+      org.wartremover.warts.Unsafe,
+      org.wartremover.warts.OrTypeLeastUpperBound.Any,
+      org.wartremover.warts.OrTypeLeastUpperBound.AnyRef,
+      org.wartremover.warts.OrTypeLeastUpperBound.Matchable,
+      org.wartremover.warts.OrTypeLeastUpperBound.Product,
+      org.wartremover.warts.OrTypeLeastUpperBound.Serializable,
+    ).map(_.getClass: Class[?])
+    val sample = org.wartremover.warts.Any.getClass
+    val values = Source
+      .fromInputStream(
+        sample.getProtectionDomain.getClassLoader.getResourceAsStream(
+          sample.getPackageName.replace('.', '/')
+        )
+      )
+      .getLines
+      .filter(_.endsWith(suffix))
+      .map(_.dropRight(suffix.length))
+      .map { className =>
+        Class.forName(packagePrefix + className)
+      }
+      .filter { clazz =>
+        !java.lang.reflect.Modifier.isAbstract(clazz.getModifiers)
+      }
+      .filter { clazz =>
+        Iterator
+          .unfold[Class[?], Class[?]](clazz)(c => Option(c).map(x => c -> x.getSuperclass))
+          .exists(_ == classOf[WartTraverser])
+      }
+      .filterNot(exclude)
+      .toList
+    assert(values.size == 59)
+    values
+  }
 
   final case class Repo(githubUser: String, githubName: String, ref: String) {
     def cloneTo(dir: File): Unit = {
@@ -141,7 +121,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
               dependenciesClasspath = jars.map(_.getAbsolutePath).toList,
               wartClasspath = Nil,
               errorWarts = Nil,
-              warningWarts = allWarts.map(_.fullName),
+              warningWarts = allWarts.map(_.getName.dropRight(1)),
               exclude = Nil,
               failIfWartLoadError = true,
               outputStandardReporter = true
