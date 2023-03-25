@@ -1,7 +1,6 @@
 package wartremover
 
 import java.nio.file.Path
-import java.net.URL
 import java.nio.charset.StandardCharsets
 import org.wartremover.InspectParam
 import org.wartremover.InspectResult
