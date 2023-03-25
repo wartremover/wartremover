@@ -4,7 +4,7 @@ import tools.nsc.plugins.PluginComponent
 import tools.nsc.Global
 import tools.nsc.Phase
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.net.URLClassLoader
 import scala.reflect.internal.util.NoPosition
 import scala.util.control.NonFatal
@@ -41,7 +41,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
       if (c startsWith filePrefix) {
         new File(c.drop(filePrefix.length)).getCanonicalFile.toURI.toURL
       } else {
-        new URL(c)
+        new URI(c).toURL
       }
     }
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)

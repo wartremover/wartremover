@@ -3,7 +3,7 @@ package org.wartremover
 import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.plugins.StandardPlugin
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.net.URLClassLoader
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.reflect.NameTransformer
@@ -40,7 +40,7 @@ class Plugin extends StandardPlugin {
         val f = new File(c)
         f.getCanonicalFile.toURI.toURL
       case s"cp:${c}" =>
-        new URL(c)
+        new URI(c).toURL
     }
     val classLoader = new URLClassLoader(classPathEntries.toArray, getClass.getClassLoader)
     val (errors1, errorWarts) = options.collect { case s"traverser:${name}" =>
