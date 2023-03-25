@@ -293,7 +293,7 @@ object WartRemover extends sbt.AutoPlugin {
                       case a if a.startsWith(filePrefix) =>
                         file(a.drop(filePrefix.length)).getCanonicalFile.toURI.toURL
                       case a =>
-                        new URL(a)
+                        new URI(a).toURL
                     }.map(_.toString)
                   }.toList,
                   errorWarts = errorWartNames.map(_.clazz).toList,
