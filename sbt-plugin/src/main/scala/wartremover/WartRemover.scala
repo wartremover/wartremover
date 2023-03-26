@@ -6,6 +6,7 @@ import org.wartremover.InspectParam
 import org.wartremover.InspectResult
 import sbt.*
 import sbt.Keys.*
+import sbt.SlashSyntax.HasSlashKey
 import sjsonnew.JsonFormat
 import sjsonnew.support.scalajson.unsafe.CompactPrinter
 
@@ -304,17 +305,7 @@ object WartRemover extends sbt.AutoPlugin {
                   failIfWartLoadError = (x / wartremoverFailIfWartLoadError).value,
                   outputStandardReporter = (x / wartremoverInspectOutputStandardReporter).value
                 )
-                val Seq(launcher) = dependencyResolution.value
-                  .retrieve(
-                    dependencyId = "org.scala-sbt" % "sbt-launch" % (wartremoverInspect / sbtVersion).value,
-                    scalaModuleInfo = scalaModuleInfo.value,
-                    retrieveDirectory = csrCacheDirectory.value,
-                    log = streams.value.log
-                  )
-                  .left
-                  .map(e => throw e.resolveException)
-                  .merge
-                  .distinct
+                val launcher = sbtLauncher(wartremoverInspect).value
                 val resultJson = runInspector(
                   projectName = thisTaskName,
                   base = (LocalRootProject / baseDirectory).value,
@@ -352,6 +343,28 @@ object WartRemover extends sbt.AutoPlugin {
       }
     }.value
   )
+
+  private[this] def getJarFiles(module: ModuleID): Def.Initialize[Task[Seq[File]]] = Def.task {
+    dependencyResolution.value
+      .retrieve(
+        dependencyId = module,
+        scalaModuleInfo = scalaModuleInfo.value,
+        retrieveDirectory = csrCacheDirectory.value,
+        log = streams.value.log
+      )
+      .left
+      .map(e => throw e.resolveException)
+      .merge
+      .distinct
+  }
+
+  private[this] def sbtLauncher(k: HasSlashKey): Def.Initialize[Task[File]] = Def.taskDyn {
+    val v = (k / sbtVersion).value
+    Def.task {
+      val Seq(launcher) = getJarFiles("org.scala-sbt" % "sbt-launch" % v).value
+      launcher
+    }
+  }
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Def.settings(
     libraryDependencies ++= {
