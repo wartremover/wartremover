@@ -61,7 +61,8 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
           case _ if hasWartAnnotation(tree) =>
           case a: Inferred =>
             a.tpe match {
-              case t: OrType =>
+              case t: OrType
+                  if !t.left.typeSymbol.flags.is(Flags.Private) && !t.right.typeSymbol.flags.is(Flags.Private) =>
                 val lub = {
                   implicit val ctx = q.asInstanceOf[QuotesImpl].ctx
                   t.asInstanceOf[DottyType].widenUnion.asInstanceOf[TypeRepr]
