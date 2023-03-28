@@ -53,7 +53,10 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
         }
       }
 
-      override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
+      override def traverseTree(tree: Tree)(owner: Symbol): Unit =
+        impl(tree, None, owner)
+
+      private[this] def impl(tree: Tree, positionOpt: Option[Position], owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
           case a: Inferred =>
@@ -67,10 +70,11 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
                 if (types.exists(x => lubAndTypes.exists(x =:= _))) {
                   val left = t.left.show
                   val right = t.right.show
-                  error(tree.pos, s"least upper bound is `${lub.show}`. `${left} | ${right}`")
+                  val pos = positionOpt.getOrElse(tree.pos)
+                  error(pos, s"least upper bound is `${lub.show}`. `${left} | ${right}`")
                 }
               case t: AppliedType =>
-                t.args.foreach(arg => traverseTree(TypeTree.of(using arg.asType))(owner))
+                t.args.foreach(arg => impl(TypeTree.of(using arg.asType), Some(positionOpt.getOrElse(a.pos)), owner))
               case _ =>
             }
             super.traverseTree(tree)(owner)
