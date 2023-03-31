@@ -9,7 +9,7 @@ import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.nio.file.Files
 import java.nio.charset.StandardCharsets
 
@@ -66,7 +66,7 @@ final class WartRemoverInspector {
       println("tastyFiles is empty")
       InspectResult.empty
     } else {
-      val classLoader = new URLClassLoader(param.wartClasspath.map(new URL(_)).toArray, getClass.getClassLoader)
+      val classLoader = new URLClassLoader(param.wartClasspath.map(new URI(_).toURL).toArray, getClass.getClassLoader)
       val (errorLoadFail, errorTraversers) = param.errorWarts.toList.partitionMap(Plugin.loadWart(_, classLoader))
       val (warnLoadFail, warningTraversers) = param.warningWarts.toList.partitionMap(Plugin.loadWart(_, classLoader))
       val loadFailed = errorLoadFail ++ warnLoadFail
