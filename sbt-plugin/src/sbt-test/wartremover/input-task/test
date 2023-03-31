@@ -1,0 +1,9 @@
+> Test/compile
+> wartremover https://raw.githubusercontent.com/wartremover/wartremover-contrib/379526ebb70db9952/core/src/main/scala-3/org/wartremover/contrib/warts/SymbolicName.scala org.wartremover.warts.IsInstanceOf
+-> wartremover --error org.wartremover.warts.IsInstanceOf
+-> wartremover file:warts/NotExists.scala
+> wartremover file:warts
+> wartremover file:warts/DisableHoge.scala
+> wartremover --warn   file:warts/DisableHoge.scala
+-> wartremover --error file:warts/DisableHoge.scala
+> Test/wartremover file:warts/DisableHoge.scala

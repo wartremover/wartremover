@@ -9,11 +9,23 @@ import sbt.Keys.*
 import sbt.SlashSyntax.HasSlashKey
 import sjsonnew.JsonFormat
 import sjsonnew.support.scalajson.unsafe.CompactPrinter
+import wartremover.InspectWart.Type
+import java.io.FileInputStream
+import java.net.URLClassLoader
+import java.util.zip.ZipInputStream
+import scala.annotation.tailrec
+import scala.collection.concurrent.TrieMap
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+import scala.util.Using
 
 object WartRemover extends sbt.AutoPlugin {
   override def trigger = allRequirements
   object autoImport {
     val WartremoverTag = Tags.Tag("wartremover")
+    val wartremoverTask = InputKey[InspectResult]("wartremover", "run wartremover by TASTy inspector")
     val wartremoverFailIfWartLoadError = settingKey[Boolean]("")
     val wartremoverInspect = taskKey[InspectResult]("run wartremover by TASTy inspector")
     val wartremoverInspectOutputFile = settingKey[Option[File]]("")
@@ -240,6 +252,22 @@ object WartRemover extends sbt.AutoPlugin {
 
   private[this] def inspectTask(x: Configuration): Seq[Def.Setting[?]] = Def.settings(
     x / wartremoverInspectOutputFile := None,
+    x / wartremoverTask := Def.inputTaskDyn {
+      val parsed0 = InspectArgsParser.get(file(".").getAbsoluteFile.toPath).parsed
+      val parsed = InspectArgs.from(parsed0.collect { case x: InspectArg.Wart =>
+        x
+      })
+      Def.taskDyn {
+        val errResult = compileWartFromSources(parsed(Type.Err)).value
+        val warnResult = compileWartFromSources(parsed(Type.Warn)).value
+        createInspectTask(
+          x = x,
+          warningWartNames = parsed(Type.Warn).warts ++ warnResult.wartNames,
+          errorWartNames = parsed(Type.Err).warts ++ errResult.wartNames,
+          jarFiles = errResult.jarBinary.toSeq ++ warnResult.jarBinary.toSeq,
+        )
+      }
+    }.evaluated,
     x / wartremoverInspect := Def.taskDyn {
       createInspectTask(
         x = x,
@@ -249,6 +277,140 @@ object WartRemover extends sbt.AutoPlugin {
       )
     }.value
   )
+
+  private final case class CompileResult(jarBinary: Option[Seq[Byte]], wartNames: Seq[Wart])
+  private object CompileResult {
+    val empty: CompileResult = CompileResult(None, Nil)
+  }
+
+  private[this] def compileWartFromSources(inspectArg: InspectArgs): Def.Initialize[Task[CompileResult]] = {
+    Def.taskDyn {
+      val log = streams.value.log
+      val wartremoverJars = Def.taskDyn {
+        val wartremoverCross = wartremoverCrossVersion.value
+        getJarFiles(
+          "org.wartremover" %% "wartremover" % Wart.PluginVersion cross wartremoverCross
+        )
+      }.value
+      if (inspectArg.sources.nonEmpty) {
+        val bytes: Seq[Byte] = getJar(inspectArg.sources.toSet).value
+        IO.withTemporaryDirectory { tmpDir =>
+          val compiledJar = tmpDir / "wartremover" / "warts.jar"
+          IO.write(compiledJar, bytes.toArray)
+          log.debug(s"compiled jar = $compiledJar")
+          val classes = getAllClassNamesInJar(compiledJar)
+          if (classes.isEmpty) {
+            log.error("not found compiled classes")
+            Def.task(CompileResult.empty)
+          } else {
+            log.info(s"compiled classes = ${classes.mkString(" ")}")
+            val loader = new URLClassLoader(
+              (compiledJar.toURI.toURL +: wartremoverJars.map(_.toURI.toURL)).toArray
+            )
+            val xs =
+              try {
+                classes.filter { className =>
+                  val clazz = Class.forName(className, false, loader)
+                  val traverserName = "org.wartremover.WartTraverser"
+
+                  @tailrec
+                  def loop(c: Class[?]): Boolean = {
+                    if (c == null) {
+                      false
+                    } else if (c.getName == traverserName) {
+                      true
+                    } else {
+                      loop(c.getSuperclass)
+                    }
+                  }
+
+                  loop(clazz)
+                }.map { s =>
+                  if (s.endsWith("$")) s.dropRight(1) else s
+                }
+              } finally {
+                loader.close()
+              }
+
+            Def.task(
+              CompileResult(jarBinary = Some(bytes), wartNames = xs.map(Wart.custom))
+            )
+          }
+        }
+      } else {
+        Def.task(
+          CompileResult.empty
+        )
+      }
+    }
+  }
+
+  private[this] def getAllClassNamesInJar(jar: File): List[String] = {
+    val suffix = ".class"
+    Using.resource(new ZipInputStream(new FileInputStream(jar))) { zip =>
+      Iterator
+        .continually(
+          zip.getNextEntry
+        )
+        .takeWhile(_ != null)
+        .filter(e => !e.isDirectory && e.getName.endsWith(suffix))
+        .map(
+          _.getName.replace('/', '.').dropRight(suffix.length)
+        )
+        .toList
+    }
+  }
+
+  private[this] case class WartCacheKey(scalaV: String, files: Set[String])
+
+  private[this] val wartRunCache: TrieMap[WartCacheKey, Future[Seq[Byte]]] = TrieMap.empty
+
+  private[this] def getJar(files: Set[String]): Def.Initialize[Task[Seq[Byte]]] = Def.task {
+    val key = WartCacheKey(
+      scalaV = (wartremoverTask / scalaVersion).value,
+      files = files
+    )
+    val forkOps = (wartremoverTask / forkOptions).value
+    val launcher = sbtLauncher(wartremoverTask).value
+    val log = state.value.log
+
+    val res = wartRunCache.getOrElseUpdate(
+      key,
+      Future {
+        val buildSbt =
+          s"""
+             |logLevel := Level.Warn
+             |scalaVersion := "${key.scalaV}"
+             |crossPaths := false
+             |libraryDependencies := Seq(
+             |  "org.wartremover" %% "wartremover" % "${Wart.PluginVersion}"
+             |)
+             |""".stripMargin
+
+        IO.withTemporaryDirectory { dir =>
+          IO.write(dir / "build.sbt", buildSbt.getBytes(StandardCharsets.UTF_8))
+          key.files.toSeq.sorted.zipWithIndex.foreach { case (src, index) =>
+            IO.write(dir / s"${index}.scala", src.getBytes(StandardCharsets.UTF_8))
+          }
+          log.info(s"compile ${key.files.size} files")
+          val exitCode = Fork.java.apply(
+            forkOps.withWorkingDirectory(dir),
+            Seq(
+              "-jar",
+              launcher.getCanonicalPath,
+              packageBin.key.label
+            )
+          )
+          assert(exitCode == 0, s"exit code = $exitCode")
+          log.info(s"compiled ${key.files.size} files")
+          val Seq(compiledJar) = (dir / "target").listFiles(f => f.isFile && f.getName.endsWith(".jar")).toList
+          IO.readBytes(compiledJar).toSeq
+        }
+      }(ExecutionContext.global)
+    )
+
+    Await.result(res, 2.minutes)
+  }
 
   private[this] def createInspectTask(
     x: Configuration,
