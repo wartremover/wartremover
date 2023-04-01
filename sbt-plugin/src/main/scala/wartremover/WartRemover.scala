@@ -477,25 +477,6 @@ object WartRemover extends sbt.AutoPlugin {
     )
   )
 
-  // Workaround for https://github.com/wartremover/wartremover/issues/123
-  private[wartremover] def derive[T](s: Setting[T]): Setting[T] = {
-    try {
-      Def derive s
-    } catch {
-      case _: LinkageError =>
-        import scala.language.reflectiveCalls
-        Def
-          .asInstanceOf[{
-              def derive[T](
-                setting: Setting[T],
-                allowDynamic: Boolean,
-                filter: Scope => Boolean,
-                trigger: AttributeKey[_] => Boolean,
-                default: Boolean
-              ): Setting[T]
-            }
-          ]
-          .derive(s, false, _ => true, _ => true, false)
-    }
-  }
+  private[wartremover] def derive[T](s: Setting[T]): Setting[T] =
+    Def derive s
 }
