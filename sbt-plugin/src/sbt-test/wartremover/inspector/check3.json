@@ -15,5 +15,6 @@
         "endColumn" : 23
       }
     }
-  ]
+  ],
+  "stderr" : "\u001b[33m\u001b[33m-- Warning: src/test/scala/Test.scala:4:15 -------------------------------------\u001b[0m\u001b[0m\n\u001b[33m4 |\u001b[0m  \u001b[33mdef\u001b[0m \u001b[36mx\u001b[0m: \u001b[35mInt\u001b[0m = \u001b[33mreturn\u001b[0m \u001b[31m3\u001b[0m\n\u001b[33m\u001b[33m  |\u001b[0m               ^^^^^^^^\u001b[0m\n\u001b[33m  |\u001b[0m               [wartremover:Return] return is disabled\n1 warning found\n"
 }

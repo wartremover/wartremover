@@ -212,9 +212,10 @@ object WartRemover extends sbt.AutoPlugin {
         "position",
       )
 
-    caseClass2(InspectResult.apply, InspectResult.unapply)(
+    caseClass3(InspectResult.apply, InspectResult.unapply)(
       "errors",
       "warnings",
+      "stderr",
     )
   }
 
@@ -336,7 +337,7 @@ object WartRemover extends sbt.AutoPlugin {
               ).fold(e => sys.error(s"${thisTaskName} failed ${e}"), identity)
               val result = {
                 val r = resultJson.decodeFromJsonString[InspectResult]
-                new InspectResult(errors = r.errors, warnings = r.warnings) {
+                new InspectResult(errors = r.errors, warnings = r.warnings, stderr = r.stderr) {
                   override def toString: String = resultJson
                 }
               }

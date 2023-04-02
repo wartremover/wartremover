@@ -29,5 +29,6 @@
       }
     }
   ],
-  "warnings" : []
+  "warnings" : [],
+  "stderr" : "\u001b[31m\u001b[31m-- Error: src/main/scala/Main.scala:4:12 ---------------------------------------\u001b[0m\u001b[0m\n\u001b[31m4 |\u001b[0m  \u001b[33mdef\u001b[0m \u001b[36mfoo\u001b[0m = \u001b[31mnull\u001b[0m\n\u001b[31m\u001b[31m  |\u001b[0m            ^^^^\u001b[0m\n\u001b[31m  |\u001b[0m            [wartremover:Null] null is disabled\n\u001b[31m\u001b[31m-- Error: src/main/scala/Main.scala:3:20 ---------------------------------------\u001b[0m\u001b[0m\n\u001b[31m3 |\u001b[0m\u001b[33mobject\u001b[0m \u001b[35mMain\u001b[0m \u001b[33mextends\u001b[0m \u001b[35mApp\u001b[0m {\n\u001b[31m\u001b[31m  |\u001b[0m                    ^^^\u001b[0m\n\u001b[31m  |\u001b[0m[wartremover:ScalaApp] Don't use scala.App. https://docs.scala-lang.org/scala3/book/methods-main-methods.html\n2 errors found\n"
 }
