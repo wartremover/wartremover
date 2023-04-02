@@ -8,6 +8,7 @@ import scala.quoted.Quotes
 import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.URI
 import java.nio.file.Files
@@ -160,11 +161,18 @@ final class WartRemoverInspector {
         warningTraversers.foreach(t => run(onlyWarning = true, traverser = t))
       }
     }
-    TastyInspector.inspectAllTastyFiles(
-      tastyFiles = tastyFiles,
-      jars = Nil,
-      dependenciesClasspath = dependenciesClasspath,
-    )(inspector)
+    val out = new ByteArrayOutputStream()
+    Console.withErr(out) {
+      TastyInspector.inspectAllTastyFiles(
+        tastyFiles = tastyFiles,
+        jars = Nil,
+        dependenciesClasspath = dependenciesClasspath,
+      )(inspector)
+    }
+    val stderrResult = new String(out.toByteArray, "UTF-8")
+    if (outputReporter) {
+      Console.err.println(stderrResult)
+    }
 
     implicit val ord: Ordering[Diagnostic] = Ordering.by { a =>
       val p = a.position
@@ -173,7 +181,8 @@ final class WartRemoverInspector {
 
     InspectResult(
       errors = errors.result().sorted,
-      warnings = warnings.result().sorted
+      warnings = warnings.result().sorted,
+      stderr = stderrResult,
     )
   }
 }
