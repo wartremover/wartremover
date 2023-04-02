@@ -40,6 +40,7 @@ object WartRemover extends sbt.AutoPlugin {
     },
     wartremoverInspectSettings := Nil,
     excludeLintKeys += wartremoverInspectOutputFile,
+    excludeLintKeys += wartremoverInspectScalaVersion,
     wartremoverCrossVersion := CrossVersion.full,
     wartremoverDependencies := Nil,
     wartremoverErrors := Nil,
