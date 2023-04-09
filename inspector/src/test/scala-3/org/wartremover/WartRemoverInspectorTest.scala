@@ -64,7 +64,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       }
       .filterNot(exclude)
       .toList
-    assert(values.size == 62)
+    assert(values.size == 64)
     values
   }
 
@@ -189,6 +189,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("OptionPartial", 22),
         ("Overloading", 44),
         ("Return", 8),
+        ("RedundantIsInstanceOf", 1), // maybe https://github.com/typelevel/cats/pull/3392#discussion_r434230415
         ("SizeIs", 3),
         ("StringPlusAny", 1),
         ("Throw", 13),
@@ -214,6 +215,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Option2Iterable", 5),
         ("OptionPartial", 3),
         ("Overloading", 115),
+        ("RedundantAsInstanceOf", 1), // https://github.com/lampepfl/dotty/commit/cf18183c6b6edd0e4949
         ("RedundantConversions", 8),
         ("Return", 5),
         ("SizeIs", 2),
