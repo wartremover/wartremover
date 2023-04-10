@@ -88,14 +88,24 @@ private[wartremover] object InspectArgsParser {
     }
   }
 
-  private[this] val scala3warts: Set[String] = {
+  private[wartremover] val scala3warts: Set[String] = {
+    val prefix = "org.wartremover.warts."
     val exclude = Set(
       "ExplicitImplicitTypes",
       "JavaConversions",
       "JavaSerializable",
       "PublicInference",
-    ).map("org.wartremover.warts." + _)
-    wartremover.Warts.all.map(_.clazz).toSet -- exclude
+    ).map(prefix + _)
+    val include = Set(
+      "Matchable",
+      "OrTypeLeastUpperBound$All",
+      "OrTypeLeastUpperBound$Any",
+      "OrTypeLeastUpperBound$AnyRef",
+      "OrTypeLeastUpperBound$Matchable",
+      "OrTypeLeastUpperBound$Product",
+      "OrTypeLeastUpperBound$Serializable"
+    ).map(prefix + _)
+    (wartremover.Warts.all.map(_.clazz).toSet -- exclude) ++ include
   }
 
   private[this] val f3: Parser[InspectWart] =
