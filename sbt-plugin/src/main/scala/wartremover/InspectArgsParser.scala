@@ -88,9 +88,15 @@ private[wartremover] object InspectArgsParser {
     }
   }
 
+  private[this] val scala3warts: Set[String] = {
+    val exclude = Set(
+      "ExplicitImplicitTypes"
+    ).map("org.wartremover.warts." + _)
+    wartremover.Warts.all.map(_.clazz).toSet -- exclude
+  }
+
   private[this] val f3: Parser[InspectWart] =
-    token(Space) ~> token(NotSpace examples _root_.wartremover.Warts.all.map(_.clazz).toSet).doNotParseSpecialArgs.map {
-      wartName =>
-        InspectWart.WartName(wartName)
+    token(Space) ~> token(NotSpace examples scala3warts).doNotParseSpecialArgs.map { wartName =>
+      InspectWart.WartName(wartName)
     }
 }

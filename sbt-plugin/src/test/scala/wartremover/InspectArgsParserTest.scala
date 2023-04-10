@@ -133,7 +133,6 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "org.wartremover.warts.EitherProjectionPartial",
         "org.wartremover.warts.Enumeration",
         "org.wartremover.warts.Equals",
-        "org.wartremover.warts.ExplicitImplicitTypes",
         "org.wartremover.warts.FilterEmpty",
         "org.wartremover.warts.FilterHeadOption",
         "org.wartremover.warts.FilterSize",
