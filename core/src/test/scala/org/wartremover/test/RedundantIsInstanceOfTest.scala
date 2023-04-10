@@ -4,6 +4,7 @@ package test
 import org.wartremover.warts.RedundantIsInstanceOf
 import org.scalatest.funsuite.AnyFunSuite
 import org.wartremover.test.RedundantIsInstanceOfTest._
+import scala.annotation.nowarn
 
 class RedundantIsInstanceOfTest extends AnyFunSuite with ResultAssertions {
   private def x1: Int = 2
@@ -32,7 +33,8 @@ class RedundantIsInstanceOfTest extends AnyFunSuite with ResultAssertions {
 
   test("can use isInstanceOf if not sub types") {
     val result = WartTestTraverser(RedundantIsInstanceOf) {
-      x1.isInstanceOf[String]
+      @nowarn("msg=fruitless type test")
+      def y1 = x1.isInstanceOf[String]
       x1.isInstanceOf[Long]
       a1.isInstanceOf[A2]
     }
