@@ -305,37 +305,36 @@ object WartRemover extends sbt.AutoPlugin {
             Def.task(CompileResult.empty)
           } else {
             log.info(s"compiled classes = ${classes.mkString(" ")}")
-            val loader = new URLClassLoader(
-              (compiledJar.toURI.toURL +: wartremoverJars.map(_.toURI.toURL)).toArray
-            )
-            val xs =
-              try {
-                classes.filter { className =>
-                  val clazz = Class.forName(className, false, loader)
-                  val traverserName = "org.wartremover.WartTraverser"
 
-                  @tailrec
-                  def loop(c: Class[?]): Boolean = {
-                    if (c == null) {
-                      false
-                    } else if (c.getName == traverserName) {
-                      true
-                    } else {
-                      loop(c.getSuperclass)
-                    }
-                  }
+            val xs = Using.resource(
+              new URLClassLoader(
+                (compiledJar.toURI.toURL +: wartremoverJars.map(_.toURI.toURL)).toArray
+              )
+            ) { loader =>
+              classes.filter { className =>
+                val clazz = Class.forName(className, false, loader)
+                val traverserName = "org.wartremover.WartTraverser"
 
-                  if (Modifier.isAbstract(clazz.getModifiers)) {
+                @tailrec
+                def loop(c: Class[?]): Boolean = {
+                  if (c == null) {
                     false
+                  } else if (c.getName == traverserName) {
+                    true
                   } else {
-                    loop(clazz)
+                    loop(c.getSuperclass)
                   }
-                }.map { s =>
-                  if (s.endsWith("$")) s.dropRight(1) else s
                 }
-              } finally {
-                loader.close()
+
+                if (Modifier.isAbstract(clazz.getModifiers)) {
+                  false
+                } else {
+                  loop(clazz)
+                }
+              }.map { s =>
+                if (s.endsWith("$")) s.dropRight(1) else s
               }
+            }
 
             Def.task(
               CompileResult(jarBinary = Some(bytes), wartNames = xs.map(Wart.custom))
