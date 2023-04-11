@@ -11,6 +11,7 @@ import sjsonnew.JsonFormat
 import sjsonnew.support.scalajson.unsafe.CompactPrinter
 import wartremover.InspectWart.Type
 import java.io.FileInputStream
+import java.lang.reflect.Modifier
 import java.net.URLClassLoader
 import java.util.zip.ZipInputStream
 import scala.annotation.tailrec
@@ -324,7 +325,11 @@ object WartRemover extends sbt.AutoPlugin {
                     }
                   }
 
-                  loop(clazz)
+                  if (Modifier.isAbstract(clazz.getModifiers)) {
+                    false
+                  } else {
+                    loop(clazz)
+                  }
                 }.map { s =>
                   if (s.endsWith("$")) s.dropRight(1) else s
                 }
