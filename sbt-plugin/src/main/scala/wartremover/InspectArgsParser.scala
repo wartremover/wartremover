@@ -90,7 +90,10 @@ private[wartremover] object InspectArgsParser {
 
   private[this] val scala3warts: Set[String] = {
     val exclude = Set(
-      "ExplicitImplicitTypes"
+      "ExplicitImplicitTypes",
+      "JavaConversions",
+      "JavaSerializable",
+      "PublicInference",
     ).map("org.wartremover.warts." + _)
     wartremover.Warts.all.map(_.clazz).toSet -- exclude
   }
