@@ -349,7 +349,7 @@ object WartRemover extends sbt.AutoPlugin {
     }
   }
 
-  private[this] def getAllClassNamesInJar(jar: File): List[String] = {
+  private[wartremover] def getAllClassNamesInJar(jar: File): List[String] = {
     val suffix = ".class"
     Using.resource(new ZipInputStream(new FileInputStream(jar))) { zip =>
       Iterator

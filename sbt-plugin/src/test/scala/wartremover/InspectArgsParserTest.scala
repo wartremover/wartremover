@@ -8,10 +8,15 @@ import java.io.File
 import sbt.complete.Parser
 import sbt.io.IO
 import sbt.uri
+import wartremover.InspectArgsParserTest._
 import wartremover.InspectWart.SourceFile
 import wartremover.InspectWart.Type
 import wartremover.InspectWart.Uri
 import wartremover.InspectWart.WartName
+import java.lang.reflect.Modifier
+import java.net.URLClassLoader
+import scala.annotation.tailrec
+import scala.util.Using
 
 class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAndAfterAll {
   private[this] lazy val base: File = IO.createTemporaryDirectory
@@ -217,5 +222,65 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "./file_4.scala",
       )
     )
+  }
+
+  test("wart names") {
+    val v = "3.1.0"
+    val jars = coursier.Fetch().addDependencies("org.wartremover" % "wartremover_3" % v).run()
+    val jar = jars.find(_.getName == s"wartremover_3-${v}.jar").getOrElse(sys.error(s"not found ${jars}"))
+    val classes = WartRemover.getAllClassNamesInJar(jar)
+    val exclude = Set(
+      "Unsafe",
+      // exclude on purpose because maybe does not work following warts with inspector
+      "Matchable",
+      "OrTypeLeastUpperBound$All",
+      "OrTypeLeastUpperBound$Any",
+      "OrTypeLeastUpperBound$AnyRef",
+      "OrTypeLeastUpperBound$Matchable",
+      "OrTypeLeastUpperBound$Product",
+      "OrTypeLeastUpperBound$Serializable",
+    ).map("org.wartremover.warts." + _)
+    val result = Using.resource(new URLClassLoader(jars.map(_.toURI.toURL).toArray)) { loader =>
+      classes.filter { className =>
+        val clazz = Class.forName(className, false, loader)
+        val traverserName = "org.wartremover.WartTraverser"
+
+        @tailrec
+        def loop(c: Class[?]): Boolean = {
+          if (c == null) {
+            false
+          } else if (c.getName == traverserName) {
+            true
+          } else {
+            loop(c.getSuperclass)
+          }
+        }
+
+        if (Modifier.isAbstract(clazz.getModifiers)) {
+          false
+        } else {
+          loop(clazz)
+        }
+      }.map { s =>
+        if (s.endsWith("$")) s.dropRight(1) else s
+      }.filterNot(_.contains("$anon")).filterNot(exclude)
+    }
+    assert(result.toSet == InspectArgsParser.scala3warts)
+  }
+}
+
+object InspectArgsParserTest {
+  implicit class StringOps(private val groupId: String) extends AnyVal {
+    def %(artifactId: String): coursier.core.Module =
+      coursier.core.Module(
+        coursier.core.Organization(groupId),
+        coursier.core.ModuleName(artifactId),
+        Map.empty
+      )
+  }
+
+  implicit class ModuleOps(private val module: coursier.core.Module) extends AnyVal {
+    def %(version: String): coursier.core.Dependency =
+      coursier.core.Dependency(module, version)
   }
 }

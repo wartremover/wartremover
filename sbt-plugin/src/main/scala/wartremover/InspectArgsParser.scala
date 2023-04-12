@@ -88,7 +88,7 @@ private[wartremover] object InspectArgsParser {
     }
   }
 
-  private[this] val scala3warts: Set[String] = {
+  private[wartremover] val scala3warts: Set[String] = {
     val exclude = Set(
       "ExplicitImplicitTypes",
       "JavaConversions",
