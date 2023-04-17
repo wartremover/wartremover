@@ -64,7 +64,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       }
       .filterNot(exclude)
       .toList
-    assert(values.size == 64)
+    assert(values.size == 65)
     values
   }
 
@@ -154,6 +154,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     assert(
       result(s"cats-kernel_3-${catsVersion}.jar") === Map(
         ("AsInstanceOf", 5),
+        ("CaseClassPrivateApply", 2),
         ("Equals", 64),
         ("ForeachEntry", 2),
         ("ImplicitParameter", 2),

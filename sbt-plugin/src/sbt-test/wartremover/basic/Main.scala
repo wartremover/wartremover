@@ -14,3 +14,8 @@ object Main {
 
 case class Foo(n: Int)
 object Foo
+
+case class B private(x: Int)
+object B {
+  val x = B(2)
+}

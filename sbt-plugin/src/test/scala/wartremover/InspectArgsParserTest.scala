@@ -132,6 +132,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "ArrayEquals",
         "AsInstanceOf",
         "AutoUnboxing",
+        "CaseClassPrivateApply",
         "CollectHeadOption",
         "DefaultArguments",
         "DropTakeToSlice",
@@ -264,7 +265,11 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
       }.map { s =>
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
-    }
+    } ++ Seq[String](
+      "CaseClassPrivateApply" // TODO remove when update to 3.1.1
+    ).map(
+      "org.wartremover.warts." + _
+    )
     assert(result.toSet == InspectArgsParser.scala3warts)
   }
 }
