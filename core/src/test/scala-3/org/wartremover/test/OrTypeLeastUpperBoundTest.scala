@@ -24,7 +24,16 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
       },
       WartTestTraverser(OrTypeLeastUpperBound.All) {
         Seq(Option(8), Option("V"))
-      }
+      },
+      WartTestTraverser(OrTypeLeastUpperBound.All) {
+        def f[R: R1: R2](b: Boolean): Eff[R, Int] = {
+          if (b) {
+            eff1[R, String]("2")
+          } else {
+            eff2(Some(3))
+          }
+        }.map { x => 4 }
+      },
     )
     results.foreach { result =>
       assert(result.errors.size == 1)
@@ -124,4 +133,14 @@ object OrTypeLeastUpperBoundTest {
   sealed abstract class E[+A, +B] extends Product with Serializable
   final case class L[+A](a: A) extends E[A, Nothing]
   final case class R[+B](b: B) extends E[Nothing, B]
+
+  trait Eff[R, A] {
+    def map[B](f: A => B): Eff[R, B] = ???
+  }
+
+  trait R1[A]
+  trait R2[A]
+
+  def eff1[R: R1, A](a: A): Eff[R, A] = ???
+  def eff2[R: R2, A](a: Option[A]): Eff[R, A] = ???
 }
