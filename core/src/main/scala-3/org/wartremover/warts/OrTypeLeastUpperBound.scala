@@ -78,6 +78,11 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
                   currentPosition = Some(tree.pos)
                 }
                 t.args.foreach(arg => traverseTree(TypeTree.of(using arg.asType))(owner))
+              case t: TypeRef =>
+                if (tree.pos.sourceFile.getJPath.nonEmpty) {
+                  currentPosition = Some(tree.pos)
+                }
+                traverseTree(TypeTree.of(using t.qualifier.asType))(owner)
               case _ =>
             }
             super.traverseTree(tree)(owner)
