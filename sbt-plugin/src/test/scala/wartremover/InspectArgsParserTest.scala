@@ -226,7 +226,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
   }
 
   test("wart names") {
-    val v = "3.1.0"
+    val v = "3.1.1"
     val jars = coursier.Fetch().addDependencies("org.wartremover" % "wartremover_3" % v).run()
     val jar = jars.find(_.getName == s"wartremover_3-${v}.jar").getOrElse(sys.error(s"not found ${jars}"))
     val classes = WartRemover.getAllClassNamesInJar(jar)
@@ -266,7 +266,6 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
-      "CaseClassPrivateApply" // TODO remove when update to 3.1.1
     ).map(
       "org.wartremover.warts." + _
     )
