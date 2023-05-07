@@ -15,6 +15,11 @@ object CaseClassPrivateApply extends WartTraverser {
             outerObjectNames ::= outer
             super.traverse(tree)
             outerObjectNames = outerObjectNames.tail
+          case m @ ClassDef(_, _, _, _) =>
+            val outer = m.symbol.fullName
+            outerObjectNames ::= outer
+            super.traverse(tree)
+            outerObjectNames = outerObjectNames.tail
           case Apply(Select(obj, TermName("apply")), args)
               if obj.symbol.isModule &&
                 !outerObjectNames.toSet.apply(obj.symbol.fullName) &&

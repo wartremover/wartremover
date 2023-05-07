@@ -10,8 +10,8 @@ object CaseClassPrivateApply extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case m: ClassDef if m.symbol.flags.is(Flags.Module) =>
-            val outer = m.symbol.companionClass.fullName
+          case m: ClassDef =>
+            val outer = (if (m.symbol.flags.is(Flags.Module)) m.symbol.companionClass else m.symbol).fullName
             outerObjectNames ::= outer
             super.traverseTree(tree)(owner)
             outerObjectNames = outerObjectNames.tail
