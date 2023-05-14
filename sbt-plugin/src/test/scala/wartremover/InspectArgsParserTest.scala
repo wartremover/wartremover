@@ -178,6 +178,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "ReverseTakeReverse",
         "ScalaApp",
         "SeqApply",
+        "SeqUpdated",
         "Serializable",
         "SizeIs",
         "SizeToLength",
@@ -267,6 +268,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "SeqUpdated",
     ).map(
       "org.wartremover.warts." + _
     )
