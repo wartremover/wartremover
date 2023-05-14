@@ -64,7 +64,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       }
       .filterNot(exclude)
       .toList
-    assert(values.size == 66)
+    assert(values.size == 67)
     values
   }
 
@@ -193,6 +193,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Return", 8),
         ("RedundantIsInstanceOf", 1), // maybe https://github.com/typelevel/cats/pull/3392#discussion_r434230415
         ("SeqApply", 272),
+        ("SeqUpdated", 5),
         ("SizeIs", 3),
         ("StringPlusAny", 1),
         ("Throw", 13),
