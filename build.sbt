@@ -2,6 +2,7 @@ import ReleaseTransformations._
 import com.jsuereth.sbtpgp.PgpKeys
 import xsbti.api.ClassLike
 import xsbti.api.DefinitionType
+import scala.collection.compat._
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
@@ -18,6 +19,7 @@ lazy val allScalaVersions = Seq(
   "2.12.15",
   "2.12.16",
   "2.12.17",
+  "2.12.18-M2",
   "2.13.6",
   "2.13.7",
   "2.13.8",
@@ -42,7 +44,7 @@ def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
   prefix + versions
     .filter(_ startsWith prefix)
-    .map(_.drop(prefix.length).toLong)
+    .flatMap(_.drop(prefix.length).toLongOption)
     .reduceLeftOption(_ max _)
     .getOrElse(
       sys.error(s"not found Scala ${prefix}x version ${versions}")
