@@ -142,7 +142,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       githubName = "cats",
       ref = s"v${catsVersion}"
     )
-    val scala3version = "3.2.1"
+    val scala3version = "3.3.0"
     val result = inspectLibrary(
       "org.typelevel" %% "cats-core" % catsVersion,
       Map(

@@ -1,3 +1,3 @@
-scalaVersion := "3.3.0-RC6"
+scalaVersion := "3.3.0"
 wartremoverInspectScalaVersion := scalaVersion.value
 wartremoverFailIfWartLoadError := true
