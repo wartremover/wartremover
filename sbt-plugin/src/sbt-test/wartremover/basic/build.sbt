@@ -13,7 +13,8 @@ crossScalaVersions := Seq(
   "3.1.3",
   "3.2.0",
   "3.2.1",
-  "3.2.2"
+  "3.2.2",
+  "3.3.0"
 )
 
 wartremoverWarnings ++= Warts.all
@@ -26,6 +27,6 @@ wartremoverErrors += Wart.CaseClassPrivateApply
 
 commands += Command.command("changeBinary") {
   "set wartremoverCrossVersion := CrossVersion.binary" ::
-    """set crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.2")""" :: // set latest versions
+    """set crossScalaVersions := Seq("2.12.17", "2.13.10", "3.3.0")""" :: // set latest versions
     _
 }
