@@ -32,7 +32,15 @@ object PlatformDefault extends WartTraverser {
               case '{ scala.io.Codec.fallbackSystemCodec } =>
                 error(tree.pos, fallbackSystemCodec)
               case _ =>
-                super.traverseTree(tree)(owner)
+                t match {
+                  case Apply(
+                        Select(New(tpe: TypeTree), "<init>"),
+                        arg1 :: Nil
+                      ) if tpe.tpe =:= TypeRepr.of[String] && arg1.tpe =:= TypeRepr.of[Array[Byte]] =>
+                    error(tree.pos, newString)
+                  case _ =>
+                    super.traverseTree(tree)(owner)
+                }
             }
           case _ =>
             super.traverseTree(tree)(owner)
