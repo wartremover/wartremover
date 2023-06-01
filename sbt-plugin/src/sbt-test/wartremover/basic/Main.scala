@@ -15,7 +15,7 @@ object Main {
 case class Foo(n: Int)
 object Foo
 
-case class B private(x: Int) {
+case class B private (x: Int) {
   def y: B = B(x + 3)
 }
 object B {
