@@ -347,8 +347,7 @@ val wartClasses = Def.task {
     .sorted
 }
 
-val scoverage =
-  "org.scoverage" % "scalac-scoverage-plugin_2.12.17" % "2.0.8" % "runtime" // for scala-steward
+val scoverage = "org.scoverage" % "sbt-scoverage" % "2.0.8" % "runtime" // for scala-steward
 
 lazy val sbtPlug: Project = Project(
   id = "sbt-plugin",
@@ -356,7 +355,7 @@ lazy val sbtPlug: Project = Project(
 ).settings(
   commonSettings,
   name := "sbt-wartremover",
-  libraryDependencies += scoverage,
+  addSbtPlugin(scoverage),
   pomPostProcess := { node =>
     import scala.xml.{NodeSeq, Node}
     val rule = new scala.xml.transform.RewriteRule {
@@ -369,12 +368,19 @@ lazy val sbtPlug: Project = Project(
           ).forall(identity)
         ) {
           NodeSeq.Empty
+        } else if (n.label == "extraDependencyAttributes") {
+          NodeSeq.Empty
         } else {
           n
         }
       }
     }
     new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
+  },
+  makePom := {
+    val f = makePom.value
+    assert(!IO.read(f).contains("scoverage"))
+    f
   },
   sbtPlugin := true,
   scriptedBufferLog := false,
