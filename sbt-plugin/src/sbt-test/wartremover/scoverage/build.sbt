@@ -1,4 +1,4 @@
-crossScalaVersions := Seq("3.2.1", "2.13.8", "2.12.17")
+crossScalaVersions := Seq("3.2.2", "2.13.11", "2.12.18")
 
 coverageEnabled := true
 
