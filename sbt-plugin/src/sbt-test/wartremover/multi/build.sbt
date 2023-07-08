@@ -1,5 +1,5 @@
 lazy val commonSettings = Def.settings(
-  scalaVersion := "2.13.10",
+  scalaVersion := "2.13.11",
   wartremoverWarnings ++= Warts.all,
   wartremoverWarnings += Wart.custom("org.wartremover.contrib.warts.OldTime"),
   wartremoverCrossVersion := CrossVersion.binary,
@@ -8,7 +8,7 @@ lazy val commonSettings = Def.settings(
   },
 )
 
-scalaVersion := "2.12.17"
+scalaVersion := "2.12.18"
 
 lazy val myWarts = project
   .in(file("my-warts"))
