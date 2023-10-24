@@ -365,7 +365,7 @@ lazy val sbtPlug: Project = Project(
           List(
             n.label == "dependency",
             (n \ "groupId").text == scoverage.organization,
-            (n \ "artifactId").text == scoverage.name,
+            (n \ "artifactId").text.contains(scoverage.name),
           ).forall(identity)
         ) {
           NodeSeq.Empty
@@ -378,10 +378,14 @@ lazy val sbtPlug: Project = Project(
     }
     new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
   },
-  makePom := {
-    val f = makePom.value
-    assert(!IO.read(f).contains("scoverage"))
-    f
+  packagedArtifacts := {
+    val value = packagedArtifacts.value
+    val pomFiles = value.values.filter(_.getName.endsWith(".pom")).toList
+    assert(pomFiles.size == 2, pomFiles.map(_.getName))
+    pomFiles.foreach { f =>
+      assert(!IO.read(f).contains("scoverage"))
+    }
+    value
   },
   sbtPlugin := true,
   scriptedBufferLog := false,
