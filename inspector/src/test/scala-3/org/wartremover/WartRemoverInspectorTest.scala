@@ -205,9 +205,9 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     )
     assert(
       result(s"scala3-library_3-${scala3version}.jar") === Map(
-        ("AsInstanceOf", 176),
+        ("AsInstanceOf", 175),
         ("DefaultArguments", 12),
-        ("Equals", 14),
+        ("Equals", 13),
         ("FinalVal", 9),
         ("ImplicitConversion", 13),
         ("ImplicitParameter", 145),
@@ -215,7 +215,6 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("IterableOps", 2),
         ("LeakingSealed", 2),
         ("MutableDataStructures", 20),
-        ("Null", 1),
         ("Option2Iterable", 5),
         ("OptionPartial", 3),
         ("Overloading", 115),
@@ -225,7 +224,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("SeqApply", 3),
         ("SizeIs", 2),
         ("StringPlusAny", 2),
-        ("Throw", 32),
+        ("Throw", 31),
         ("ToString", 2),
         ("TripleQuestionMark", 11),
         ("Var", 18),

@@ -77,7 +77,26 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
         .flatten
         .toSet
 
-      args(traverser.fullName) || args("org.wartremover.warts.All")
+      args(traverser.fullName) || args("org.wartremover.warts.All") || hasScalaAnnotationNowarn(s)
+    }
+
+    private[this] def hasScalaAnnotationNowarn(s: Symbol): Boolean = {
+      val nowarnSymbol = TypeTree.of[scala.annotation.nowarn].symbol
+
+      s.getAnnotation(nowarnSymbol).exists {
+        case Apply(
+              Select(_, "<init>"),
+              Select(x: Ident, y) :: Nil
+            ) =>
+          (x.tpe =:= TypeRepr.of[scala.annotation.nowarn.type]) && y.contains("$default$")
+        case Apply(
+              Select(_, "<init>"),
+              Literal(StringConstant("")) :: Nil
+            ) =>
+          true
+        case _ =>
+          false
+      }
     }
 
     def sourceCodeContains(t: Tree, src: String): Boolean = {

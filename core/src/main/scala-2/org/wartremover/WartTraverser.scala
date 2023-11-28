@@ -120,6 +120,32 @@ trait WartTraverser {
         case _ =>
           false
       }
+    } || isScalaAnnotationNowarn(u)(a)
+  }
+
+  private[this] def isScalaAnnotationNowarn(u: WartUniverse)(a: u.universe.Annotation): Boolean = {
+    import u.universe._
+    val nowarnClassOpt =
+      try {
+        Option(rootMirror.staticClass("scala.annotation.nowarn"))
+      } catch {
+        case _: ScalaReflectionException =>
+          None
+      }
+
+    val compat = new org.wartremover.Compat[u.universe.type](u.universe)
+
+    nowarnClassOpt.exists { nowarnClass =>
+      (a.tree.tpe =:= nowarnClass.toType) && {
+        a.tree.children match {
+          case _ :: compat.NamedArg(Ident(TermName("value")), Literal(Constant(""))) :: Nil =>
+            true
+          case _ :: Nil =>
+            true
+          case _ =>
+            false
+        }
+      }
     }
   }
 
