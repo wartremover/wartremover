@@ -66,7 +66,7 @@ jobs:
             sbt -v "project core" "testPartial 3 ${{matrix.test_index}}"
             ;;
           "scripted")
-            sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of3"
+            sbt -v "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of3"
             ;;
           "inspector")
             sbt -v SetLatestStableScala3 inspector/test
