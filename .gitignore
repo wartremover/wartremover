@@ -1,2 +1,4 @@
 target/
 wartremover-assembly.jar
+.bsp/
+.idea/
