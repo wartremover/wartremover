@@ -551,7 +551,7 @@ object WartRemover extends sbt.AutoPlugin {
     }
   }
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = Def.settings(
+  override lazy val projectSettings: Seq[Def.Setting[?]] = Def.settings(
     libraryDependencies ++= {
       Seq(
         compilerPlugin(
