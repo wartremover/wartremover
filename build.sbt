@@ -338,7 +338,7 @@ val wartClasses = Def.task {
     }
     .flatMap(c =>
       try {
-        List[Class[?]](Class.forName(c, false, loader))
+        List[Class[_]](Class.forName(c, false, loader))
       } catch {
         case _: ClassNotFoundException =>
           Nil
