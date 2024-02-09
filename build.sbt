@@ -398,7 +398,7 @@ lazy val sbtPlug: Project = Project(
     }
     javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
-  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.8" % Test,
+  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.9" % Test,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
   crossScalaVersions := Seq(latestScala212),
