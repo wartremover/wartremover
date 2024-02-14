@@ -1,6 +1,6 @@
 Compile / wartremoverInspect / wartremoverWarnings ++= Warts.all
 
-scalaVersion := "3.3.1"
+scalaVersion := "3.3.2"
 
 wartremoverExcluded += (baseDirectory.value / "src/main/scala/ignore")
 
