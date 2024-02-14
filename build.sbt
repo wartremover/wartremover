@@ -36,12 +36,12 @@ lazy val allScalaVersions = Seq(
   "3.3.0",
   "3.3.1",
   "3.3.2",
-  "3.4.0-RC4",
+  "3.4.0",
 )
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
-def latestScala3 = allScalaVersions.filterNot(_ contains "-RC").last // TODO more better way
+def latestScala3 = allScalaVersions.filterNot(_ contains "-RC").filter(_ startsWith "3.3.").last // TODO more better way
 
 addCommandAlias("SetLatestStableScala3", s"""++ ${latestScala3}! -v""")
 
