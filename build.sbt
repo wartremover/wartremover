@@ -258,7 +258,7 @@ lazy val inspector = Project(
     if (scalaBinaryVersion.value == "3") {
       Seq(
         "org.scala-sbt" %% "io" % "1.9.9" % Test,
-        "io.get-coursier" % "coursier" % "2.1.1" % Test cross CrossVersion.for3Use2_13 exclude ("io.argonaut", "*") exclude ("org.scala-lang.modules", "scala-xml_2.13"),
+        "io.get-coursier" % "coursier" % "2.1.9" % Test cross CrossVersion.for3Use2_13 exclude ("io.argonaut", "*") exclude ("org.scala-lang.modules", "scala-xml_2.13"),
         "io.argonaut" %% "argonaut" % "6.3.9",
         "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
       )
