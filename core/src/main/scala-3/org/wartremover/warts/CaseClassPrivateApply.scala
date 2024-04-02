@@ -22,7 +22,7 @@ object CaseClassPrivateApply extends WartTraverser {
                   .methodMember("apply")
                   .filter(_.paramSymss.headOption.forall(_.lengthCompare(args) == 0))
                   .forall(_.flags.is(Flags.Synthetic)) =>
-            error(obj.pos, "disable apply bacause constructor is private")
+            error(obj.pos, "disable apply because constructor is private")
             super.traverseTree(tree)(owner)
           case _ =>
             super.traverseTree(tree)(owner)

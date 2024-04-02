@@ -31,7 +31,7 @@ object CaseClassPrivateApply extends WartTraverser {
                   .collect { case m if m.isMethod => m.asMethod }
                   .filter(_.paramLists.head.lengthCompare(args.size) == 0)
                   .forall(_.isSynthetic) =>
-            error(u)(obj.pos, "disable apply bacause constructor is private")
+            error(u)(obj.pos, "disable apply because constructor is private")
             super.traverse(tree)
           case _ =>
             super.traverse(tree)
