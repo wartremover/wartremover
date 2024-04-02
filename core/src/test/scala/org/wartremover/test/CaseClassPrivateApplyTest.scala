@@ -18,7 +18,7 @@ class CaseClassPrivateApplyTest extends AnyFunSuite with ResultAssertions {
         A3(4)
       }
     ).foreach { result =>
-      assertError(result)("disable apply bacause constructor is private")
+      assertError(result)("disable apply because constructor is private")
     }
   }
 
