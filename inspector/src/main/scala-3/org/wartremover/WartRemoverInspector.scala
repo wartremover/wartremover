@@ -86,6 +86,7 @@ final class WartRemoverInspector {
           warningTraversers = warningTraversers,
           tastyFiles = param.tastyFiles.toList,
           dependenciesClasspath = param.dependenciesClasspath.toList,
+          include = param.include,
           exclude = param.exclude,
           outputReporter = param.outputStandardReporter,
         )
@@ -98,6 +99,7 @@ final class WartRemoverInspector {
     warningTraversers: List[WartTraverser],
     tastyFiles: List[String],
     dependenciesClasspath: List[String],
+    include: List[String],
     exclude: List[String],
     outputReporter: Boolean
   ): InspectResult = {
@@ -151,7 +153,7 @@ final class WartRemoverInspector {
             val tree = tasty.ast
             if (exclude.exists(tree.pos.sourceFile.path startsWith _)) {
               // skip
-            } else {
+            } else if (include.isEmpty || include.exists(tree.pos.sourceFile.path startsWith _)) {
               treeTraverser.traverseTree(tree)(tree.symbol)
             }
           }

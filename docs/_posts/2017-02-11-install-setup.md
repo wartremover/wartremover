@@ -115,6 +115,14 @@ scalacOptions += "-P:wartremover:excluded:ABSOLUTE_PATH_TO_THE_FILE"
 
 The `excluded` option accepts a colon-separated list of absolute paths to files to ignore.
 
+If you want to perform the checks in some file only, you can use:
+
+```scala
+scalacOptions += "-P:wartremover:included:ABSOLUTE_PATH_TO_THE_FILE"
+```
+
+The `included` option accepts a colon-separated list of absolute paths to files to ignore.
+
 To use your custom `WartTraverser`, you'll need to provide a classpath where it can be found:
 
 ```scala

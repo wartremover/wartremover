@@ -32,6 +32,9 @@ class Plugin extends StandardPlugin {
   private[this] val initialLog = new AtomicBoolean(true)
 
   override def init(options: List[String]): List[PluginPhase] = {
+    val included = options.collect { case s"included:${path}" =>
+      new File(path).getAbsolutePath
+    }
     val excluded = options.collect { case s"excluded:${path}" =>
       new File(path).getAbsolutePath
     }
@@ -63,6 +66,7 @@ class Plugin extends StandardPlugin {
       errorWarts = errorWarts,
       warningWarts = warningWarts,
       loadFailureWarts = loadFailureWarts,
+      included = included,
       excluded = excluded,
       logLevel = loglevel,
       initialLog = initialLog,

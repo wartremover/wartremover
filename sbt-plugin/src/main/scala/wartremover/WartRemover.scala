@@ -36,6 +36,7 @@ object WartRemover extends sbt.AutoPlugin {
     val wartremoverInspectSettings = settingKey[Seq[String]]("extra settings for run inspector")
     val wartremoverErrors = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation errors.")
     val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
+    val wartremoverIncluded = taskKey[Seq[File]]("If defined, contains list of files to be included to all checks.")
     val wartremoverExcluded = taskKey[Seq[File]]("List of files to be excluded from all checks.")
     val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
     val wartremoverCrossVersion = settingKey[CrossVersion]("CrossVersion setting for wartremover")
@@ -58,6 +59,7 @@ object WartRemover extends sbt.AutoPlugin {
     wartremoverDependencies := Nil,
     wartremoverErrors := Nil,
     wartremoverWarnings := Nil,
+    wartremoverIncluded := Nil,
     wartremoverExcluded := Nil,
     wartremoverClasspaths := Nil
   )
@@ -192,12 +194,13 @@ object WartRemover extends sbt.AutoPlugin {
 
   private[this] implicit val inspectParamFormat: JsonFormat[InspectParam] = {
     import sjsonnew.BasicJsonProtocol.*
-    caseClass8(InspectParam, InspectParam.unapply)(
+    caseClass9(InspectParam, InspectParam.unapply)(
       "tastyFiles",
       "dependenciesClasspath",
       "wartClasspath",
       "errorWarts",
       "warningWarts",
+      "include",
       "exclude",
       "failIfWartLoadError",
       "outputStandardReporter",
@@ -483,6 +486,10 @@ object WartRemover extends sbt.AutoPlugin {
                 }.toList,
                 errorWarts = errorWartNames.map(_.clazz).toList,
                 warningWarts = warningWartNames.map(_.clazz).toList,
+                include = wartremoverIncluded.value.distinct.flatMap { c =>
+                  val base = (LocalRootProject / baseDirectory).value
+                  IO.relativize(base, c)
+                }.toList,
                 exclude = wartremoverExcluded.value.distinct.flatMap { c =>
                   val base = (LocalRootProject / baseDirectory).value
                   IO.relativize(base, c)
@@ -569,6 +576,11 @@ object WartRemover extends sbt.AutoPlugin {
     scalacOptions ++= {
       // use relative path
       // https://github.com/sbt/sbt/issues/6027
+      wartremoverIncluded.value.distinct.map { c =>
+        val base = (LocalRootProject / baseDirectory).value
+        val x = base.toPath.relativize(c.toPath)
+        s"-P:wartremover:included:$x"
+      }
       wartremoverExcluded.value.distinct.map { c =>
         val base = (LocalRootProject / baseDirectory).value
         val x = base.toPath.relativize(c.toPath)

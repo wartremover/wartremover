@@ -14,6 +14,7 @@ class WartremoverPhase(
   errorWarts: List[WartTraverser],
   warningWarts: List[WartTraverser],
   loadFailureWarts: List[(String, Throwable)],
+  included: List[String],
   excluded: List[String],
   logLevel: LogLevel,
   initialLog: AtomicBoolean
@@ -32,6 +33,9 @@ class WartremoverPhase(
           }
           if (loadFailureWarts.nonEmpty) {
             report.warning(s"load failure warts = " + loadFailureWarts.mkString(", "))
+          }
+          if (included.nonEmpty) {
+            report.echo("included = " + excluded.mkString(", "))
           }
           if (excluded.nonEmpty) {
             report.echo("excluded = " + excluded.mkString(", "))
