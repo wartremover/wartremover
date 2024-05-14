@@ -7,7 +7,7 @@ object PublicInferenceTestMacros {
 
   inline def define: Int = ${ define_impl }
 
-  private[this] def define_impl(using Quotes): Expr[Int] = '{
+  private def define_impl(using Quotes): Expr[Int] = '{
     class generated {
       val a_val = 2
       var a_var = 2

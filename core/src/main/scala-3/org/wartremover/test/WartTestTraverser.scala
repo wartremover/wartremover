@@ -17,8 +17,8 @@ import scala.quoted.runtime.impl.QuotesImpl
 import scala.reflect.NameTransformer
 
 class WartReporter extends Reporter {
-  private[this] val lock = new Object
-  private[this] val values = ListBuffer.empty[Diagnostic]
+  private val lock = new Object
+  private val values = ListBuffer.empty[Diagnostic]
   override def doReport(diagnostic: Diagnostic)(using Context): Unit = {
     lock.synchronized {
       values += diagnostic
@@ -46,7 +46,7 @@ object WartTestTraverser {
 
   inline def apply[A <: WartTraverser](inline t: A)(inline a: Any): Result = ${ applyImpl[A]('t, 'a) }
 
-  private[this] def applyImpl[A <: WartTraverser: Type](t: Expr[A], expr: Expr[Any])(using q1: Quotes): Expr[Result] = {
+  private def applyImpl[A <: WartTraverser: Type](t: Expr[A], expr: Expr[Any])(using q1: Quotes): Expr[Result] = {
     val q2 = q1.asInstanceOf[QuotesImpl]
     val reporter = new WartReporter
     q2.ctx.asInstanceOf[FreshContext].setReporter(reporter)

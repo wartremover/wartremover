@@ -36,7 +36,7 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
   abstract class Traverser(traverser: WartTraverser) extends TreeTraverser {
     final implicit val q: self.quotes.type = self.quotes
 
-    private[this] def withPrefix(name: String): String = s"[wartremover:${name}] "
+    private def withPrefix(name: String): String = s"[wartremover:${name}] "
 
     protected final def warning(pos: Position, message: String): Unit =
       onWarn(msg = withPrefix(traverser.simpleName) + message, pos = pos)
@@ -57,7 +57,7 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
         .exists(hasWartAnnotationSymbol)
     }
 
-    protected[this] def hasWartAnnotationSymbol(s: Symbol): Boolean = {
+    protected def hasWartAnnotationSymbol(s: Symbol): Boolean = {
       val SuppressWarningsSymbol = TypeTree.of[SuppressWarnings].symbol
 
       val args: Set[String] = s
@@ -80,7 +80,7 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
       args(traverser.fullName) || args("org.wartremover.warts.All") || hasScalaAnnotationNowarn(s)
     }
 
-    private[this] def hasScalaAnnotationNowarn(s: Symbol): Boolean = {
+    private def hasScalaAnnotationNowarn(s: Symbol): Boolean = {
       val nowarnSymbol = TypeTree.of[scala.annotation.nowarn].symbol
 
       s.getAnnotation(nowarnSymbol).exists {
