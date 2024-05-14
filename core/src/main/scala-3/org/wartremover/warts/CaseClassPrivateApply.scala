@@ -4,7 +4,7 @@ package warts
 object CaseClassPrivateApply extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
-      private[this] var outerObjectNames: List[String] = Nil
+      private var outerObjectNames: List[String] = Nil
 
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {

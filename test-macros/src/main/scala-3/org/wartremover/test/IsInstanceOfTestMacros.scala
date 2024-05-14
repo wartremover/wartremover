@@ -9,6 +9,6 @@ object IsInstanceOfTestMacros {
 
   inline def is[A, B]: A => Boolean = ${ is_impl[A, B] }
 
-  private[this] def is_impl[A: Type, B: Type](using Quotes): Expr[A => Boolean] =
+  private def is_impl[A: Type, B: Type](using Quotes): Expr[A => Boolean] =
     '{ (a: A) => a.isInstanceOf[B] }
 }

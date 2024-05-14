@@ -5,8 +5,8 @@ object Recursion extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
-      private[this] val Tailrec = TypeRepr.of[scala.annotation.tailrec]
-      private[this] var open: Set[Symbol] = Set.empty[Symbol]
+      private val Tailrec = TypeRepr.of[scala.annotation.tailrec]
+      private var open: Set[Symbol] = Set.empty[Symbol]
       private def inside[A](sym: Symbol)(expr: => A): A = {
         open = open + sym
         try expr

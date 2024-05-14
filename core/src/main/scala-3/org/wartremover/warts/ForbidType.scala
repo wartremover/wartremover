@@ -8,7 +8,7 @@ abstract class ForbidType[A <: AnyKind](message: String)(using getType: Quotes ?
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
-      private[this] val A: TypeRepr = TypeRepr.of[A]
+      private val A: TypeRepr = TypeRepr.of[A]
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>

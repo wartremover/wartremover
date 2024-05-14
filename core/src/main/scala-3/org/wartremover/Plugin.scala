@@ -29,7 +29,7 @@ class Plugin extends StandardPlugin {
 
   override def description = "wartremover"
 
-  private[this] val initialLog = new AtomicBoolean(true)
+  private val initialLog = new AtomicBoolean(true)
 
   override def init(options: List[String]): List[PluginPhase] = {
     val excluded = options.collect { case s"excluded:${path}" =>

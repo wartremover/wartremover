@@ -53,7 +53,7 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
         }
       }
 
-      private[this] var currentPosition: Option[Position] = None
+      private var currentPosition: Option[Position] = None
 
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
