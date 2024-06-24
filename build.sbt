@@ -91,7 +91,7 @@ lazy val baseSettings = Def.settings(
 lazy val commonSettings = Def.settings(
   baseSettings,
   libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.18" % "test")
+    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test")
   },
   Seq(packageBin, packageDoc, packageSrc).flatMap {
     // include LICENSE file in all packaged artifacts
