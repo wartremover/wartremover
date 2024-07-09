@@ -35,10 +35,10 @@ object WartRemoverInspector {
 }
 
 final class WartRemoverInspector {
-  private[this] implicit val inspectParamInstance: DecodeJson[InspectParam] =
+  private implicit val inspectParamInstance: DecodeJson[InspectParam] =
     DecodeJson.derive[InspectParam]
 
-  private[this] implicit val inspectResultInstance: EncodeJson[InspectResult] = {
+  private implicit val inspectResultInstance: EncodeJson[InspectResult] = {
     implicit val positionInstance: EncodeJson[Position] =
       EncodeJson.derive[Position]
     implicit val diagnosticInstance: EncodeJson[Diagnostic] =
@@ -94,7 +94,7 @@ final class WartRemoverInspector {
     }
   }
 
-  private[this] def run0(
+  private def run0(
     errorTraversers: List[WartTraverser],
     warningTraversers: List[WartTraverser],
     tastyFiles: List[String],

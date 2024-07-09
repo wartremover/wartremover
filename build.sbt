@@ -40,7 +40,8 @@ lazy val allScalaVersions = Seq(
   "3.3.3",
   "3.4.0",
   "3.4.1",
-  "3.4.2-RC1",
+  "3.4.2",
+  "3.5.0-RC3",
 )
 
 def latestScala212 = latest(12, allScalaVersions)
@@ -90,7 +91,7 @@ lazy val baseSettings = Def.settings(
 lazy val commonSettings = Def.settings(
   baseSettings,
   libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.18" % "test")
+    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test")
   },
   Seq(packageBin, packageDoc, packageSrc).flatMap {
     // include LICENSE file in all packaged artifacts
@@ -258,9 +259,12 @@ lazy val inspector = Project(
   libraryDependencies ++= {
     if (scalaBinaryVersion.value == "3") {
       Seq(
-        "org.scala-sbt" %% "io" % "1.9.9" % Test,
-        "io.get-coursier" % "coursier" % "2.1.9" % Test cross CrossVersion.for3Use2_13 exclude ("io.argonaut", "*") exclude ("org.scala-lang.modules", "scala-xml_2.13"),
-        "io.argonaut" %% "argonaut" % "6.3.9",
+        "org.scala-sbt" %% "io" % "1.10.0" % Test,
+        "io.get-coursier" % "coursier" % "2.1.10" % Test cross CrossVersion.for3Use2_13 exclude (
+          "io.argonaut",
+          "*"
+        ) exclude ("org.scala-lang.modules", "scala-xml_2.13"),
+        "io.argonaut" %% "argonaut" % "6.3.10",
         "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
       )
     } else {
@@ -354,7 +358,7 @@ val wartClasses = Def.task {
     .sorted
 }
 
-val scoverage = "org.scoverage" % "sbt-scoverage" % "2.0.11" % "runtime" // for scala-steward
+val scoverage = "org.scoverage" % "sbt-scoverage" % "2.1.0" % "runtime" // for scala-steward
 
 lazy val sbtPlug: Project = Project(
   id = "sbt-plugin",
@@ -402,7 +406,7 @@ lazy val sbtPlug: Project = Project(
     }
     javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
-  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.9" % Test,
+  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.10" % Test,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
   crossScalaVersions := Seq(latestScala212),

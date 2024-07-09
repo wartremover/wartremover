@@ -10,7 +10,7 @@ abstract class ForbidInference[A](using getType: Quotes ?=> Type[A]) extends War
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
-      private[this] val A: TypeRepr = TypeRepr.of[A]
+      private val A: TypeRepr = TypeRepr.of[A]
       @nowarn("msg=cannot be checked at runtime")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
