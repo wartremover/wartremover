@@ -55,6 +55,12 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
 
       private var currentPosition: Option[Position] = None
 
+      extension (self: Position) {
+        def isNoPosition: Boolean = {
+          self.sourceFile.getJPath.isEmpty || ((self.start == 0) && (self.end == 0))
+        }
+      }
+
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
@@ -70,16 +76,22 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
                 if (types.exists(x => lubAndTypes.exists(x =:= _))) {
                   val left = t.left.show
                   val right = t.right.show
-                  val pos = if (tree.pos.sourceFile.getJPath.nonEmpty) tree.pos else currentPosition.getOrElse(tree.pos)
+                  val pos = {
+                    if (tree.pos.isNoPosition) {
+                      currentPosition.getOrElse(tree.pos)
+                    } else {
+                      tree.pos
+                    }
+                  }
                   error(pos, s"least upper bound is `${lub.show}`. `${left} | ${right}`")
                 }
               case t: AppliedType =>
-                if (tree.pos.sourceFile.getJPath.nonEmpty) {
+                if (!tree.pos.isNoPosition) {
                   currentPosition = Some(tree.pos)
                 }
                 t.args.foreach(arg => traverseTree(TypeTree.of(using arg.asType))(owner))
               case t: TypeRef =>
-                if (tree.pos.sourceFile.getJPath.nonEmpty) {
+                if (!tree.pos.isNoPosition) {
                   currentPosition = Some(tree.pos)
                 }
                 traverseTree(TypeTree.of(using t.qualifier.asType))(owner)
