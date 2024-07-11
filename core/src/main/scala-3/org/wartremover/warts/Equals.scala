@@ -15,7 +15,7 @@ object Equals extends WartTraverser {
                 error(tree.pos, "== is disabled - use === or equivalent instead")
               case '{ ($x1: Any) != ($x2: Any) } =>
                 error(tree.pos, "!= is disabled - use =/= or equivalent instead")
-              case '{ ($x1: Any) equals ($x2: Any) } =>
+              case '{ ($x1: Any).equals($x2: Any) } =>
                 error(tree.pos, "equals is disabled - use === or equivalent instead")
               case '{ ($x1: AnyRef) eq ($x2: AnyRef) } =>
                 error(tree.pos, "eq is disabled - use === or equivalent instead")
