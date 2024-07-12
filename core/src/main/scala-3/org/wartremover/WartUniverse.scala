@@ -72,6 +72,15 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
             values.collect { case Literal(StringConstant(str)) =>
               str
             }
+          case Apply(
+                Select(_, "<init>"),
+                NamedArg("value", Apply(Apply(_, values), List(Apply(_, _ :: Nil)))) :: Nil
+              ) =>
+            values.collect { case Typed(Repeated(xs, _), _) =>
+              xs.collect { case Literal(StringConstant(str)) =>
+                str
+              }
+            }.flatten
         }
         .toList
         .flatten
