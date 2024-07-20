@@ -74,8 +74,8 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
                 }
                 val lubAndTypes = andTypes(lub)
                 if (types.exists(x => lubAndTypes.exists(x =:= _))) {
-                  val left = t.left.show
-                  val right = t.right.show
+                  val left = t.left.dealias.show
+                  val right = t.right.dealias.show
                   val pos = {
                     if (tree.pos.isNoPosition) {
                       currentPosition.getOrElse(tree.pos)
