@@ -148,6 +148,19 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
       "least upper bound is `java.lang.Object & scala.Product & java.io.Serializable`. `org.wartremover.test.OrTypeLeastUpperBoundTest.A1 | org.wartremover.test.OrTypeLeastUpperBoundTest.B`"
     )
   }
+
+  test("type alias message") {
+    type X = A1
+    def x: X = A1(1)
+    type Y = B
+    def y: Y = B(2)
+    val result = WartTestTraverser(OrTypeLeastUpperBound.Serializable) {
+      List(x, y)
+    }
+    assertError(result)(
+      "least upper bound is `java.lang.Object & scala.Product & java.io.Serializable`. `org.wartremover.test.OrTypeLeastUpperBoundTest.A1 | org.wartremover.test.OrTypeLeastUpperBoundTest.B`"
+    )
+  }
 }
 
 object OrTypeLeastUpperBoundTest {
