@@ -6,6 +6,7 @@ final case class InspectParam(
   wartClasspath: List[String],
   errorWarts: List[String],
   warningWarts: List[String],
+  include: List[String],
   exclude: List[String],
   failIfWartLoadError: Boolean,
   outputStandardReporter: Boolean,

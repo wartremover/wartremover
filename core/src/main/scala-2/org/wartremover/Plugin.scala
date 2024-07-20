@@ -17,6 +17,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
   private[this] var traversers: List[WartTraverser] = List.empty
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
+  private[this] var includedFiles: List[String] = List.empty
   private[this] var excludedFiles: List[String] = List.empty
   private[this] var logLevel: LogLevel = LogLevel.Disable
 
@@ -78,6 +79,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
+    includedFiles =
+      filterOptions("included", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
     excludedFiles =
       filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
 
@@ -90,6 +93,9 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
           global.reporter.echo(
             "warning warts = " + onlyWarnTraversers.map(_.getClass.getName.dropRight(1)).mkString(", ")
           )
+        }
+        if (includedFiles.nonEmpty) {
+          global.reporter.echo("include = " + includedFiles.mkString(", "))
         }
         if (excludedFiles.nonEmpty) {
           global.reporter.echo("exclude = " + excludedFiles.mkString(", "))
@@ -113,9 +119,10 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     override def newPhase(prev: Phase) = new StdPhase(prev) {
       override def apply(unit: CompilationUnit) = {
+        val isIncluded = includedFiles.isEmpty || includedFiles.exists(unit.source.file.absolute.path.startsWith)
         val isExcluded = excludedFiles exists unit.source.file.absolute.path.startsWith
 
-        if (isExcluded) {
+        if (isExcluded || !isIncluded) {
           logLevel match {
             case LogLevel.Debug =>
               reporter.echo("skip wartremover " + unit.source.path)
