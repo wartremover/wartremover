@@ -213,6 +213,22 @@ val coreSettings = Def.settings(
     }
     new RuleTransformer(strip).transform(node)(0)
   },
+  Compile / unmanagedSourceDirectories ++= {
+    scalaVersion.value match {
+      case VersionNumber(Seq(3, n, _), _, _) =>
+        val dir = {
+          if (n >= 5) {
+            "scala-3.5+"
+          } else {
+            "scala-3.5-"
+          }
+        }
+        val base = (LocalProject(coreId) / baseDirectory).value / "src" / "main"
+        Seq(base / dir)
+      case _ =>
+        Nil
+    }
+  },
   assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
 )
 

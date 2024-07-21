@@ -1,5 +1,6 @@
 package org.wartremover
 
+import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.plugins.StandardPlugin
 import java.io.File
@@ -24,14 +25,17 @@ object Plugin {
   }
 }
 
-class Plugin extends StandardPlugin {
+class Plugin extends StandardPlugin with CompilerPluginCompat {
   override def name = "wartremover"
 
   override def description = "wartremover"
 
   private val initialLog = new AtomicBoolean(true)
 
-  override def init(options: List[String]): List[PluginPhase] = {
+  protected final def initializeWartremoverPlugin(
+    options: List[String],
+    context: Option[Context]
+  ): List[PluginPhase] = {
     val excluded = options.collect { case s"excluded:${path}" =>
       new File(path).getAbsolutePath
     }
