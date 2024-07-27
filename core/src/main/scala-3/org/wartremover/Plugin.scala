@@ -3,6 +3,7 @@ package org.wartremover
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.plugins.StandardPlugin
+import dotty.tools.dotc.typer.TyperPhase
 import java.io.File
 import java.net.URI
 import java.net.URLClassLoader
@@ -63,14 +64,23 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
       println(loadFailureWarts.mkString("load failure warts = ", ", ", ""))
       throw loadFailureWarts.head._2
     }
-    val newPhase = new WartremoverPhase(
-      errorWarts = errorWarts,
-      warningWarts = warningWarts,
-      loadFailureWarts = loadFailureWarts,
-      excluded = excluded,
-      logLevel = loglevel,
-      initialLog = initialLog,
-    )
-    newPhase :: Nil
+    val allPhases: List[String] = (errorWarts ++ warningWarts).flatMap(_.runsAfter).distinct.toList.sorted
+    allPhases.map { phase =>
+      new WartremoverPhase(
+        errorWarts = errorWarts.filter(_.runsAfter(phase)),
+        warningWarts = warningWarts.filter(_.runsAfter(phase)),
+        loadFailureWarts = loadFailureWarts,
+        excluded = excluded,
+        logLevel = loglevel,
+        initialLog = initialLog,
+        runsAfter = Set(phase),
+        phaseName = phase match {
+          case TyperPhase.name =>
+            WartremoverPhase.defaultWartremoverPhaseName
+          case _ =>
+            s"${WartremoverPhase.defaultWartremoverPhaseName}-${phase}"
+        }
+      )
+    }
   }
 }
