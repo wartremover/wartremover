@@ -1,0 +1,5 @@
+> update
+> myWarts/compile
+-> main/compile
+> set main/wartremoverErrors := Nil
+> main/compile

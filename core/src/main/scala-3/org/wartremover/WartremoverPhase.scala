@@ -10,15 +10,39 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.quoted.Quotes
 import scala.util.control.NonFatal
 
+object WartremoverPhase {
+  private[wartremover] def defaultWartremoverPhaseName: String = "wartremover"
+  private[wartremover] def defaultRunsAfter: String = TyperPhase.name
+}
+
 class WartremoverPhase(
   errorWarts: List[WartTraverser],
   warningWarts: List[WartTraverser],
   loadFailureWarts: List[(String, Throwable)],
   excluded: List[String],
   logLevel: LogLevel,
-  initialLog: AtomicBoolean
+  initialLog: AtomicBoolean,
+  override val runsAfter: Set[String],
+  override val phaseName: String
 ) extends PluginPhase {
-  override def phaseName = "wartremover"
+
+  def this(
+    errorWarts: List[WartTraverser],
+    warningWarts: List[WartTraverser],
+    loadFailureWarts: List[(String, Throwable)],
+    excluded: List[String],
+    logLevel: LogLevel,
+    initialLog: AtomicBoolean,
+  ) = this(
+    errorWarts = errorWarts,
+    warningWarts = warningWarts,
+    loadFailureWarts = loadFailureWarts,
+    excluded = excluded,
+    logLevel = logLevel,
+    initialLog = initialLog,
+    runsAfter = Set(WartremoverPhase.defaultRunsAfter),
+    phaseName = WartremoverPhase.defaultWartremoverPhaseName
+  )
 
   override def run(using c: Context): Unit = {
     logLevel match {
@@ -53,8 +77,6 @@ class WartremoverPhase(
       super.run
     }
   }
-
-  override val runsAfter = Set(TyperPhase.name)
 
   override def prepareForUnit(tree: tpd.Tree)(using c: Context): Context = {
     val c2 = QuotesCache.init(c.fresh)

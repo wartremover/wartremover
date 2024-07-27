@@ -1,5 +1,7 @@
 package org.wartremover
 
+import dotty.tools.dotc.typer.TyperPhase
+
 abstract class WartTraverser { self =>
   private[wartremover] val simpleName: String = {
     Iterator
@@ -12,9 +14,13 @@ abstract class WartTraverser { self =>
   }
   private[wartremover] val fullName: String = this.getClass.getName.dropRight(1)
 
+  def runsAfter: Set[String] = Set(TyperPhase.name)
+
   def apply(u: WartUniverse): u.Traverser
 
   def compose(o: WartTraverser): WartTraverser = new WartTraverser {
+    override def runsAfter: Set[String] = self.runsAfter ++ o.runsAfter
+
     override def apply(u: WartUniverse): u.Traverser = {
       import u.quotes.reflect.*
       new u.Traverser(this) {
