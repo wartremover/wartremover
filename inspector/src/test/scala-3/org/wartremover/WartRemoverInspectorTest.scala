@@ -176,6 +176,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       result(s"cats-core_3-${catsVersion}.jar") === Map(
         ("AsInstanceOf", 86),
         ("DefaultArguments", 22),
+        ("Discard$Either", 3),
         ("Equals", 197),
         ("FinalVal", 1),
         ("ForeachEntry", 2),

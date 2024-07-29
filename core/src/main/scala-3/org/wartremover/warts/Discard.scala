@@ -92,6 +92,42 @@ abstract class Discard(filter: Quotes ?=> ([a <: AnyKind] => Type[a] => Boolean)
               }
             }
             super.traverseTree(tree)(owner)
+          case f: CaseDef =>
+            PartialFunction
+              .condOpt(f.pattern) {
+                case Bind(x, w: Wildcard) if filter(w.tpe.asType) =>
+                  x -> w.tpe
+                case x: Ident if filter(x.tpe.asType) =>
+                  x.name -> x.tpe
+              }
+              .foreach { case (name, tpe) =>
+                val accumulator = new TreeAccumulator[Set[String]] {
+                  override def foldTree(x: Set[String], t: Tree)(owner: Symbol) = {
+                    foldOverTree(
+                      t match {
+                        case i: Ident =>
+                          x + i.name
+                        case _ =>
+                          x
+                      },
+                      t
+                    )(owner)
+                  }
+                }
+
+                val namesSet: Set[String] =
+                  accumulator.foldTree(Set.empty, f.rhs)(owner) ++ f.guard
+                    .map(x => accumulator.foldTree(Set.empty, x)(owner))
+                    .toSeq
+                    .flatten
+
+                if (namesSet(name)) {
+                  // ok
+                } else {
+                  error(f.pattern.pos, msg(tpe))
+                }
+              }
+            super.traverseTree(tree)(owner)
           case _ =>
             super.traverseTree(tree)(owner)
         }

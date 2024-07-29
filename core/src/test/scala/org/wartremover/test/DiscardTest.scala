@@ -53,6 +53,63 @@ class DiscardTest extends AnyFunSuite with ResultAssertions {
     }
   }
 
+  test("for generator") {
+    Seq(
+      WartTestTraverser(Discard.Try) {
+        def f[A](x: Option[Try[A]]): Option[String] = {
+          for {
+            _ <- x
+          } yield "x"
+        }
+      },
+      WartTestTraverser(Discard.Try) {
+        def f[A](x: Option[Try[A]]): Option[String] = {
+          for {
+            y <- x
+          } yield "x"
+        }
+      }
+    ).foreach { result =>
+      assertError(result)("discard `scala.util.Try[A]`")
+    }
+  }
+
+  test("match") {
+    Seq(
+      WartTestTraverser(Discard.Try) {
+        def f[A](a1: Try[A], b1: Boolean): Int = {
+          a1 match {
+            case a2 if b1 =>
+              println(a2)
+              1
+            case _ =>
+              2
+          }
+        }
+      },
+      WartTestTraverser(Discard.Try) {
+        def f[A](a1: Try[A], b1: Boolean): Int = {
+          a1 match {
+            case a2 if b1 =>
+              println(a2)
+              1
+            case a3 =>
+              2
+          }
+        }
+      }
+    ).foreach { result =>
+      assertError(result)("discard `scala.util.Try[A]`")
+    }
+  }
+
+  test("PartialFunction") {
+    val result = WartTestTraverser(Discard.Either) {
+      def f[A, B](xs: List[Either[A, B]]): List[B] = xs.collect { case Right(x) => x }
+    }
+    assertEmpty(result)
+  }
+
   test("wart obeys SuppressWarnings") {
     Seq(
       WartTestTraverser(Discard.Try) {
