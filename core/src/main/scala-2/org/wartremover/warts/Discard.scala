@@ -27,7 +27,7 @@ abstract class Discard(types: Set[String], subtype: Boolean) extends WartTravers
     new Traverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
-          case t if hasWartAnnotation(u)(t) =>
+          case t if hasWartAnnotation(u)(t) || isSyntheticPartialFunction(u)(t) =>
           case Block(values, _) =>
             values.withFilter(_.tpe != null).foreach { x =>
               if (check(x.tpe)) {
@@ -57,6 +57,31 @@ abstract class Discard(types: Set[String], subtype: Boolean) extends WartTravers
                 error(u)(x.pos, msg(x.tpt.tpe))
               }
             }
+            super.traverse(tree)
+          case f: CaseDef if check(f.pat.tpe) =>
+            PartialFunction
+              .condOpt(f.pat) {
+                case Bind(TermName(name), Ident(TermName("_"))) =>
+                  name
+                case x: Ident =>
+                  x.name.toString
+              }
+              .foreach { name =>
+                val names = Set.newBuilder[String]
+                val traverser = new Traverser {
+                  override def traverseName(name: Name): Unit = {
+                    names += name.toString
+                  }
+                }
+                traverser.traverse(f.guard)
+                traverser.traverse(f.body)
+                val namesSet = names.result()
+                if (namesSet(name)) {
+                  // ok
+                } else {
+                  error(u)(f.pat.pos, msg(f.pat.tpe))
+                }
+              }
             super.traverse(tree)
           case _ =>
             super.traverse(tree)
