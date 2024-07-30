@@ -22,7 +22,7 @@ abstract class Discard(types: Set[String], subtype: Boolean) extends WartTravers
     }
 
     def msg(t: Type): String =
-      s"discard `${t}`"
+      s"discard `${t.dealias}`"
 
     new Traverser {
       override def traverse(tree: Tree): Unit = {

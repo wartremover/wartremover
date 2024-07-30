@@ -48,7 +48,7 @@ abstract class Discard(filter: Quotes ?=> ([a <: AnyKind] => Type[a] => Boolean)
       import q.reflect.*
 
       def msg[B](t: TypeRepr): String =
-        s"discard `${t.show}`"
+        s"discard `${t.dealias.show}`"
 
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
