@@ -19,7 +19,7 @@ object RedundantConversions
             type t2 >: `t1`
             ($x: Set[`t1`]).toSet[`t2`]
           } =>
-        // note https://github.com/lampepfl/dotty/issues/14708
+        // note https://github.com/scala/scala3/issues/14708
         "redundant toSet conversion"
       case '{ ($x: collection.immutable.IndexedSeq[t]).toIndexedSeq } =>
         "redundant toIndexedSeq conversion"

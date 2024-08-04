@@ -321,7 +321,7 @@ lazy val core = Project(
     if (scalaBinaryVersion.value != "3") {
       src
     } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
-      // maybe https://github.com/lampepfl/dotty/pull/15642
+      // maybe https://github.com/scala/scala3/pull/15642
       val exclude = Set[String](
         "Matchable",
         "AnyVal",
