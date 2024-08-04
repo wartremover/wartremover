@@ -147,7 +147,6 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
       try {
         tree match {
           case _: tpd.Typed =>
-          case _: tpd.InlineMatch => // https://github.com/scala/scala3/issues/14789
           case _ =>
             super.foldOverTree(x, tree)(owner)
         }
