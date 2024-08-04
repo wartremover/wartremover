@@ -148,7 +148,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       Map(
         s"cats-kernel_3-${catsVersion}.jar" -> catsRepo,
         s"cats-core_3-${catsVersion}.jar" -> catsRepo,
-        s"scala3-library_3-${scala3version}.jar" -> Repo("lampepfl", "dotty", scala3version)
+        s"scala3-library_3-${scala3version}.jar" -> Repo("scala", "scala3", scala3version)
       )
     )
     assert(
@@ -219,7 +219,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Option2Iterable", 5),
         ("OptionPartial", 3),
         ("Overloading", 115),
-        ("RedundantAsInstanceOf", 1), // https://github.com/lampepfl/dotty/commit/cf18183c6b6edd0e4949
+        ("RedundantAsInstanceOf", 1), // https://github.com/scala/scala3/commit/cf18183c6b6edd0e4949
         ("RedundantConversions", 8),
         ("Return", 5),
         ("SeqApply", 3),
