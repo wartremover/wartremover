@@ -146,7 +146,6 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
     override def foldOverTree(x: Unit, tree: Tree)(owner: Symbol): Unit = {
       try {
         tree match {
-          case _: tpd.Template =>
           case _: tpd.Typed =>
           case _: tpd.InlineMatch => // https://github.com/scala/scala3/issues/14789
           case _ =>
