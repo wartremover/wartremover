@@ -35,5 +35,5 @@ abstract class WartTraverser { self =>
 
 object WartTraverser {
   def sumList(u: WartUniverse)(l: List[WartTraverser]): u.Traverser =
-    l.reduceRight(_ compose _)(u)
+    l.reduceRight(_ `compose` _)(u)
 }
