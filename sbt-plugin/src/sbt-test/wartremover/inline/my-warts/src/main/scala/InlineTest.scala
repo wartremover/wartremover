@@ -27,15 +27,6 @@ object InlineTest extends WartTraverser {
         savePosition(tree.pos)
         tree match {
           case _ if hasWartAnnotation(tree) =>
-          case Typed(i: Inlined, _) =>
-            savePosition(i.pos)
-            i.bindings.foreach { x =>
-              traverseTree(x)(owner)
-            }
-            i.call.foreach { x =>
-              traverseTree(x)(owner)
-            }
-            traverseTree(i.body)(owner)
           case _ if tree.isExpr =>
             tree.asExpr match {
               case '{ Writes.DoubleWrites } =>

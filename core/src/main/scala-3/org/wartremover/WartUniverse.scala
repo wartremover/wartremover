@@ -1,7 +1,5 @@
 package org.wartremover
 
-import dotty.tools.dotc.ast.tpd
-import scala.annotation.nowarn
 import scala.quoted.Exprs
 import scala.quoted.Quotes
 import scala.quoted.Type
@@ -142,14 +140,9 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
       t <:< TypeRepr.of[Double]
     }
 
-    @nowarn("msg=dotty.tools.dotc.ast.tpd")
     override def foldOverTree(x: Unit, tree: Tree)(owner: Symbol): Unit = {
       try {
-        tree match {
-          case _: tpd.Typed =>
-          case _ =>
-            super.foldOverTree(x, tree)(owner)
-        }
+        super.foldOverTree(x, tree)(owner)
       } catch {
         case e: MatchError =>
           if (logLevel != LogLevel.Disable) {

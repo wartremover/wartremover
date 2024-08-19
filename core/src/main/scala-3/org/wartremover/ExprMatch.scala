@@ -18,8 +18,13 @@ abstract class ExprMatch(
               val message = exprMatch.apply(e)
               error(tree.pos, message)
             } else {
-              super.traverseTree(tree)(owner)
+              tree match {
+                case _: Typed =>
+                case _ =>
+                  super.traverseTree(tree)(owner)
+              }
             }
+          case _: Typed =>
           case _ =>
             super.traverseTree(tree)(owner)
         }
