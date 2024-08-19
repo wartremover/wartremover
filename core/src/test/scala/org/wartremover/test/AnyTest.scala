@@ -10,7 +10,6 @@ class AnyTest extends AnyFunSuite with ResultAssertions {
   test("Any can't be inferred") {
     val result = WartTestTraverser(Any) {
       val x = foo
-      x
     }
     assertError(result)("Inferred type containing Any: Any")
   }
