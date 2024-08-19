@@ -45,7 +45,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
     val values = Source
       .fromInputStream(
         sample.getProtectionDomain.getClassLoader.getResourceAsStream(
-          sample.getPackageName.replace('.', '/')
+          sample.getPackage.getName.replace('.', '/')
         )
       )
       .getLines
