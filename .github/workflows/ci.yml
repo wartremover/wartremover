@@ -69,7 +69,7 @@ jobs:
             sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of3"
             ;;
           "inspector")
-            sbt -v SetLatestStableScala3 inspector/test '++ 3.6.0-RC1-bin-20240815-99f431e-NIGHTLY!' core/test
+            sbt -v SetLatestStableScala3 inspector/test '++ 3.6.0-RC1-bin-20240828-5e83606-NIGHTLY!' core/test
             ;;
           "test")
             sbt -v test SetLatestStableScala3 core/test
