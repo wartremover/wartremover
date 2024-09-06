@@ -8,6 +8,13 @@ class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
 
   import OrTypeLeastUpperBoundTest.*
 
+  test("AnyVal") {
+    val result = WartTestTraverser(OrTypeLeastUpperBound.AnyVal) {
+      List(Option(Option[Long](2)), Option(Option[Int](3)))
+    }
+    assertError(result)("least upper bound is `scala.AnyVal`. `scala.Long | scala.Int`")
+  }
+
   test("All") {
     val results = Seq(
       WartTestTraverser(OrTypeLeastUpperBound.All) {
