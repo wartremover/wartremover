@@ -64,7 +64,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       }
       .filterNot(exclude)
       .toList
-    assert(values.size == 70)
+    assert(values.size == 71)
     values
   }
 

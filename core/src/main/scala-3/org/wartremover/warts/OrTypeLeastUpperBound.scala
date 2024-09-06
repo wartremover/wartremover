@@ -18,6 +18,7 @@ object OrTypeLeastUpperBound {
         )
       ]
   object Any extends OrTypeLeastUpperBound[scala.Any *: EmptyTuple]
+  object AnyVal extends OrTypeLeastUpperBound[scala.AnyVal *: EmptyTuple]
   object AnyRef extends OrTypeLeastUpperBound[scala.AnyRef *: EmptyTuple]
   object Matchable extends OrTypeLeastUpperBound[scala.Matchable *: EmptyTuple]
   object Product extends OrTypeLeastUpperBound[scala.Product *: EmptyTuple]
