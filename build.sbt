@@ -371,7 +371,7 @@ val wartClasses = Def.task {
     .sorted
 }
 
-val scoverage = "org.scoverage" % "sbt-scoverage" % "2.1.1" % "runtime" // for scala-steward
+val scoverage = "org.scoverage" % "sbt-scoverage" % "2.2.0" % "runtime" // for scala-steward
 
 lazy val sbtPlug: Project = Project(
   id = "sbt-plugin",
