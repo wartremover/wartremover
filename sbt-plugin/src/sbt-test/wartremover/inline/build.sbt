@@ -1,5 +1,5 @@
 lazy val commonSettings = Def.settings(
-  scalaVersion := "3.5.1-RC1",
+  scalaVersion := "3.5.1",
   ThisBuild / wartremoverCrossVersion := CrossVersion.binary,
   libraryDependencies += "org.playframework" %% "play-json" % "3.0.4",
 )
