@@ -273,7 +273,7 @@ lazy val inspector = Project(
     if (scalaBinaryVersion.value == "3") {
       Seq(
         "org.scala-sbt" %% "io" % "1.10.0" % Test,
-        "io.get-coursier" % "coursier" % "2.1.12" % Test cross CrossVersion.for3Use2_13 exclude (
+        "io.get-coursier" % "coursier" % "2.1.13" % Test cross CrossVersion.for3Use2_13 exclude (
           "io.argonaut",
           "*"
         ) exclude ("org.scala-lang.modules", "scala-xml_2.13"),
@@ -419,7 +419,7 @@ lazy val sbtPlug: Project = Project(
     }
     javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
-  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.12" % Test,
+  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.13" % Test,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
   crossScalaVersions := Seq(latestScala212),
