@@ -9,6 +9,29 @@ import scala.util.Try
 class DiscardTest extends AnyFunSuite with ResultAssertions {
   private def x: Discard = ???
 
+  test("don't report Nothing") {
+    List(
+      WartTestTraverser(Discard.Future) {
+        def f = {
+          sys.error("")
+          2
+        }
+      },
+      WartTestTraverser(Discard.Try) {
+        def f = {
+          sys.error("")
+          3
+        }
+      },
+      WartTestTraverser(Discard.Either) {
+        def f = {
+          sys.error("")
+          4
+        }
+      },
+    ).foreach(assertEmpty)
+  }
+
   test("Future") {
     val result = WartTestTraverser(Discard.Future) {
       val f: Unit = Future.successful(x)
