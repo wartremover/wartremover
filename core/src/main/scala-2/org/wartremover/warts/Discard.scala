@@ -15,7 +15,7 @@ abstract class Discard(types: Set[String], subtype: Boolean) extends WartTravers
 
     def check(t: Type): Boolean = {
       if (subtype) {
-        checkTypes.exists(t.dealias.typeConstructor <:< _)
+        !(t.dealias =:= typeOf[Nothing]) && checkTypes.exists(t.dealias.typeConstructor <:< _)
       } else {
         checkTypes.exists(t.dealias.typeConstructor =:= _)
       }

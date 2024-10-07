@@ -50,25 +50,29 @@ abstract class Discard(filter: Quotes ?=> ([a <: AnyKind] => Type[a] => Boolean)
       def msg[B](t: TypeRepr): String =
         s"discard `${t.dealias.show}`"
 
+      def filterFunc(tpe: TypeRepr): Boolean = {
+        !(tpe =:= TypeRepr.of[Nothing]) && filter(tpe.asType)
+      }
+
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
           case t: Block =>
             t.statements.collect {
-              case x: Term if filter(x.tpe.asType) => x
+              case x: Term if filterFunc(x.tpe) => x
             }.foreach { x =>
               error(x.pos, msg(x.tpe))
             }
             super.traverseTree(tree)(owner)
           case t: ClassDef =>
             t.body.collect {
-              case x: Term if filter(x.tpe.asType) => x
+              case x: Term if filterFunc(x.tpe) => x
             }.foreach { x =>
               error(x.pos, msg(x.tpe))
             }
             super.traverseTree(tree)(owner)
           case f: DefDef if f.symbol.isAnonymousFunction =>
-            val params = f.termParamss.flatMap(_.params).filter(x => filter(x.tpt.tpe.asType))
+            val params = f.termParamss.flatMap(_.params).filter(x => filterFunc(x.tpt.tpe))
 
             if (params.nonEmpty) {
               f.rhs.foreach { body =>
@@ -95,9 +99,9 @@ abstract class Discard(filter: Quotes ?=> ([a <: AnyKind] => Type[a] => Boolean)
           case f: CaseDef =>
             PartialFunction
               .condOpt(f.pattern) {
-                case Bind(x, w: Wildcard) if filter(w.tpe.asType) =>
+                case Bind(x, w: Wildcard) if filterFunc(w.tpe) =>
                   x -> w.tpe
-                case x: Ident if filter(x.tpe.asType) =>
+                case x: Ident if filterFunc(x.tpe) =>
                   x.name -> x.tpe
               }
               .foreach { case (name, tpe) =>
