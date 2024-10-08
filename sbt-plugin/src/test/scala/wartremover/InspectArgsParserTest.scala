@@ -163,6 +163,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "NonUnitStatements",
         "Nothing",
         "Null",
+        "ObjectThrowable",
         "Option2Iterable",
         "OptionPartial",
         "Overloading",
@@ -272,6 +273,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "ObjectThrowable"
     ).map(
       "org.wartremover.warts." + _
     )
