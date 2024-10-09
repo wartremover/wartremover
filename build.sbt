@@ -380,7 +380,17 @@ lazy val sbtPlug: Project = Project(
 ).settings(
   commonSettings,
   name := "sbt-wartremover",
-  addSbtPlugin(scoverage),
+  libraryDependencies ++= {
+    scalaBinaryVersion.value match {
+      case scalaV @ "2.12" =>
+        Seq(
+          Defaults.sbtPluginExtra(scoverage, (pluginCrossBuild / sbtBinaryVersion).value, scalaV)
+        )
+      case _ =>
+        // TODO: sbt-scoverage for sbt 2.x
+        Nil
+    }
+  },
   pomPostProcess := { node =>
     import scala.xml.{NodeSeq, Node}
     val rule = new scala.xml.transform.RewriteRule {
