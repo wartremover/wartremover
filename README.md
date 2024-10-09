@@ -1,9 +1,7 @@
 # WartRemover
 
-[![scaladoc](https://javadoc.io/badge2/org.wartremover/wartremover_2.13/javadoc.svg)](https://javadoc.io/doc/org.wartremover/wartremover_2.13/latest/org/wartremover/warts/index.html)
-[![Maven Central](https://img.shields.io/maven-central/v/org.wartremover/wartremover_2.13?label=Maven%20Central&color=%236DBE42)](https://search.maven.org/search?q=g:%22org.wartremover%22%20AND%20a:%22wartremover_2.13%22)
-
-[![Join us on gitter](https://badges.gitter.im/repo.svg)](https://gitter.im/wartremover/Lobby)
+[![scaladoc](https://javadoc.io/badge2/org.wartremover/wartremover_3/javadoc.svg)](https://javadoc.io/doc/org.wartremover/wartremover_3/latest/org/wartremover/warts.html)
+[![Maven Central](https://img.shields.io/maven-central/v/org.wartremover/wartremover_3?label=Maven%20Central&color=%236DBE42)](https://search.maven.org/search?q=g:%22org.wartremover%22%20AND%20a:%22wartremover_3%22)
 
 WartRemover is a flexible Scala code linting tool.
 
