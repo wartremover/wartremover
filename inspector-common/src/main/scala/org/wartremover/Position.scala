@@ -9,4 +9,4 @@ final case class Position(
   endColumn: Int,
   path: String,
   sourceCode: Option[String],
-)
+) extends PositionCompat

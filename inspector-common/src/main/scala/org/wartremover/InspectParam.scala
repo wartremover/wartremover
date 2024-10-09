@@ -9,4 +9,4 @@ final case class InspectParam(
   exclude: List[String],
   failIfWartLoadError: Boolean,
   outputStandardReporter: Boolean,
-)
+) extends InspectParamCompat

@@ -4,4 +4,4 @@ final case class Diagnostic(
   message: String,
   wart: String,
   position: Position
-)
+) extends DiagnosticCompat

@@ -192,7 +192,7 @@ object WartRemover extends sbt.AutoPlugin {
 
   private[this] implicit val inspectParamFormat: JsonFormat[InspectParam] = {
     import sjsonnew.BasicJsonProtocol.*
-    caseClass8(InspectParam, InspectParam.unapply)(
+    caseClass8(InspectParam.apply, (_: InspectParam).asTupleOption)(
       "tastyFiles",
       "dependenciesClasspath",
       "wartClasspath",
@@ -208,7 +208,7 @@ object WartRemover extends sbt.AutoPlugin {
     import sjsonnew.BasicJsonProtocol.*
 
     implicit val positionInstance: JsonFormat[org.wartremover.Position] =
-      caseClass8(org.wartremover.Position, org.wartremover.Position.unapply)(
+      caseClass8(org.wartremover.Position.apply, (_: org.wartremover.Position).asTupleOption)(
         "start",
         "startLine",
         "startColumn",
@@ -220,13 +220,13 @@ object WartRemover extends sbt.AutoPlugin {
       )
 
     implicit val diagnosticInstance: JsonFormat[org.wartremover.Diagnostic] =
-      caseClass3(org.wartremover.Diagnostic, org.wartremover.Diagnostic.unapply)(
+      caseClass3(org.wartremover.Diagnostic.apply, (_: org.wartremover.Diagnostic).asTupleOption)(
         "message",
         "wart",
         "position",
       )
 
-    caseClass3(InspectResult.apply, InspectResult.unapply)(
+    caseClass3(InspectResult.apply, (_: InspectResult).asTupleOption)(
       "errors",
       "warnings",
       "stderr",
