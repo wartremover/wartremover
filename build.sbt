@@ -420,7 +420,14 @@ lazy val sbtPlug: Project = Project(
     }
     javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
   },
-  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.13" % Test,
+  conflictWarning := {
+    if (scalaBinaryVersion.value == "3") {
+      ConflictWarning("warn", Level.Warn, false)
+    } else {
+      conflictWarning.value
+    }
+  },
+  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.13" % Test cross CrossVersion.for3Use2_13,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
   crossScalaVersions := Seq(latestScala212),
