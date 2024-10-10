@@ -41,6 +41,9 @@ jobs:
             java: 8
             os: ubuntu-latest
             test_index: 3
+          - name: "sbt2"
+            java: 8
+            os: ubuntu-latest
           - name: "test"
             java: 11
             os: ubuntu-latest
@@ -67,6 +70,9 @@ jobs:
             ;;
           "scripted")
             sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of3"
+            ;;
+          "sbt2")
+            sbt -v "+ publishLocal" SetLatestStableScala3 sbt-plugin/scriptedTestSbt2
             ;;
           "inspector")
             sbt -v SetLatestStableScala3 inspector/test '++ 3.6.0-RC1-bin-20240927-5ec1e8b-NIGHTLY!' core/test
