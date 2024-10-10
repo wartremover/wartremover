@@ -274,7 +274,7 @@ lazy val inspector = Project(
     if (scalaBinaryVersion.value == "3") {
       Seq(
         "org.scala-sbt" %% "io" % "1.10.0" % Test,
-        "io.get-coursier" % "coursier" % "2.1.13" % Test cross CrossVersion.for3Use2_13 exclude (
+        "io.get-coursier" % "coursier" % "2.1.14" % Test cross CrossVersion.for3Use2_13 exclude (
           "io.argonaut",
           "*"
         ) exclude ("org.scala-lang.modules", "scala-xml_2.13"),
@@ -437,7 +437,7 @@ lazy val sbtPlug: Project = Project(
       conflictWarning.value
     }
   },
-  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.13" % Test cross CrossVersion.for3Use2_13,
+  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.14" % Test cross CrossVersion.for3Use2_13,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
   crossScalaVersions := Seq(latestScala212),
