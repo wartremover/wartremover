@@ -278,7 +278,7 @@ lazy val inspector = Project(
           "org.scala-lang.modules",
           "scala-xml_2.13"
         ),
-        "io.argonaut" %% "argonaut" % "6.3.10",
+        "io.github.argonaut-io" %% "argonaut" % "6.3.11",
         "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
       )
     } else {
