@@ -1,4 +1,4 @@
-crossScalaVersions := Seq("2.12.20", "2.13.15", "3.3.4")
+crossScalaVersions := Seq("2.12.20", "2.13.15", "3.6.0")
 
 wartremoverErrors ++= Warts.all
 
