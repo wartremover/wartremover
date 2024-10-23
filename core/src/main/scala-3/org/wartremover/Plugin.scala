@@ -59,28 +59,76 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
     }.flatten.headOption.getOrElse(LogLevel.Disable)
     val optionsSet = options.toSet
     val throwIfLoadFail = optionsSet.contains("on-wart-load-error:failure")
+    val separatePhase = optionsSet.contains("separate-phase")
     val loadFailureWarts = errors1 ++ errors2
     if (throwIfLoadFail && loadFailureWarts.nonEmpty) {
       println(loadFailureWarts.mkString("load failure warts = ", ", ", ""))
       throw loadFailureWarts.head._2
     }
     val allPhases: List[String] = (errorWarts ++ warningWarts).flatMap(_.runsAfter).distinct.toList.sorted
-    allPhases.map { phase =>
-      new WartremoverPhase(
-        errorWarts = errorWarts.filter(_.runsAfter(phase)),
-        warningWarts = warningWarts.filter(_.runsAfter(phase)),
-        loadFailureWarts = loadFailureWarts,
-        excluded = excluded,
-        logLevel = loglevel,
-        initialLog = initialLog,
-        runsAfter = Set(phase),
-        phaseName = phase match {
-          case TyperPhase.name =>
-            WartremoverPhase.defaultWartremoverPhaseName
-          case _ =>
-            s"${WartremoverPhase.defaultWartremoverPhaseName}-${phase}"
+    allPhases.flatMap { phase =>
+      def extractCompoisteTraverser(xs: List[WartTraverser]): List[WartTraverser] = xs.flatMap {
+        case x: CompositeTraverser => x.traversers
+        case x => x :: Nil
+      }
+
+      val errorWartsInThisPhase = extractCompoisteTraverser(errorWarts).filter(_.runsAfter(phase))
+      val warningWartsInThisPhase = extractCompoisteTraverser(warningWarts).filter(_.runsAfter(phase))
+
+      val duplicateNames: Set[String] = (errorWartsInThisPhase ++ warningWartsInThisPhase)
+        .groupBy(_.simpleName)
+        .collect { case (k, v) if v.sizeIs > 1 => k }
+        .toSet
+
+      if (separatePhase) {
+        def phaseName(w: WartTraverser): String = {
+          val wartName: String = if (duplicateNames(w.simpleName)) w.fullName else w.simpleName
+          s"${WartremoverPhase.defaultWartremoverPhaseName}-${phase}-${wartName}"
         }
-      )
+
+        List(
+          errorWartsInThisPhase.map { w =>
+            new WartremoverPhase(
+              errorWarts = w :: Nil,
+              warningWarts = Nil,
+              loadFailureWarts = loadFailureWarts,
+              excluded = excluded,
+              logLevel = loglevel,
+              initialLog = initialLog,
+              runsAfter = Set(phase),
+              phaseName = phaseName(w),
+            )
+          },
+          warningWartsInThisPhase.map { w =>
+            new WartremoverPhase(
+              errorWarts = Nil,
+              warningWarts = w :: Nil,
+              loadFailureWarts = loadFailureWarts,
+              excluded = excluded,
+              logLevel = loglevel,
+              initialLog = initialLog,
+              runsAfter = Set(phase),
+              phaseName = phaseName(w),
+            )
+          },
+        ).flatten
+      } else {
+        new WartremoverPhase(
+          errorWarts = errorWartsInThisPhase,
+          warningWarts = warningWartsInThisPhase,
+          loadFailureWarts = loadFailureWarts,
+          excluded = excluded,
+          logLevel = loglevel,
+          initialLog = initialLog,
+          runsAfter = Set(phase),
+          phaseName = phase match {
+            case TyperPhase.name =>
+              WartremoverPhase.defaultWartremoverPhaseName
+            case _ =>
+              s"${WartremoverPhase.defaultWartremoverPhaseName}-${phase}"
+          }
+        ) :: Nil
+      }
     }
   }
 }
