@@ -10,10 +10,11 @@ class SizeIsTest extends AnyFunSuite with ResultAssertions {
       List(3).size == 1
       Vector(3).size <= 1
       Iterable(3).size >= 1
+      Seq(3).size != 1
       Map.empty[Int, String].size > 1
       Set.empty[Boolean].size < 1
     }
-    assertErrors(result)("Maybe you can use `sizeIs` instead of `size`", 5)
+    assertErrors(result)("Maybe you can use `sizeIs` instead of `size`", 6)
   }
 
   test("suggest lengthIs") {
