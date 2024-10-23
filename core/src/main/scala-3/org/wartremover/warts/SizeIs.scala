@@ -17,6 +17,8 @@ object SizeIs extends WartTraverser {
                 error(tree.pos, sizeMessage)
               case '{ ($x1: Iterable[t]).size == ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
+              case '{ ($x1: Iterable[t]).size != ($x2: Int) } =>
+                error(tree.pos, sizeMessage)
               case '{ ($x1: Iterable[t]).size <= ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
               case '{ ($x1: Iterable[t]).size > ($x2: Int) } =>
@@ -28,7 +30,7 @@ object SizeIs extends WartTraverser {
                 error(tree.pos, lengthMessage)
               case '{ ($x1: collection.Seq[t]).length == ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[t]).length == ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[t]).length != ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
               case '{ ($x1: collection.Seq[t]).length <= ($x2: Int) } =>
                 error(tree.pos, lengthMessage)

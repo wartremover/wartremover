@@ -11,6 +11,7 @@ object SizeIs extends WartTraverser {
         "<",
         "<=",
         "==",
+        "!=",
         ">",
         ">="
       ).map(NameTransformer.encode).map(TermName.apply(_))
