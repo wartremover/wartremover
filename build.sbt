@@ -8,6 +8,8 @@ import java.lang.reflect.Modifier
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
+ThisBuild / sbtPluginPublishLegacyMavenStyle := false
+
 // compiler plugin should be fully cross-versioned. e.g.
 // - https://github.com/ghik/silencer/issues/31
 // - https://github.com/typelevel/kind-projector/issues/15
