@@ -66,6 +66,8 @@ abstract class OrTypeLeastUpperBound[A <: NonEmptyTuple](using getType: Quotes ?
         tree match {
           case _ if hasWartAnnotation(tree) =>
           case _: Typed =>
+          case t: DefDef if (t.name == "valueOf") && t.symbol.flags.is(Flags.Synthetic) =>
+          // ignore enum `valueOf` method
           case a: Inferred =>
             a.tpe match {
               case t: OrType
