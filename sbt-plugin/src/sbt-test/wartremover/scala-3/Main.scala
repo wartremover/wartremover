@@ -20,3 +20,8 @@ object Main {
   private case object B extends A
   private case object C extends A
 }
+
+enum ExampleEnum[X] {
+  case A1 extends ExampleEnum[Int]
+  case A2 extends ExampleEnum[String]
+}
