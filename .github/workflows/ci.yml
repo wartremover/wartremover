@@ -59,6 +59,8 @@ jobs:
     - uses: actions/checkout@v4
     - uses: coursier/cache-action@v6
     - shell: bash
+      env:
+        JAVA_OPTS: "-Xmx4G"
       run: |
         case ${{ matrix.name }} in
           "format")
