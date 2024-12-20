@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets
 import org.wartremover.InspectParam
 import org.wartremover.InspectResult
 import sbt.Keys.*
-import sbt.SlashSyntax.HasSlashKey
 import sjsonnew.JsonFormat
 import sjsonnew.support.scalajson.unsafe.CompactPrinter
 import java.io.FileInputStream
@@ -464,7 +463,15 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
       .distinct
   }
 
-  private[this] def sbtLauncher(k: HasSlashKey): Def.Initialize[Task[File]] = Def.taskDyn {
+  private[this] def sbtLauncher[A](k: InputKey[A]): Def.Initialize[Task[File]] = Def.taskDyn {
+    val v = (k / sbtVersion).value
+    Def.task {
+      val Seq(launcher) = getJarFiles("org.scala-sbt" % "sbt-launch" % v).value
+      launcher
+    }
+  }
+
+  private[this] def sbtLauncher[A](k: TaskKey[A]): Def.Initialize[Task[File]] = Def.taskDyn {
     val v = (k / sbtVersion).value
     Def.task {
       val Seq(launcher) = getJarFiles("org.scala-sbt" % "sbt-launch" % v).value

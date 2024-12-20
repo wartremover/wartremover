@@ -399,7 +399,7 @@ lazy val sbtPlug: Project = Project(
       case "2.12" =>
         sbtVersion.value
       case _ =>
-        "2.0.0-M2"
+        "2.0.0-M3"
     }
   },
   libraryDependencies ++= {
@@ -462,7 +462,7 @@ lazy val sbtPlug: Project = Project(
   libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.22" % Test cross CrossVersion.for3Use2_13,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
-  crossScalaVersions := Seq(latestScala212, latestScala3),
+  crossScalaVersions := Seq(latestScala212, "3.6.2"),
   TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
     val values = sbtTestDirectory.value
       .listFiles(_.isDirectory)
