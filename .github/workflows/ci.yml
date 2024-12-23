@@ -46,6 +46,7 @@ jobs:
         distribution: temurin
     - uses: actions/checkout@v3
     - uses: coursier/cache-action@v6
+    - uses: sbt/setup-sbt@v1
     - shell: bash
       run: |
         case ${{ matrix.name }} in
