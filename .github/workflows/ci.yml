@@ -78,7 +78,7 @@ jobs:
             sbt -v "+ publishLocal" "++ 3.6.2" sbt-plugin/scriptedTestSbt2
             ;;
           "inspector")
-            sbt -v SetLatestStableScala3 inspector/test '++ 3.6.4-RC1-bin-20241205-c61897d-NIGHTLY!' core/test
+            sbt -v SetLatestStableScala3 inspector/test '++ 3.6.4-RC1-bin-20241223-4d3f757-NIGHTLY!' core/test
             ;;
           "test")
             sbt -v test SetLatestStableScala3 core/test
