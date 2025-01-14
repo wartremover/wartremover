@@ -4,18 +4,22 @@ lazy val commonSettings = Def.settings(
   libraryDependencies += "org.playframework" %% "play-json" % "3.0.4",
 )
 
-lazy val myWarts = project.in(file("my-warts")).settings(
-  commonSettings,
-  libraryDependencies ++= Seq(
-    "org.wartremover" % "wartremover" % wartremover.Wart.PluginVersion cross (ThisBuild / wartremoverCrossVersion).value
+lazy val myWarts = project
+  .in(file("my-warts"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.wartremover" % "wartremover" % wartremover.Wart.PluginVersion cross (ThisBuild / wartremoverCrossVersion).value
+    )
   )
-)
 
-lazy val main = project.in(file("main")).settings(
-  commonSettings,
-  scalacOptions += "-P:wartremover:loglevel:debug",
-  wartremoverErrors += Wart.custom("mywarts.InlineTest"),
-  wartremover.WartRemover.dependsOnLocalProjectWarts(myWarts),
-)
+lazy val main = project
+  .in(file("main"))
+  .settings(
+    commonSettings,
+    scalacOptions += "-P:wartremover:loglevel:debug",
+    wartremoverErrors += Wart.custom("mywarts.InlineTest"),
+    wartremover.WartRemover.dependsOnLocalProjectWarts(myWarts),
+  )
 
 commonSettings
