@@ -208,15 +208,14 @@ object WartRemover extends sbt.AutoPlugin {
         import scala.language.reflectiveCalls
         Def
           .asInstanceOf[{
-              def derive[T](
-                setting: Setting[T],
-                allowDynamic: Boolean,
-                filter: Scope => Boolean,
-                trigger: AttributeKey[_] => Boolean,
-                default: Boolean
-              ): Setting[T]
-            }
-          ]
+            def derive[T](
+              setting: Setting[T],
+              allowDynamic: Boolean,
+              filter: Scope => Boolean,
+              trigger: AttributeKey[_] => Boolean,
+              default: Boolean
+            ): Setting[T]
+          }]
           .derive(s, false, _ => true, _ => true, false)
     }
   }
