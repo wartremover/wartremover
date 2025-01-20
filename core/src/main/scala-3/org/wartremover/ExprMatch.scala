@@ -3,6 +3,12 @@ package org.wartremover
 import scala.quoted.Expr
 import scala.quoted.Quotes
 
+object ExprMatch {
+  // https://github.com/scala/scala/blob/0d570fbcfddd527bd9c7946dcf7af64d78efa00a/src/library/scala/PartialFunction.scala#L309-L332
+  private val fallback = new String("")
+  private val fallbackFunction: Any => String = _ => fallback
+}
+
 abstract class ExprMatch(
   exprMatch: Quotes ?=> PartialFunction[Expr[Any], String]
 ) extends WartTraverser {
@@ -14,8 +20,8 @@ abstract class ExprMatch(
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             val e = t.asExpr
-            if (exprMatch.isDefinedAt(e)) {
-              val message = exprMatch.apply(e)
+            val message = exprMatch.applyOrElse(e, ExprMatch.fallbackFunction)
+            if (message ne ExprMatch.fallback) {
               error(tree.pos, message)
             } else {
               tree match {
