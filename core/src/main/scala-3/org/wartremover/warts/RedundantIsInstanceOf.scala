@@ -8,13 +8,13 @@ object RedundantIsInstanceOf extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
-          case _ if tree.isExpr =>
+          case _ if tree.isExpr && sourceCodeContains(tree, "isInstanceOf") =>
             tree.asExpr match {
               case '{
                     type t1
                     type t2
                     ($x: `t1`).isInstanceOf[`t2`]
-                  } if TypeRepr.of[t1] <:< TypeRepr.of[t2] && sourceCodeContains(tree, "isInstanceOf") =>
+                  } if TypeRepr.of[t1] <:< TypeRepr.of[t2] =>
                 error(tree.pos, "redundant isInstanceOf")
               case _ =>
                 super.traverseTree(tree)(owner)
