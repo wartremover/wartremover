@@ -2,6 +2,16 @@ package org.wartremover
 package warts
 
 object IterableOps extends WartTraverser {
+  private val methodNames: Seq[String] = Seq(
+    "head",
+    "tail",
+    "init",
+    "last",
+    "reduce",
+    "max",
+    "min",
+  )
+
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
@@ -10,6 +20,7 @@ object IterableOps extends WartTraverser {
           error(tree.pos, s"${method} is disabled - use ${alternative} instead")
 
         tree match {
+          case _ if getSourceCode(tree).fold(false)(src => !methodNames.exists(src.contains)) =>
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {

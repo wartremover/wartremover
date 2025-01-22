@@ -4,6 +4,7 @@ import scala.quoted.Exprs
 import scala.quoted.Quotes
 import scala.quoted.Type
 import scala.quoted.Varargs
+import scala.util.control.NonFatal
 import java.lang.SuppressWarnings
 
 object WartUniverse {
@@ -106,16 +107,24 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
       }
     }
 
-    def sourceCodeContains(t: Tree, src: String): Boolean = {
+    def getSourceCode(t: Tree): Option[String] = try {
       // avoid StringIndexOutOfBoundsException
       // Don't use `def sourceCode: Option[String]`
       // https://github.com/scala/scala3/issues/14785
       // https://github.com/scala/scala3/blob/58b59a5f88508bb4b3/compiler/src/scala/quoted/runtime/impl/QuotesImpl.scala#L2791-L2793
-      t.pos.sourceFile.content.exists { content =>
-        val sliced = content.slice(t.pos.start, t.pos.end)
-        sliced.contains(src)
+      t.pos.sourceFile.content.map { content =>
+        content.slice(t.pos.start, t.pos.end)
       }
+    } catch {
+      case NonFatal(e) =>
+        None
     }
+
+    def sourceCodeContains(t: Tree, src: String): Boolean =
+      getSourceCode(t).exists(_.contains(src))
+
+    def sourceCodeNotContains(t: Tree, src: String): Boolean =
+      getSourceCode(t).fold(false)(!_.contains(src))
 
     def getSyntheticPartialFunction(tree: Tree): Option[ClassDef] = {
       PartialFunction.condOpt(tree) {
