@@ -45,4 +45,4 @@ Adding the generated code to an issue is very useful for debugging.
 
 ## License
 
-[The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)

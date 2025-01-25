@@ -111,7 +111,7 @@ lazy val commonSettings = Def.settings(
   organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
-      url("http://www.apache.org/licenses/LICENSE-2.0.txt")
+      url("https://www.apache.org/licenses/LICENSE-2.0.txt")
   ),
   publishMavenStyle := true,
   Test / publishArtifact := false,
@@ -140,7 +140,7 @@ lazy val commonSettings = Def.settings(
       <developer>
         <id>puffnfresh</id>
         <name>Brian McKenna</name>
-        <url>http://brianmckenna.org/</url>
+        <url>https://brianmckenna.org/</url>
       </developer>
       <developer>
         <name>Chris Neveu</name>
