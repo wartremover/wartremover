@@ -31,6 +31,7 @@ object ListUnapplySeq extends WartTraverser {
                 error(x.pos, message)
               }
             }
+            super.traverseTree(tree)(owner)
           case _ =>
             super.traverseTree(tree)(owner)
         }
