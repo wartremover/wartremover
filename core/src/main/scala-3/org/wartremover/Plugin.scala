@@ -70,7 +70,7 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
       def extractCompoisteTraverser(xs: List[WartTraverser]): List[WartTraverser] = xs.flatMap {
         case x: CompositeTraverser => x.traversers
         case x => x :: Nil
-      }
+      }.distinct
 
       val errorWartsInThisPhase = extractCompoisteTraverser(errorWarts).filter(_.runsAfter(phase))
       val warningWartsInThisPhase = extractCompoisteTraverser(warningWarts).filter(_.runsAfter(phase))
