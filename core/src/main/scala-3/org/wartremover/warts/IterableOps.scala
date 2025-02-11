@@ -41,18 +41,18 @@ object IterableOps extends WartTraverser {
               case '{
                     type t1
                     type t2
-                    ($x: collection.Iterable[`t1`]).maxBy($f: Function[`t1`, `t2`])($o: Ordering[`t2`])
+                    ($x: collection.Iterable[`t1`]).maxBy($f: Function[`t1`, `t2`])(using $o: Ordering[`t2`])
                   } =>
                 err("maxBy", "foldLeft or foldRight")
-              case '{ ($x: collection.Iterable[t]).max($o) } =>
+              case '{ ($x: collection.Iterable[t]).max(using $o) } =>
                 err("max", "foldLeft or foldRight")
               case '{
                     type t1
                     type t2
-                    ($x: collection.Iterable[`t1`]).minBy($f: Function[`t1`, `t2`])($o: Ordering[`t2`])
+                    ($x: collection.Iterable[`t1`]).minBy($f: Function[`t1`, `t2`])(using $o: Ordering[`t2`])
                   } =>
                 err("minBy", "foldLeft or foldRight")
-              case '{ ($x: collection.Iterable[t]).min($o) } =>
+              case '{ ($x: collection.Iterable[t]).min(using $o) } =>
                 err("min", "foldLeft or foldRight")
               case _ =>
                 super.traverseTree(tree)(owner)
