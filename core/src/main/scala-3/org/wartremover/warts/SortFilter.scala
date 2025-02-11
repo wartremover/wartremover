@@ -13,13 +13,13 @@ object SortFilter extends WartTraverser {
             t.asExpr match {
               case '{
                     type t1
-                    ($x: collection.Seq[`t1`]).sorted($o: Ordering[`t1`]).filter($p)
+                    ($x: collection.Seq[`t1`]).sorted(using $o: Ordering[`t1`]).filter($p)
                   } =>
                 error(t.pos, "Change order of `sorted` and `filter`")
               case '{
                     type t1
                     type t2
-                    ($x: collection.Seq[`t1`]).sortBy($f: Function1[`t1`, `t2`])($o: Ordering[`t2`]).filter($p)
+                    ($x: collection.Seq[`t1`]).sortBy($f: Function1[`t1`, `t2`])(using $o: Ordering[`t2`]).filter($p)
                   } =>
                 error(t.pos, "Change order of `sortBy` and `filter`")
               case '{
