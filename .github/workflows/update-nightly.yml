@@ -9,3 +9,34 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v4
+    - run: sudo apt-get install -y libxml2-utils
+    - run: wget https://repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/maven-metadata.xml
+    - run: xmllint --xpath "/metadata/versioning/latest/text()" maven-metadata.xml > .github/scala_3_nightly.txt
+    - id: generate_token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: 89668
+        private-key: ${{ secrets.WARTREMOVER_BOT_KEY }}
+    - id: push
+      run: |
+        git add -u
+        git config --global user.email "74847867+wartremover-bot[bot]@users.noreply.github.com"
+        git config --global user.name "wartremover-bot[bot]"
+        if git commit -m "update scala 3 nightly version"; then
+          git push -f "https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/${GITHUB_REPOSITORY}.git" master:update-scala-3-nightly
+          echo "pushed=true"  >> $GITHUB_OUTPUT
+        else
+          echo "pushed=false" >> $GITHUB_OUTPUT
+        fi
+    - uses: actions/github-script@v7
+      if: steps.push.outputs.pushed == 'true'
+      with:
+        github-token: ${{ steps.generate_token.outputs.token }}
+        script: |
+          await github.rest.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: "update-scala-3-nightly",
+            base: "${{ github.ref_name }}",
+            title: "update scala 3 nightly version"
+          });
