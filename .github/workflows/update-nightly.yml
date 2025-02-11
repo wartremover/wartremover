@@ -21,11 +21,12 @@ jobs:
     - run: xmllint --xpath "/metadata/versioning/latest/text()" maven-metadata.xml > .github/scala_3_nightly.txt
     - id: push
       run: |
+        git checkout -b update-scala-3-nightly
         git add -u
         git config --global user.email "74847867+wartremover-bot[bot]@users.noreply.github.com"
         git config --global user.name "wartremover-bot[bot]"
         if git commit -m "update scala 3 nightly version"; then
-          git push -f origin master:update-scala-3-nightly
+          git push -f origin update-scala-3-nightly
           echo "pushed=true"  >> $GITHUB_OUTPUT
         else
           echo "pushed=false" >> $GITHUB_OUTPUT
