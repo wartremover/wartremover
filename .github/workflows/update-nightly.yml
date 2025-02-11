@@ -1,0 +1,11 @@
+on:
+  schedule:
+  - cron: '0 10 * * *'
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'wartremover' }}
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v4
