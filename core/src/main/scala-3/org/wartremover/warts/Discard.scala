@@ -104,7 +104,7 @@ abstract class Discard(filter: Quotes ?=> ([a <: AnyKind] => Type[a] => Boolean)
                 case x: Ident if filterFunc(x.tpe) =>
                   x.name -> x.tpe
               }
-              .foreach { case (name, tpe) =>
+              .foreach { (name, tpe) =>
                 val accumulator = new TreeAccumulator[Set[String]] {
                   override def foldTree(x: Set[String], t: Tree)(owner: Symbol) = {
                     foldOverTree(

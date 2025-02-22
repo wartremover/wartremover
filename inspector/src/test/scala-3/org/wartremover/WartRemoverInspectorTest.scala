@@ -128,7 +128,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
             inspector.run(param)
           }
       }
-      jar.getName -> result.warnings.map(_.wart.replace(packagePrefix, "")).groupBy(identity).map { case (k, v) =>
+      jar.getName -> result.warnings.map(_.wart.replace(packagePrefix, "")).groupBy(identity).map { (k, v) =>
         k -> v.size
       }
     }.toMap
