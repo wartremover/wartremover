@@ -75,7 +75,7 @@ jobs:
             sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of3"
             ;;
           "sbt2")
-            sbt -v "+ publishLocal" "++ 3.6.3" sbt-plugin/scriptedTestSbt2
+            sbt -v "+ publishLocal" "++ 3.6.4" sbt-plugin/scriptedTestSbt2
             ;;
           "inspector")
             SCALA_3_NIGHTLY=$(cat .github/scala_3_nightly.txt)

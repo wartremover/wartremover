@@ -36,7 +36,7 @@ lazy val allScalaVersions = Seq(
   "3.6.1",
   "3.6.2",
   "3.6.3",
-  "3.6.4-RC2",
+  "3.6.4",
 )
 
 def latestScala212 = latest(12, allScalaVersions)
@@ -452,7 +452,7 @@ lazy val sbtPlug: Project = Project(
   libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13,
   scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
   scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
-  crossScalaVersions := Seq(latestScala212, "3.6.3"),
+  crossScalaVersions := Seq(latestScala212, "3.6.4"),
   TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
     val values = sbtTestDirectory.value
       .listFiles(_.isDirectory)

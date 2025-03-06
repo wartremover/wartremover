@@ -10,7 +10,7 @@ crossScalaVersions := Seq(
   "3.3.3",
   "3.3.4",
   "3.3.5",
-  "3.6.3"
+  "3.6.4"
 )
 
 wartremoverErrors += Wart.Serializable
