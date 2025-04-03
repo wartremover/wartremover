@@ -12,6 +12,15 @@ class ListUnapplySeqTest extends AnyFunSuite with ResultAssertions {
   private[this] def immutableIterable: collection.immutable.Iterable[Int] = ???
   private[this] def list: List[Int] = ???
   private[this] def cons: ::[Int] = ???
+  private[this] def any: Any = ???
+
+  test("Any") {
+    val result = WartTestTraverser(ListUnapplySeq) {
+      val Seq(x1) = any
+      val List(x2) = any
+    }
+    assertEmpty(result)
+  }
 
   test("val xs @ List(x1, x2) = notList") {
     val result = WartTestTraverser(ListUnapplySeq) {

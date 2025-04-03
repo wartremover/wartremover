@@ -26,6 +26,8 @@ object ListUnapplySeq extends WartTraverser {
           case m: Match =>
             if (m.scrutinee.tpe.classSymbol == TypeRepr.of[List[?]].classSymbol) {
               // this is a list
+            } else if (m.scrutinee.tpe =:= TypeRepr.of[Any]) {
+              // skip if Any
             } else {
               m.cases.map(_.pattern).withFilter(isListUnapplySeq).foreach { x =>
                 error(x.pos, message)
