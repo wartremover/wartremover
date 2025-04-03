@@ -26,6 +26,8 @@ object ListUnapplySeq extends WartTraverser {
           case m: Match =>
             if (m.selector.tpe.dealias.typeConstructor <:< listType) {
               // this is a list
+            } else if (m.selector.tpe.dealias =:= definitions.AnyTpe) {
+              // skip if Any
             } else {
               // report error for each `case`
               m.cases.withFilter(isListConsUnapply).foreach { badCase =>
