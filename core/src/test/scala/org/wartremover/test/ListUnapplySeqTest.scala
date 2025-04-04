@@ -13,11 +13,20 @@ class ListUnapplySeqTest extends AnyFunSuite with ResultAssertions {
   private[this] def list: List[Int] = ???
   private[this] def cons: ::[Int] = ???
   private[this] def any: Any = ???
+  private[this] def anyRef: AnyRef = ???
 
   test("Any") {
     val result = WartTestTraverser(ListUnapplySeq) {
       val Seq(x1) = any
       val List(x2) = any
+    }
+    assertEmpty(result)
+  }
+
+  test("AnyRef") {
+    val result = WartTestTraverser(ListUnapplySeq) {
+      val Seq(x1) = anyRef
+      val List(x2) = anyRef
     }
     assertEmpty(result)
   }
