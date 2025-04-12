@@ -48,6 +48,26 @@ class ToStringTest extends AnyFunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+  test("issue 1294") {
+    val isScala3: Boolean =
+      try {
+        Class.forName("scala.quoted.Expr")
+        true
+      } catch {
+        case _: ClassNotFoundException =>
+          false
+      }
+    val result = WartTestTraverser(ToString) {
+      def f1(x: java.lang.StringBuilder) = x.toString
+    }
+    // TODO
+    // https://github.com/wartremover/wartremover/issues/1294
+    if (isScala3) {
+      assert(result.errors.nonEmpty)
+    } else {
+      assertEmpty(result)
+    }
+  }
   test("can use toString method of primitives") {
     val result = WartTestTraverser(ToString) {
       val x1 = 1.toString
