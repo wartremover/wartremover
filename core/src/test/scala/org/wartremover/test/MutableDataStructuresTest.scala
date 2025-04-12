@@ -6,10 +6,25 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class MutableDataStructuresTest extends AnyFunSuite with ResultAssertions {
   test("disable scala.collection.mutable._ when referenced") {
-    val result = WartTestTraverser(MutableDataStructures) {
-      var x = scala.collection.mutable.HashMap("key" -> "value")
+    Seq(
+      WartTestTraverser(MutableDataStructures) {
+        var x = scala.collection.mutable.HashMap("key" -> "value")
+      },
+      WartTestTraverser(MutableDataStructures) {
+        val x = scala.collection.mutable.Seq.empty[Int]
+      },
+      WartTestTraverser(MutableDataStructures) {
+        val x = scala.collection.mutable.Set.empty[String]
+      },
+      WartTestTraverser(MutableDataStructures) {
+        def x = scala.collection.mutable.Buffer.empty[Boolean]
+      },
+      WartTestTraverser(MutableDataStructures) {
+        def x = List.newBuilder[Int]
+      }
+    ).foreach { result =>
+      assertError(result)("scala.collection.mutable package is disabled")
     }
-    assertError(result)("scala.collection.mutable package is disabled")
   }
   test("ignore immutable collections") {
     val result = WartTestTraverser(MutableDataStructures) {
