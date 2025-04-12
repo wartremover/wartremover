@@ -10,7 +10,6 @@ object ToString extends WartTraverser {
         tree match {
           case t if hasWartAnnotation(t) =>
           case Apply(Select(lhs, "toString"), Nil) if !isPrimitive(lhs.tpe) && !(lhs.tpe <:< TypeRepr.of[String]) =>
-            val x = lhs.symbol.declaredMethod("toString")
             val parent = lhs.tpe.baseClasses.head
             val name = if (parent.flags.is(Flags.Module)) {
               "object " + parent.name.dropRight(1)
