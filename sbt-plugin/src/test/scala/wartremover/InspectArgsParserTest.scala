@@ -230,7 +230,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
   }
 
   test("wart names") {
-    val v = "3.3.1"
+    val v = "3.3.3"
     val jars = coursier.Fetch().addDependencies("org.wartremover" % "wartremover_3" % v).run()
     val jar = jars.find(_.getName == s"wartremover_3-${v}.jar").getOrElse(sys.error(s"not found ${jars}"))
     val classes = WartRemover.getAllClassNamesInJar(jar)
