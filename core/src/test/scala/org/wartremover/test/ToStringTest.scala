@@ -54,6 +54,12 @@ class ToStringTest extends AnyFunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+  test("issue 461") {
+    val result = WartTestTraverser(ToString) {
+      def f1(x: java.nio.file.Path) = x.toString
+    }
+    assertEmpty(result)
+  }
   test("can use toString method of primitives") {
     val result = WartTestTraverser(ToString) {
       val x1 = 1.toString
