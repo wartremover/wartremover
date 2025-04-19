@@ -9,7 +9,11 @@ object ToString extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case Apply(Select(lhs, "toString"), Nil) if !isPrimitive(lhs.tpe) && !(lhs.tpe <:< TypeRepr.of[String]) =>
+          case Apply(Select(lhs, "toString"), Nil)
+              if !isPrimitive(lhs.tpe) && !(lhs.tpe <:< TypeRepr.of[String]) &&
+                (lhs.tpe.baseClasses.collect {
+                  case x if x.declaredMethod("toString").filterNot(_.flags.is(Flags.Synthetic)).nonEmpty => x.fullName
+                } == Seq("scala.Any")) =>
             val parent = lhs.tpe.baseClasses.head
             val name = if (parent.flags.is(Flags.Module)) {
               "object " + parent.name.dropRight(1)
