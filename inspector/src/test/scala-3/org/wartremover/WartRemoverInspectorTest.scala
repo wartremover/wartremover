@@ -167,7 +167,6 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("SeqApply", 7),
         ("SizeIs", 8),
         ("Throw", 3),
-        ("ToString", 1),
         ("Var", 31),
         ("While", 8)
       )
@@ -199,7 +198,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("SizeIs", 3),
         ("StringPlusAny", 1),
         ("Throw", 13),
-        ("ToString", 5),
+        ("ToString", 2),
         ("TripleQuestionMark", 2),
         ("Var", 61),
         ("While", 28)
@@ -229,7 +228,6 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("SizeIs", 2),
         ("StringPlusAny", 2),
         ("Throw", 32),
-        ("ToString", 2),
         ("TripleQuestionMark", 11),
         ("Var", 18),
         ("While", 12)
