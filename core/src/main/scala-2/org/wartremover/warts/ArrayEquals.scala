@@ -21,7 +21,7 @@ object ArrayEquals extends WartTraverser {
               if (array.tpe.typeSymbol.fullName == "scala.Array" || array.tpe <:< typeOf[
                 Iterator[Any]
               ]) && !isSynthetic(u)(tree) =>
-            error(u)(tree.pos, "== is disabled, use sameElements instead")
+            error(u)(tree.pos, "== is disabled")
             super.traverse(tree)
           case _ =>
             super.traverse(tree)
