@@ -9,14 +9,14 @@ class ArrayEqualsTest extends AnyFunSuite with ResultAssertions {
     val result = WartTestTraverser(ArrayEquals) {
       Array(1) == Array(1)
     }
-    assertError(result)("== is disabled, use sameElements instead")
+    assertError(result)("== is disabled")
   }
 
   test("Iterator == is disabled") {
     val result = WartTestTraverser(ArrayEquals) {
       Iterator(1) == Iterator(1)
     }
-    assertError(result)("== is disabled, use sameElements instead")
+    assertError(result)("== is disabled")
   }
 
   test("`Array == null` is allowed") {

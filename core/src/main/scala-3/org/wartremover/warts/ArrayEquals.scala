@@ -13,9 +13,9 @@ object ArrayEquals extends WartTraverser {
             t.asExpr match {
               case '{ ($x1: Array[t]) == null } =>
               case '{ ($x1: Array[t]) == ($x2: Any) } =>
-                error(tree.pos, "== is disabled, use sameElements instead")
+                error(tree.pos, "== is disabled")
               case '{ ($x1: Iterator[t]) == ($x2: Any) } =>
-                error(tree.pos, "== is disabled, use sameElements instead")
+                error(tree.pos, "== is disabled")
               case _ =>
                 super.traverseTree(tree)(owner)
             }
