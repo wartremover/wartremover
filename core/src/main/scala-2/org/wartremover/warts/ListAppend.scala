@@ -2,10 +2,11 @@ package org.wartremover
 package warts
 
 object ListAppend extends WartTraverser {
-  private[wartremover] def message: String = "Don't use List `:+` method because too slow"
+  private[wartremover] def message: String = "Don't use List `:+` or `appended` method because too slow"
   override def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
     val colonPlus = TermName(":+").encodedName
+    val appended = TermName("appended")
 
     new Traverser {
       override def traverse(tree: Tree): Unit = {
@@ -16,7 +17,7 @@ object ListAppend extends WartTraverser {
           // Ignore trees marked by SuppressWarnings
           case Apply(TypeApply(Select(receiver, method), typeArgs), args)
               if (receiver.tpe.typeConstructor <:< listType) &&
-                (method == colonPlus) &&
+                ((method == colonPlus) || (method == appended)) &&
                 args.nonEmpty &&
                 (args.lengthCompare(2) <= 0) &&
                 typeArgs.nonEmpty &&
