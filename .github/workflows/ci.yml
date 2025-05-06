@@ -14,19 +14,7 @@ jobs:
           - name: "format"
             java: 8
             os: ubuntu-latest
-          - name: "inspector"
-            java: 17
-            os: ubuntu-latest
           - name: "test-cross"
-            test_index: 0
-            java: 8
-            os: ubuntu-latest
-          - name: "test-cross"
-            test_index: 1
-            java: 8
-            os: ubuntu-latest
-          - name: "test-cross"
-            test_index: 2
             java: 8
             os: ubuntu-latest
           - name: "scripted"
@@ -43,9 +31,6 @@ jobs:
             test_index: 3
           - name: "sbt2"
             java: 8
-            os: ubuntu-latest
-          - name: "test"
-            java: 11
             os: ubuntu-latest
           - name: "test"
             java: 21
@@ -69,20 +54,16 @@ jobs:
             git diff --exit-code
             ;;
           "test-cross")
-            sbt -v "project core" "testPartial 3 ${{matrix.test_index}}"
+            sbt -v Test/compile test
             ;;
           "scripted")
-            sbt -v "+ publishLocal" "sbt-plugin/scripted wartremover/*${{matrix.test_index}}of3"
+            sbt -v publishLocal "sbt-pluginJVM2_12/scripted wartremover/*${{matrix.test_index}}of3"
             ;;
           "sbt2")
-            sbt -v "+ publishLocal" "++ 3.6.4" sbt-plugin/scriptedTestSbt2
-            ;;
-          "inspector")
-            SCALA_3_NIGHTLY=$(cat .github/scala_3_nightly.txt)
-            sbt -v SetLatestStableScala3 inspector/test "++ ${SCALA_3_NIGHTLY}!" core/test
+            sbt -v publishLocal sbt-pluginJVM3/scriptedTestSbt2
             ;;
           "test")
-            sbt -v test SetLatestStableScala3 core/test
+            sbt -v "all coreJVM3_3_5/test coreJVM2_13_16/test coreJVM2_12_20/test"
             ;;
           *)
             echo "unknown job"

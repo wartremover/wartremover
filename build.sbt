@@ -10,6 +10,8 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / sbtPluginPublishLegacyMavenStyle := false
 
+lazy val nightlyScala3: String = IO.read(file(".github/scala_3_nightly.txt")).trim
+
 // compiler plugin should be fully cross-versioned. e.g.
 // - https://github.com/ghik/silencer/issues/31
 // - https://github.com/typelevel/kind-projector/issues/15
@@ -42,13 +44,13 @@ lazy val allScalaVersions = Seq(
   "3.6.4",
   "3.7.0",
   "3.7.1-RC1",
-)
+) :+ nightlyScala3
+
+def Scala3forSbt2 = "3.6.4"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
 def latestScala3 = allScalaVersions.filterNot(_ contains "-RC").filter(_ startsWith "3.3.").last // TODO more better way
-
-addCommandAlias("SetLatestStableScala3", s"""++ ${latestScala3}! -v""")
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
@@ -85,7 +87,6 @@ lazy val baseSettings = Def.settings(
   },
   Test / javaOptions ++= Seq("-Xmx5G"),
   run / fork := true,
-  scalaVersion := latestScala212,
 )
 
 lazy val commonSettings = Def.settings(
@@ -144,25 +145,29 @@ lazy val commonSettings = Def.settings(
 
 commonSettings
 publishArtifact := false
-releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
-  releaseStepCommandAndRemaining("+publishSigned"),
+  releaseStepCommandAndRemaining("publishSigned"),
   releaseStepCommand("sonatypeBundleRelease"),
   setNextVersion,
   commitNextVersion,
   pushChanges
 )
 
-val coreId = "core"
+val coreSrcDir = Def.settingDyn {
+  val p = core.jvm(scalaVersion.value)
+  Def.setting(
+    (p / projectMatrixBaseDirectory).value.getAbsoluteFile / "src"
+  )
+}
 
 def crossSrcSetting(c: Configuration) = {
   c / unmanagedSourceDirectories ++= {
-    val dir = (LocalProject(coreId) / baseDirectory).value / "src" / Defaults.nameForSrc(c.name)
+    val dir = coreSrcDir.value / Defaults.nameForSrc(c.name)
     PartialFunction
       .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
         case Some((2, v)) if v <= 12 =>
@@ -178,7 +183,6 @@ val coreSettings = Def.settings(
   commonSettings,
   name := "wartremover",
   Test / fork := true,
-  crossScalaVersions := allScalaVersions,
   Test / scalacOptions += {
     val hash = (Compile / sources).value.map { f =>
       sbt.internal.inc.HashUtil.farmHash(f.toPath)
@@ -221,7 +225,7 @@ val coreSettings = Def.settings(
             "scala-3.5-"
           }
         }
-        val base = (LocalProject(coreId) / baseDirectory).value / "src" / "main"
+        val base = coreSrcDir.value / "main"
         Seq(base / dir)
       case _ =>
         Nil
@@ -230,268 +234,276 @@ val coreSettings = Def.settings(
   assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
 )
 
-lazy val coreCrossBinary = Project(
-  id = "core-cross-binary",
-  base = file("core-cross-binary")
-).settings(
-  coreSettings,
-  crossSrcSetting(Compile),
-  Compile / scalaSource := (core / Compile / scalaSource).value,
-  Compile / resourceDirectory := (core / Compile / resourceDirectory).value,
-  crossScalaVersions := Seq(latestScala212, latestScala213, latestScala3),
-  crossVersion := CrossVersion.binary
-).dependsOn(testMacros % "test->compile")
-
-lazy val inspectorCommon = Project(
-  id = "inspector-common",
-  base = file("inspector-common")
-).settings(
-  commonSettings,
-  publish / skip := (scalaBinaryVersion.value == "2.13"),
-  crossScalaVersions := Seq(latestScala3, latestScala212),
-  name := "wartremover-inspector-common",
-)
-
-lazy val inspector = Project(
-  id = "inspector",
-  base = file("inspector")
-).settings(
-  commonSettings,
-  name := "wartremover-inspector",
-  crossScalaVersions := Seq(latestScala3),
-  publish / skip := (scalaBinaryVersion.value != "3"),
-  Test / fork := true,
-  Test / baseDirectory := target.value / "test-base-dir",
-  Test / testOptions ++= List(
-    Tests.Setup { () =>
-      val dir = (Test / baseDirectory).value
-      IO.delete(dir)
-      dir.mkdirs()
-    },
-    Tests.Cleanup { () =>
-      IO.delete((Test / baseDirectory).value)
-    }
-  ),
-  libraryDependencies ++= {
-    if (scalaBinaryVersion.value == "3") {
-      Seq(
-        "org.scala-sbt" %% "io" % "1.10.5" % Test,
-        "io.get-coursier" % "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13 exclude (
-          "org.scala-lang.modules",
-          "scala-xml_2.13"
-        ),
-        "io.github.argonaut-io" %% "argonaut" % "6.3.11",
-        "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
+lazy val coreCrossBinary = projectMatrix
+  .in(file("core-cross-binary"))
+  .withId("core-cross-binary")
+  .defaultAxes()
+  .jvmPlatform(scalaVersions = Seq(latestScala212, latestScala213, latestScala3))
+  .settings(
+    coreSettings,
+    crossSrcSetting(Compile),
+    Compile / scalaSource := Def.settingDyn {
+      val p = core.jvm(scalaVersion.value)
+      Def.setting(
+        (p / Compile / scalaSource).value
       )
-    } else {
-      Nil
-    }
-  }
-).dependsOn(
-  coreCrossBinary,
-  inspectorCommon,
-)
-
-lazy val core = Project(
-  id = coreId,
-  base = file("core")
-).settings(
-  coreSettings,
-  crossSrcSetting(Compile),
-  crossSrcSetting(Test),
-  crossScalaVersions := allScalaVersions,
-  crossVersion := CrossVersion.full,
-  commands += {
-    object ToInt {
-      def unapply(s: String): Option[Int] = Some(s.toInt)
-    }
-    Command.args("testPartial", "") { case (state, Seq(ToInt(total), ToInt(index))) =>
-      assert(0 <= index, index)
-      assert(0 < total, total)
-      assert(index < total, (total, index))
-      val allVersions = Project.extract(state).get(crossScalaVersions)
-      val eachSize = math.ceil(allVersions.size / total.toDouble).toInt
-      val values = allVersions.sliding(eachSize, eachSize).toList
-      assert(values.size == total, values.toString)
-      assert(values.flatten == allVersions, values.toString)
-      val result = values(index).flatMap { v =>
-        s"++ ${v}!" :: "test" :: Nil
-      }.toList
-      println(result)
-      result ::: state
-    }
-  },
-  Test / sources := {
-    val src = (Test / sources).value
-    if (scalaBinaryVersion.value != "3") {
-      src
-    } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
-      // maybe https://github.com/scala/scala3/pull/15642
-      val exclude = Set[String](
-        "Matchable",
-        "AnyVal",
-      ).map(_ + "Test.scala")
-      src.filterNot(f => exclude(f.getName))
-    } else {
-      val exclude = Set[String](
-        "OrTypeLeastUpperBound",
-      ).map(_ + "Test.scala")
-      src.filterNot(f => exclude(f.getName))
-    }
-  },
-  crossTarget := {
-    // workaround for https://github.com/sbt/sbt/issues/5097
-    target.value / s"scala-${scalaVersion.value}"
-  },
-  assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
-).dependsOn(testMacros % "test->compile")
-
-val wartClasses = Def.task {
-  val loader = (core / Test / testLoader).value
-  val wartTraverserClass = Class.forName("org.wartremover.WartTraverser", false, loader)
-  val classes = Tests
-    .allDefs((core / Compile / compile).value)
-    .collect { case c: ClassLike =>
-      val decoded = c.name.split('.').map(NameTransformer.decode).mkString(".")
-      c.definitionType match {
-        case DefinitionType.Module =>
-          decoded + "$"
-        case _ =>
-          decoded
-      }
-    }
-    .flatMap(c =>
-      try {
-        List[Class[_]](Class.forName(c, false, loader))
-      } catch {
-        case _: ClassNotFoundException =>
-          Nil
-      }
-    )
-    .filter(c => !Modifier.isAbstract(c.getModifiers) && wartTraverserClass.isAssignableFrom(c))
-    .map(_.getSimpleName.replace("$", ""))
-    .filterNot(Set("Unsafe", "ForbidInference", "Matchable"))
-
-  val scala2only = Seq(
-    "ExplicitImplicitTypes",
-    "JavaConversions",
-    "JavaSerializable",
-    "PublicInference",
+    }.value,
+    Compile / resourceDirectory := Def.settingDyn {
+      val p = core.jvm(scalaVersion.value)
+      Def.setting(
+        (p / Compile / resourceDirectory).value
+      )
+    }.value,
   )
-  (classes ++ scala2only).distinct.sorted
+  .dependsOn(testMacros % "test->compile")
+
+lazy val inspectorCommon = projectMatrix
+  .in(file("inspector-common"))
+  .withId(
+    "inspector-common"
+  )
+  .defaultAxes()
+  .jvmPlatform(scalaVersions = Seq(latestScala3, latestScala212))
+  .settings(
+    commonSettings,
+    name := "wartremover-inspector-common",
+  )
+
+lazy val inspector = projectMatrix
+  .in(file("inspector"))
+  .withId("inspector")
+  .defaultAxes()
+  .jvmPlatform(scalaVersions = Seq(latestScala3))
+  .settings(
+    commonSettings,
+    name := "wartremover-inspector",
+    Test / fork := true,
+    Test / baseDirectory := target.value / "test-base-dir",
+    Test / testOptions ++= List(
+      Tests.Setup { () =>
+        val dir = (Test / baseDirectory).value
+        IO.delete(dir)
+        dir.mkdirs()
+      },
+      Tests.Cleanup { () =>
+        IO.delete((Test / baseDirectory).value)
+      }
+    ),
+    libraryDependencies ++= {
+      if (scalaBinaryVersion.value == "3") {
+        Seq(
+          "org.scala-sbt" %% "io" % "1.10.5" % Test,
+          "io.get-coursier" % "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13 exclude (
+            "org.scala-lang.modules",
+            "scala-xml_2.13"
+          ),
+          "io.github.argonaut-io" %% "argonaut" % "6.3.11",
+          "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
+        )
+      } else {
+        Nil
+      }
+    }
+  )
+  .dependsOn(
+    coreCrossBinary,
+    inspectorCommon,
+  )
+
+lazy val core: sbt.internal.ProjectMatrix = projectMatrix
+  .in(file("core"))
+  .withId("core")
+  .defaultAxes()
+  .jvmPlatform(
+    scalaVersions = allScalaVersions,
+    crossVersion = CrossVersion.full
+  )
+  .settings(
+    coreSettings,
+    crossSrcSetting(Compile),
+    crossSrcSetting(Test),
+    publish / skip := (scalaVersion.value == nightlyScala3),
+    Test / sources := {
+      val src = (Test / sources).value
+      if (scalaBinaryVersion.value != "3") {
+        src
+      } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
+        // maybe https://github.com/scala/scala3/pull/15642
+        val exclude = Set[String](
+          "Matchable",
+          "AnyVal",
+        ).map(_ + "Test.scala")
+        src.filterNot(f => exclude(f.getName))
+      } else {
+        val exclude = Set[String](
+          "OrTypeLeastUpperBound",
+        ).map(_ + "Test.scala")
+        src.filterNot(f => exclude(f.getName))
+      }
+    },
+    crossTarget := {
+      // workaround for https://github.com/sbt/sbt/issues/5097
+      target.value / s"scala-${scalaVersion.value}"
+    },
+    assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
+  )
+  .dependsOn(testMacros % "test->compile")
+
+val wartClasses: Def.Initialize[Task[Seq[String]]] = Def.taskDyn {
+  val p = core.jvm(latestScala212)
+  Def.task {
+    val loader = (p / Test / testLoader).value
+    val wartTraverserClass = Class.forName("org.wartremover.WartTraverser", false, loader)
+    val classes = Tests
+      .allDefs((p / Compile / compile).value)
+      .collect { case c: ClassLike =>
+        val decoded = c.name.split('.').map(NameTransformer.decode).mkString(".")
+        c.definitionType match {
+          case DefinitionType.Module =>
+            decoded + "$"
+          case _ =>
+            decoded
+        }
+      }
+      .flatMap(c =>
+        try {
+          List[Class[_]](Class.forName(c, false, loader))
+        } catch {
+          case _: ClassNotFoundException =>
+            Nil
+        }
+      )
+      .filter(c => !Modifier.isAbstract(c.getModifiers) && wartTraverserClass.isAssignableFrom(c))
+      .map(_.getSimpleName.replace("$", ""))
+      .filterNot(Set("Unsafe", "ForbidInference", "Matchable"))
+
+    val scala2only = Seq(
+      "ExplicitImplicitTypes",
+      "JavaConversions",
+      "JavaSerializable",
+      "PublicInference",
+    )
+    (classes ++ scala2only).distinct.sorted
+  }
 }
 
 val scoverage = "org.scoverage" % "sbt-scoverage" % "2.3.1" % "runtime" // for scala-steward
 
-lazy val sbtPlug: Project = Project(
-  id = "sbt-plugin",
-  base = file("sbt-plugin")
-).settings(
-  commonSettings,
-  name := "sbt-wartremover",
-  pluginCrossBuild / sbtVersion := {
-    scalaBinaryVersion.value match {
-      case "2.12" =>
-        sbtVersion.value
-      case _ =>
-        "2.0.0-M4"
-    }
-  },
-  libraryDependencies ++= {
-    scalaBinaryVersion.value match {
-      case scalaV @ "2.12" =>
-        Seq(
-          Defaults.sbtPluginExtra(scoverage, (pluginCrossBuild / sbtBinaryVersion).value, scalaV)
-        )
-      case _ =>
-        // TODO: sbt-scoverage for sbt 2.x
-        Nil
-    }
-  },
-  pomPostProcess := { node =>
-    import scala.xml.{NodeSeq, Node}
-    val rule = new scala.xml.transform.RewriteRule {
-      override def transform(n: Node) = {
-        if (
-          List(
-            n.label == "dependency",
-            (n \ "groupId").text == scoverage.organization,
-            (n \ "artifactId").text.contains(scoverage.name),
-          ).forall(identity)
-        ) {
-          NodeSeq.Empty
-        } else if (n.label == "extraDependencyAttributes") {
-          NodeSeq.Empty
-        } else {
-          n
-        }
-      }
-    }
-    new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
-  },
-  packagedArtifacts := {
-    val value = packagedArtifacts.value
-    val pomFiles = value.values.filter(_.getName.endsWith(".pom")).toList
-    assert(pomFiles.size >= 1, pomFiles.map(_.getName))
-    pomFiles.foreach { f =>
-      assert(!IO.read(f).contains("scoverage"))
-    }
-    value
-  },
-  sbtPlugin := true,
-  scriptedBufferLog := false,
-  scriptedLaunchOpts ++= {
-    val javaVmArgs = {
-      import scala.collection.JavaConverters._
-      java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
-    }
-    javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
-  },
-  conflictWarning := {
-    if (scalaBinaryVersion.value == "3") {
-      ConflictWarning("warn", Level.Warn, false)
-    } else {
-      conflictWarning.value
-    }
-  },
-  libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13,
-  scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
-  scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
-  crossScalaVersions := Seq(latestScala212, "3.6.4"),
-  TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
-    val values = sbtTestDirectory.value
-      .listFiles(_.isDirectory)
-      .flatMap { dir1 =>
-        dir1.listFiles(_.isDirectory).map { dir2 =>
-          dir1.getName -> dir2.getName
-        }
-      }
-      .toList
-    val exclude: Set[(String, String)] = Set(
-      "input-task",
-      "inspector",
-      "scoverage",
-    ).map("wartremover" -> _)
-    val args = values.filterNot(exclude).map { case (x1, x2) => s"${x1}/${x2}" }
-    val arg = args.mkString(" ", " ", "")
-    streams.value.log.info("scripted" + arg)
-    scripted.toTask(arg)
-  }.value,
-  (Compile / sourceGenerators) += Def.task {
-    val base = (Compile / sourceManaged).value
-    val file = base / "wartremover" / "Wart.scala"
-    val warts = wartClasses.value
-    val expectCount = 72
-    assert(
-      warts.size == expectCount,
-      s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"
+lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
+  .in(file("sbt-plugin"))
+  .withId("sbt-plugin")
+  .defaultAxes()
+  .jvmPlatform(scalaVersions =
+    Seq(
+      latestScala212,
+      Scala3forSbt2,
     )
-    val wartsDir = core.base / "src" / "main" / "scala" / "org" / "wartremover" / "warts"
-    val unsafeSource = IO.read(wartsDir / "Unsafe.scala")
-    val unsafe = warts.filter(unsafeSource contains _)
-    assert(unsafe.nonEmpty)
-    val content =
-      s"""package wartremover
+  )
+  .settings(
+    commonSettings,
+    name := "sbt-wartremover",
+    pluginCrossBuild / sbtVersion := {
+      scalaBinaryVersion.value match {
+        case "2.12" =>
+          sbtVersion.value
+        case _ =>
+          "2.0.0-M4"
+      }
+    },
+    libraryDependencies ++= {
+      scalaBinaryVersion.value match {
+        case scalaV @ "2.12" =>
+          Seq(
+            Defaults.sbtPluginExtra(scoverage, (pluginCrossBuild / sbtBinaryVersion).value, scalaV)
+          )
+        case _ =>
+          // TODO: sbt-scoverage for sbt 2.x
+          Nil
+      }
+    },
+    pomPostProcess := { node =>
+      import scala.xml.{NodeSeq, Node}
+      val rule = new scala.xml.transform.RewriteRule {
+        override def transform(n: Node) = {
+          if (
+            List(
+              n.label == "dependency",
+              (n \ "groupId").text == scoverage.organization,
+              (n \ "artifactId").text.contains(scoverage.name),
+            ).forall(identity)
+          ) {
+            NodeSeq.Empty
+          } else if (n.label == "extraDependencyAttributes") {
+            NodeSeq.Empty
+          } else {
+            n
+          }
+        }
+      }
+      new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
+    },
+    packagedArtifacts := {
+      val value = packagedArtifacts.value
+      val pomFiles = value.values.filter(_.getName.endsWith(".pom")).toList
+      assert(pomFiles.size >= 1, pomFiles.map(_.getName))
+      pomFiles.foreach { f =>
+        assert(!IO.read(f).contains("scoverage"))
+      }
+      value
+    },
+    sbtPlugin := true,
+    scriptedBufferLog := false,
+    scriptedLaunchOpts ++= {
+      val javaVmArgs = {
+        import scala.collection.JavaConverters._
+        java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
+      }
+      javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
+    },
+    conflictWarning := {
+      if (scalaBinaryVersion.value == "3") {
+        ConflictWarning("warn", Level.Warn, false)
+      } else {
+        conflictWarning.value
+      }
+    },
+    libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13,
+    scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
+    scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
+    TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
+      val values = sbtTestDirectory.value
+        .listFiles(_.isDirectory)
+        .flatMap { dir1 =>
+          dir1.listFiles(_.isDirectory).map { dir2 =>
+            dir1.getName -> dir2.getName
+          }
+        }
+        .toList
+      val exclude: Set[(String, String)] = Set(
+        "input-task",
+        "inspector",
+        "scoverage",
+      ).map("wartremover" -> _)
+      val args = values.filterNot(exclude).map { case (x1, x2) => s"${x1}/${x2}" }
+      val arg = args.mkString(" ", " ", "")
+      streams.value.log.info("scripted" + arg)
+      scripted.toTask(arg)
+    }.value,
+    (Compile / sourceGenerators) += Def.task {
+      val base = (Compile / sourceManaged).value
+      val file = base / "wartremover" / "Wart.scala"
+      val warts = wartClasses.value
+      val expectCount = 72
+      assert(
+        warts.size == expectCount,
+        s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"
+      )
+      val wartsDir = core.base / "src" / "main" / "scala" / "org" / "wartremover" / "warts"
+      val unsafeSource = IO.read(wartsDir / "Unsafe.scala")
+      val unsafe = warts.filter(unsafeSource contains _)
+      assert(unsafe.nonEmpty)
+      val content =
+        s"""package wartremover
          |// Autogenerated code, see build.sbt.
          |final class Wart private[wartremover](val clazz: String) {
          |  override def toString: String = clazz
@@ -504,24 +516,31 @@ lazy val sbtPlug: Project = Project(
          |  def custom(clazz: String): Wart = new Wart(clazz)
          |  private[this] def w(nm: String): Wart = new Wart(s"org.wartremover.warts.$$nm")
          |""".stripMargin +
-        warts.map(w => s"""  val $w = w("${w}")""").mkString("\n") + "\n}\n"
-    IO.write(file, content)
-    Seq(file)
-  }
-).enablePlugins(ScriptedPlugin)
-  .dependsOn(inspectorCommon)
+          warts.map(w => s"""  val $w = w("${w}")""").mkString("\n") + "\n}\n"
+      IO.write(file, content)
+      Seq(file)
+    }
+  )
+  .enablePlugins(ScriptedPlugin)
 
-lazy val testMacros: Project = Project(
-  id = "test-macros",
-  base = file("test-macros")
-).settings(
-  baseSettings,
-  crossScalaVersions := allScalaVersions,
-  publish / skip := true,
-  publishArtifact := false,
-  publish := {},
-  publishLocal := {},
-  PgpKeys.publishSigned := {},
-  PgpKeys.publishLocalSigned := {},
-  scalaCompilerDependency,
-)
+val `sbt-pluginJVM3` = sbtPlug.jvm(Scala3forSbt2).dependsOn(inspectorCommon.jvm(latestScala3))
+val `sbt-pluginJVM2_12` = sbtPlug.jvm(latestScala212).dependsOn(inspectorCommon.jvm(latestScala212))
+
+lazy val testMacros: sbt.internal.ProjectMatrix = projectMatrix
+  .in(file("test-macros"))
+  .withId("test-macros")
+  .defaultAxes()
+  .jvmPlatform(
+    scalaVersions = allScalaVersions,
+    crossVersion = CrossVersion.full,
+  )
+  .settings(
+    baseSettings,
+    publish / skip := true,
+    publishArtifact := false,
+    publish := {},
+    publishLocal := {},
+    PgpKeys.publishSigned := {},
+    PgpKeys.publishLocalSigned := {},
+    scalaCompilerDependency,
+  )
