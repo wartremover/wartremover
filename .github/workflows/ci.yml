@@ -63,7 +63,7 @@ jobs:
             sbt -v publishLocal sbt-pluginJVM3/scriptedTestSbt2
             ;;
           "test")
-            sbt -v "all coreJVM3_3_5/test coreJVM2_13_16/test coreJVM2_12_20/test"
+            sbt -v "all coreJVM3_3_6/test coreJVM2_13_16/test coreJVM2_12_20/test"
             ;;
           *)
             echo "unknown job"
