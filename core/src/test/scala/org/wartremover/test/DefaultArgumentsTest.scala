@@ -15,6 +15,9 @@ class DefaultArgumentsTest extends AnyFunSuite with ResultAssertions {
     val result = WartTestTraverser(DefaultArguments) {
       @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
       def x(y: Int = 4) = y
+
+      @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
+      case class A(y: Int = 2)
     }
     assertEmpty(result)
   }
