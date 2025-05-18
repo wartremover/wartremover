@@ -10,6 +10,7 @@ object DefaultArguments extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t @ DefDef(name, _, _, _)
               if (name != "copy") &&
+                !t.symbol.flags.is(Flags.Synthetic) &&
                 t.termParamss
                   .flatMap(_.params)
                   .exists(p =>
