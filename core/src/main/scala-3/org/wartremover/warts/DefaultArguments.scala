@@ -8,9 +8,8 @@ object DefaultArguments extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case t @ DefDef(name, _, _, _)
-              if (name != "copy") &&
-                !t.symbol.flags.is(Flags.Synthetic) &&
+          case t: DefDef
+              if !t.symbol.flags.is(Flags.Synthetic) &&
                 t.termParamss
                   .flatMap(_.params)
                   .exists(p =>
