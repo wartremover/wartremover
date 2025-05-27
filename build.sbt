@@ -123,7 +123,7 @@ lazy val commonSettings = Def.settings(
       )
     }
   },
-  publishTo := sonatypePublishToBundle.value,
+  publishTo := (if (isSnapshot.value) None else localStaging.value),
   homepage := Some(url("https://github.com/wartremover/wartremover")),
   pomExtra :=
     <scm>
@@ -152,7 +152,7 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   releaseStepCommandAndRemaining("publishSigned"),
-  releaseStepCommand("sonatypeBundleRelease"),
+  releaseStepCommand("sonaRelease"),
   setNextVersion,
   commitNextVersion,
   pushChanges
