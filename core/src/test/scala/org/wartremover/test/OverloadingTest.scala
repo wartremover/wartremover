@@ -20,6 +20,16 @@ class OverloadingTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("self type") {
+    val result = WartTestTraverser(Overloading) {
+      trait A { self: B => }
+      trait B extends A {
+        def f(x: Int): Int = x
+      }
+    }
+    assertEmpty(result)
+  }
+
   test("Overloading wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Overloading) {
       @SuppressWarnings(Array("org.wartremover.warts.Overloading"))
