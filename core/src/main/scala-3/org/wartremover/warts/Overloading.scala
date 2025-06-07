@@ -9,17 +9,24 @@ object Overloading extends WartTraverser {
         tree match {
           case t if hasWartAnnotation(t) =>
           case t: ClassDef =>
-            // TODO
             val parentMethodNames: Set[String] = (
               t.parents.flatMap(_.symbol.methodMembers) ++
                 TypeRepr.of[AnyRef].classSymbol.toList.flatMap(_.methodMembers)
             ).map(_.name).toSet
 
-            val methods = t.body.collect { case d: DefDef => d }
+            val methods = t.body.collect {
+              case d: DefDef if d.symbol.allOverriddenSymbols.isEmpty && !d.symbol.flags.is(Flags.Synthetic) =>
+                d
+            }
             val overloads = methods
               .groupBy(_.name)
-              .map(_._2.filterNot(t => hasWartAnnotation(t)).filterNot(_.symbol.flags.is(Flags.Override)))
-              .filter(f => f.sizeIs > 1)
+              .map { (k, v) =>
+                k -> v.filterNot(t => hasWartAnnotation(t))
+              }
+              .collect {
+                case (k, v) if (v.sizeIs > 1) || parentMethodNames(k) =>
+                  v
+              }
 
             overloads.flatten.foreach { method =>
               error(method.pos, "Overloading is disabled")
