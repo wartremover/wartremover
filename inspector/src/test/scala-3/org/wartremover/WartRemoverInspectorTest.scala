@@ -189,7 +189,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Null", 19),
         ("Option2Iterable", 1),
         ("OptionPartial", 22),
-        ("Overloading", 44),
+        ("Overloading", 47),
         ("Recursion", 34),
         ("Return", 8),
         ("RedundantIsInstanceOf", 1), // maybe https://github.com/typelevel/cats/pull/3392#discussion_r434230415
@@ -219,7 +219,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Null", 1),
         ("Option2Iterable", 5),
         ("OptionPartial", 3),
-        ("Overloading", 115),
+        ("Overloading", 117),
         ("Recursion", 47),
         ("RedundantAsInstanceOf", 3), // https://github.com/scala/scala3/commit/cf18183c6b6edd0e4949
         ("RedundantConversions", 8),
