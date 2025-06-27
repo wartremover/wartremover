@@ -6,7 +6,16 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class FinalValTest extends AnyFunSuite with ResultAssertions {
   test("final val is disabled") {
+    object X {
+      final val v = 2
+    }
+
     Seq(
+      WartTestTraverser(FinalVal) {
+        class c {
+          final val v = X.v
+        }
+      },
       WartTestTraverser(FinalVal) {
         class c {
           final val v = 1
@@ -41,10 +50,29 @@ class FinalValTest extends AnyFunSuite with ResultAssertions {
         class c {
           final val v = 1.5f
         }
+      },
+      WartTestTraverser(FinalVal) {
+        class c {
+          final val v = classOf[Int]
+        }
       }
     ).foreach { result =>
       assertError(result)("final val is disabled - use non-final val or final def or add type ascription")
     }
+  }
+
+  test("not contant types are enabled") {
+    val result = WartTestTraverser(FinalVal) {
+      object X {
+        final val y: Int = 9
+      }
+      class c {
+        final val v1 = Option(2)
+        final val v2 = List(3)
+        final val v3 = X.y
+      }
+    }
+    assertEmpty(result)
   }
 
   test("final val alternatives are enabled") {
