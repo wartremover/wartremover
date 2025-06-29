@@ -11,6 +11,12 @@ class CaseClassTest extends AnyFunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+  test("case classes with type param still work") {
+    val result = WartTestTraverser(Unsafe) {
+      case class B[X](a: X)
+    }
+    assertEmpty(result)
+  }
   test("vararg case classes still work") {
     val result = WartTestTraverser(Unsafe) {
       case class A(a: Int*)
