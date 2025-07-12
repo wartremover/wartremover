@@ -1,6 +1,8 @@
 package org.wartremover
 package warts
 
+import scala.annotation.nowarn
+
 object StringPlusAny extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     import u.universe._
@@ -22,6 +24,7 @@ object StringPlusAny extends WartTraverser {
     }
 
     new u.Traverser {
+      @nowarn("msg=lineContent")
       override def traverse(tree: Tree): Unit = {
         tree match {
           // Ignore trees marked by SuppressWarnings
@@ -40,7 +43,10 @@ object StringPlusAny extends WartTraverser {
             super.traverse(tree)
 
           case t @ Apply(Select(lhs, Plus), List(rhs))
-              if isString(lhs) && !isStringExpression(rhs) && !isSynthetic(u)(t) =>
+              if isString(lhs) &&
+                !isStringExpression(rhs) &&
+                !isSynthetic(u)(t) &&
+                !tree.pos.lineContent.contains("s\"") =>
             error(u)(tree.pos, "Implicit conversion to string is disabled")
             super.traverse(tree)
 

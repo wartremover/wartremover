@@ -5,6 +5,17 @@ import org.wartremover.warts.StringPlusAny
 import org.scalatest.funsuite.AnyFunSuite
 
 class StringPlusAnyTest extends AnyFunSuite with ResultAssertions {
+  test("string interpolation") {
+    val result = WartTestTraverser(StringPlusAny) {
+      List(
+        s"a ${2} b",
+        s"${false} c",
+        s"d ${1.5}"
+      )
+    }
+    assertEmpty(result)
+  }
+
   test("Implicit conversion to string is disabled") {
     val result = WartTestTraverser(StringPlusAny) {
       "lol" + 1
