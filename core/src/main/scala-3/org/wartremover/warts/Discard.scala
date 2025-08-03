@@ -6,38 +6,35 @@ import scala.quoted.Quotes
 
 object Discard {
   object Either
-      extends Discard(
-        [a <: AnyKind] =>
-          (tpe: Type[a]) =>
-            tpe match {
-              case '[Either[?, ?]] =>
-                true
-              case _ =>
-                false
+      extends Discard([a <: AnyKind] =>
+        (tpe: Type[a]) =>
+          tpe match {
+            case '[Either[?, ?]] =>
+              true
+            case _ =>
+              false
           }
       )
 
   object Future
-      extends Discard(
-        [a <: AnyKind] =>
-          (tpe: Type[a]) =>
-            tpe match {
-              case '[scala.concurrent.Future[?]] =>
-                true
-              case _ =>
-                false
+      extends Discard([a <: AnyKind] =>
+        (tpe: Type[a]) =>
+          tpe match {
+            case '[scala.concurrent.Future[?]] =>
+              true
+            case _ =>
+              false
           }
       )
 
   object Try
-      extends Discard(
-        [a <: AnyKind] =>
-          (tpe: Type[a]) =>
-            tpe match {
-              case '[scala.util.Try[?]] =>
-                true
-              case _ =>
-                false
+      extends Discard([a <: AnyKind] =>
+        (tpe: Type[a]) =>
+          tpe match {
+            case '[scala.util.Try[?]] =>
+              true
+            case _ =>
+              false
           }
       )
 }
