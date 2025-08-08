@@ -56,7 +56,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     wartremoverErrors := Nil,
     wartremoverWarnings := Nil,
     wartremoverExcluded := Nil,
-    wartremoverClasspaths := Nil
+    wartremoverClasspaths := Def.uncached(Nil)
   )
 
   private[this] def runInspector(
@@ -154,7 +154,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
   }
 
   def scalacOptionSetting(k: TaskKey[Seq[String]]): Def.SettingsDefinition = {
-    k := {
+    k := Def.uncached {
       val prefix = "-Xplugin:"
       k.value.map { opt =>
         if (opt startsWith prefix) {
@@ -175,7 +175,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
   }
 
   def dependsOnLocalProjectWarts(p: Reference, configuration: Configuration = Compile): Def.SettingsDefinition = {
-    wartremoverClasspaths ++= {
+    wartremoverClasspaths ++= Def.uncached {
       val converter = fileConverter.value
       (p / configuration / fullClasspath).value.map(_.data).map { virtualFile =>
         val f = convertToFile(virtualFile, converter)
@@ -253,14 +253,14 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
   private[this] def inspectTask(x: Configuration): Seq[Def.Setting[?]] = Def.settings(
     x / wartremoverInspectOutputFile := None,
     wartremoverTaskSetting(x),
-    x / wartremoverInspect := Def.taskDyn {
+    x / wartremoverInspect := Def.uncached(Def.taskDyn {
       createInspectTask(
         x = x,
         warningWartNames = (x / wartremoverInspect / wartremoverWarnings).value,
         errorWartNames = (x / wartremoverInspect / wartremoverErrors).value,
         jarFiles = Nil,
       )
-    }.value
+    }.value)
   )
 
   private[wartremover] final case class CompileResult(jarBinary: Option[Seq[Byte]], wartNames: Seq[Wart])
@@ -494,7 +494,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     scalacOptionSetting(scalacOptions),
     scalacOptionSetting(Compile / scalacOptions),
     scalacOptionSetting(Test / scalacOptions),
-    scalacOptions ++= {
+    scalacOptions ++= Def.uncached {
       // use relative path
       // https://github.com/sbt/sbt/issues/6027
       wartremoverExcluded.value.distinct.map { c =>
@@ -504,7 +504,9 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
       }
     },
     wartremoverPluginJarsDir := {
-      if (VersionNumber(sbtVersion.value).matchesSemVer(SemanticSelector(">=1.4.0"))) {
+      if (
+        sbtVersion.value.startsWith("1") && VersionNumber(sbtVersion.value).matchesSemVer(SemanticSelector(">=1.4.0"))
+      ) {
         Some((LocalRootProject / crossTarget).value / "compiler_plugins")
       } else {
         None
@@ -512,7 +514,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     },
     inScope(Scope.ThisScope)(
       Seq(
-        wartremoverClasspaths ++= {
+        wartremoverClasspaths ++= Def.uncached {
           val d = dependencyResolution.value
           val jars = wartremoverDependencies.value.flatMap { m =>
             val moduleId = CrossVersion(
@@ -553,19 +555,19 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
           }
         ),
         derive(
-          scalacOptions ++= {
+          scalacOptions ++= Def.uncached {
             wartremoverErrors.value.distinct map (w => s"-P:wartremover:traverser:${w.clazz}")
           }
         ),
         derive(
-          scalacOptions ++= {
+          scalacOptions ++= Def.uncached {
             wartremoverWarnings.value.distinct filterNot (wartremoverErrors.value contains _) map (w =>
               s"-P:wartremover:only-warn-traverser:${w.clazz}"
             )
           }
         ),
         derive(
-          scalacOptions ++= {
+          scalacOptions ++= Def.uncached {
             wartremoverClasspaths.value.distinct map (cp => s"-P:wartremover:cp:$cp")
           }
         )
