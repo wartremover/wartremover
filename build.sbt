@@ -39,7 +39,7 @@ lazy val allScalaVersions = Seq(
   "3.7.2",
 ) :+ nightlyScala3
 
-def Scala3forSbt2 = "3.6.4"
+def Scala3forSbt2 = "3.7.2"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
@@ -400,7 +400,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
         case "2.12" =>
           sbtVersion.value
         case _ =>
-          "2.0.0-M4"
+          "2.0.0-M5"
       }
     },
     libraryDependencies ++= {

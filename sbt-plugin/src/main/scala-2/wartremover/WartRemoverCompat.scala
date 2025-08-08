@@ -13,6 +13,10 @@ import scala.util.Using
 private[wartremover] trait WartRemoverCompat { self: WartRemover.type =>
   import self.autoImport.*
 
+  private[wartremover] implicit class DefOps(self: Def.type) {
+    def uncached[A](a: A): A = a
+  }
+
   private[wartremover] def convertToFile(x: File, fileConverter: FileConverter): File =
     x
 
