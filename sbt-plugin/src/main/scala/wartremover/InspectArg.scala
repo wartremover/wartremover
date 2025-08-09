@@ -26,11 +26,11 @@ private[wartremover] object InspectWart {
   }
   private def fromFile(x: File): Seq[String] = {
     if (x.isFile) {
-      Source.fromFile(x)(scala.io.Codec.UTF8).getLines().mkString("\n") :: Nil
+      Source.fromFile(x)(using scala.io.Codec.UTF8).getLines().mkString("\n") :: Nil
     } else if (x.isDirectory) {
       x.listFiles(_.isFile)
         .map { f =>
-          Source.fromFile(f)(scala.io.Codec.UTF8).getLines().mkString("\n")
+          Source.fromFile(f)(using scala.io.Codec.UTF8).getLines().mkString("\n")
         }
         .toList
     } else {
@@ -48,7 +48,7 @@ private[wartremover] object InspectWart {
         case null =>
           fromFile(file(value.toString))
         case _ =>
-          Source.fromURL(value.toURL)(scala.io.Codec.UTF8).getLines().mkString("\n") :: Nil
+          Source.fromURL(value.toURL)(using scala.io.Codec.UTF8).getLines().mkString("\n") :: Nil
       }
     }
   }
