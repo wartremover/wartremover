@@ -329,7 +329,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
           val Seq(compiledJar) = (dir / "target").listFiles(f => f.isFile && f.getName.endsWith(".jar")).toList
           IO.readBytes(compiledJar).toSeq
         }
-      }(ExecutionContext.global)
+      }(using ExecutionContext.global)
     )
 
     Await.result(res, 2.minutes)
