@@ -13,7 +13,7 @@ jobs:
       with:
         app-id: 89668
         private-key: ${{ secrets.WARTREMOVER_BOT_KEY }}
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         token: ${{ steps.generate_token.outputs.token }}
     - run: sudo apt-get install -y libxml2-utils
