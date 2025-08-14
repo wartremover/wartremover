@@ -474,7 +474,6 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
         }
         .toList
       val exclude: Set[(String, String)] = Set(
-        "input-task",
         "inspector",
         "scoverage",
       ).map("wartremover" -> _)
