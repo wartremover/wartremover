@@ -473,13 +473,22 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
           }
         }
         .toList
+      val log = streams.value.log
+      values.foreach { case (dir1, dir2) =>
+        val base = sbtTestDirectory.value / dir1 / dir2
+        val forSbt2 = base / "test-sbt-2"
+        if (forSbt2.isFile) {
+          val to = base / "test"
+          log.info(s"move ${forSbt2} to ${to}")
+          IO.move(forSbt2, to)
+        }
+      }
       val exclude: Set[(String, String)] = Set(
-        "inspector",
         "scoverage",
       ).map("wartremover" -> _)
       val args = values.filterNot(exclude).map { case (x1, x2) => s"${x1}/${x2}" }
       val arg = args.mkString(" ", " ", "")
-      streams.value.log.info("scripted" + arg)
+      log.info("scripted" + arg)
       scripted.toTask(arg)
     }.value,
     (Compile / sourceGenerators) += Def.task {
