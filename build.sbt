@@ -362,7 +362,7 @@ val wartClasses: Def.Initialize[Task[Seq[String]]] = Def.taskDyn {
       }
       .flatMap(c =>
         try {
-          List[Class[_]](Class.forName(c, false, loader))
+          List[Class[?]](Class.forName(c, false, loader))
         } catch {
           case _: ClassNotFoundException =>
             Nil
