@@ -38,7 +38,7 @@ lazy val allScalaVersions = Seq(
   "3.7.0",
   "3.7.1",
   "3.7.2",
-  "3.7.3-RC2",
+  "3.7.3-RC3",
 ) :+ nightlyScala3
 
 def Scala3forSbt2 = "3.7.2"
