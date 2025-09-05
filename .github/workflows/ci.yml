@@ -14,7 +14,7 @@ jobs:
           - name: "format"
             java: 8
             os: ubuntu-latest
-          - name: "test-cross"
+          - name: "test"
             java: 8
             os: ubuntu-latest
           - name: "scripted"
@@ -53,7 +53,7 @@ jobs:
             sbt -v scalafmtSbt "+ scalafmtAll"
             git diff --exit-code
             ;;
-          "test-cross")
+          "test")
             sbt -v Test/compile test
             ;;
           "scripted")
@@ -61,9 +61,6 @@ jobs:
             ;;
           "sbt2")
             sbt -v publishLocal sbt-pluginJVM3/scriptedTestSbt2
-            ;;
-          "test")
-            sbt -v "all coreJVM3_3_6/test coreJVM2_13_16/test coreJVM2_12_20/test"
             ;;
           *)
             echo "unknown job"
