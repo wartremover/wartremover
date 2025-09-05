@@ -10,7 +10,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / sbtPluginPublishLegacyMavenStyle := false
 
-def nightlyScala3: String = "3.8.0-RC1-bin-20250822-658c8bd-NIGHTLY"
+def nightlyScala3: String = "3.8.0-RC1-bin-20250905-48bc891-NIGHTLY"
 
 // compiler plugin should be fully cross-versioned. e.g.
 // - https://github.com/ghik/silencer/issues/31
@@ -39,7 +39,13 @@ lazy val allScalaVersions = Seq(
   "3.7.1",
   "3.7.2",
   "3.7.3-RC3",
-) :+ nightlyScala3
+) ++ {
+  if (scala.util.Properties.isJavaAtLeast("17")) {
+    List(nightlyScala3)
+  } else {
+    Nil
+  }
+}
 
 def Scala3forSbt2 = "3.7.2"
 
@@ -72,6 +78,13 @@ lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
   ),
+  resolvers ++= {
+    if (scalaVersion.value == nightlyScala3) {
+      Seq("scala-nightly" at "https://repo.scala-lang.org/artifactory/maven-nightlies")
+    } else {
+      Nil
+    }
+  },
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.12" =>
