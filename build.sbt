@@ -118,11 +118,15 @@ lazy val commonSettings = Def.settings(
   publishMavenStyle := true,
   Test / publishArtifact := false,
   (Compile / doc / scalacOptions) ++= {
+    val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
     if (scalaBinaryVersion.value == "3") {
-      Nil // TODO
+      Seq(
+        "-source-links:github://wartremover/wartremover",
+        "-revision",
+        t
+      )
     } else {
       val base = (LocalRootProject / baseDirectory).value.getAbsolutePath
-      val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
       Seq(
         "-sourcepath",
         base,
