@@ -80,13 +80,13 @@ Apart from using the sbt plugin to set it up for your project, WartRemover can a
 
 ### Command-line
 
-Compile the command-line tool via `sbt "++ 2.12.20" core/assembly` and then use the provided `wartremover` shell script:
+Compile the command-line tool via `sbt assembly` and then use the provided `wartremover` shell script:
 
-    $ sbt "++ 2.12.20" core/assembly
+    $ sbt assembly
     
       ...
     
-    $ ./wartremover -traverser org.wartremover.warts.Unsafe core/src/main/scala/wartremover/Plugin.scala
+    $ ./wartremover -traverser org.wartremover.warts.Unsafe core/src/main/scala-2/org/wartremover/Plugin.scala
     core/src/main/scala/wartremover/Plugin.scala:15: error: var is disabled
       private[this] var traversers: List[WartTraverser] = List.empty
                         ^
