@@ -54,7 +54,10 @@ jobs:
             git diff --exit-code
             ;;
           "test")
-            sbt -v Test/compile test
+            # test assembly for brew
+            # https://github.com/Homebrew/homebrew-core/blob/a6f4331fd257cb0fbb/Formula/w/wartremover.rb
+            echo "class A" > tmp_scala
+            sbt -v Test/compile test assembly && ./wartremover -traverser org.wartremover.warts.Unsafe tmp_scala
             ;;
           "scripted")
             sbt -v publishLocal "sbt-pluginJVM2_12/scripted wartremover/*${{matrix.test_index}}of3"

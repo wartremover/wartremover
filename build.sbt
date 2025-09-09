@@ -243,13 +243,13 @@ val coreSettings = Def.settings(
         Nil
     }
   },
-  assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
 )
 
 lazy val coreCrossBinary = projectMatrix
   .in(file("core-cross-binary"))
   .withId("core-cross-binary")
   .defaultAxes()
+  .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions = Seq(latestScala212, latestScala213, latestScala3))
   .settings(
     coreSettings,
@@ -275,6 +275,7 @@ lazy val inspectorCommon = projectMatrix
     "inspector-common"
   )
   .defaultAxes()
+  .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions = Seq(latestScala3, latestScala212))
   .settings(
     commonSettings,
@@ -285,6 +286,7 @@ lazy val inspector = projectMatrix
   .in(file("inspector"))
   .withId("inspector")
   .defaultAxes()
+  .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions = Seq(latestScala3))
   .settings(
     commonSettings,
@@ -357,7 +359,13 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
       // workaround for https://github.com/sbt/sbt/issues/5097
       target.value / s"scala-${scalaVersion.value}"
     },
-    assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
+    assembly / assemblyOutputPath := {
+      if (latestScala213 == scalaVersion.value) {
+        file("./wartremover-assembly.jar")
+      } else {
+        (assembly / assemblyOutputPath).value
+      }
+    }
   )
   .dependsOn(testMacros % "test->compile")
 
@@ -405,6 +413,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("sbt-plugin"))
   .withId("sbt-plugin")
   .defaultAxes()
+  .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions =
     Seq(
       latestScala212,
@@ -550,6 +559,7 @@ lazy val testMacros: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("test-macros"))
   .withId("test-macros")
   .defaultAxes()
+  .disablePlugins(AssemblyPlugin)
   .jvmPlatform(
     scalaVersions = allScalaVersions,
     crossVersion = CrossVersion.full,
