@@ -359,12 +359,14 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
       // workaround for https://github.com/sbt/sbt/issues/5097
       target.value / s"scala-${scalaVersion.value}"
     },
-    assembly / assemblyOutputPath := {
-      if (latestScala213 == scalaVersion.value) {
-        file("./wartremover-assembly.jar")
-      } else {
-        (assembly / assemblyOutputPath).value
-      }
+  )
+  .configure(p =>
+    if (p.id == "coreJVM2_13_16") {
+      p.settings(
+        assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
+      )
+    } else {
+      p.disablePlugins(AssemblyPlugin)
     }
   )
   .dependsOn(testMacros % "test->compile")
