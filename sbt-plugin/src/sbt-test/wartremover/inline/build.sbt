@@ -1,7 +1,7 @@
 lazy val commonSettings = Def.settings(
-  scalaVersion := "3.5.1",
+  scalaVersion := "3.7.3",
   ThisBuild / wartremoverCrossVersion := CrossVersion.binary,
-  libraryDependencies += "org.playframework" %% "play-json" % "3.0.4",
+  libraryDependencies += "org.playframework" %% "play-json" % "3.0.5",
 )
 
 lazy val myWarts = project
