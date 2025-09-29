@@ -431,7 +431,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
         case "2.12" =>
           sbtVersion.value
         case _ =>
-          "2.0.0-RC5"
+          "2.0.0-RC6"
       }
     },
     libraryDependencies ++= {
