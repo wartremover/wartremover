@@ -25,7 +25,7 @@ lazy val allScalaVersions = Seq(
   "2.13.14",
   "2.13.15",
   "2.13.16",
-  "2.13.17-M1",
+  "2.13.17",
   "3.3.3",
   "3.3.4",
   "3.3.5",
@@ -362,7 +362,7 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
     },
   )
   .configure(p =>
-    if (p.id == "coreJVM2_13_16") {
+    if (p.id == "coreJVM2_13_17") {
       p.settings(
         assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
       )
