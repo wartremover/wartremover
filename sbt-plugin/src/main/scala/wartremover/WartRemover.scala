@@ -50,7 +50,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
   override def globalSettings = Seq(
     Global / concurrentRestrictions += Tags.limit(WartremoverTag, 2),
     wartremoverInspectScalaVersion := {
-      "3.3.6"
+      "3.3.7"
     },
     wartremoverInspectSettings := Nil,
     excludeLintKeys += wartremoverInspectOutputFile,
