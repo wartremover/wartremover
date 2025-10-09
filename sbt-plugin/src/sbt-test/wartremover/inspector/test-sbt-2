@@ -1,7 +1,7 @@
 > show wartremoverInspect
 $ must-mirror warts-main.json check1.json
-$ exists target/out/jvm/scala-3.3.6/wartremover-inspector-test/backend/example/Main.class
--$ exists target/out/jvm/scala-3.3.6/wartremover-inspector-test/test-backend
+$ exists target/out/jvm/scala-3.3.7/wartremover-inspector-test/backend/example/Main.class
+-$ exists target/out/jvm/scala-3.3.7/wartremover-inspector-test/test-backend
 
 > set Compile / wartremoverInspect / wartremoverWarnings := Nil
 > set Compile / wartremoverInspect / wartremoverErrors := Warts.all
@@ -13,7 +13,7 @@ $ must-mirror warts-main.json check2.json
 -$ exists warts-test.json
 > show Test/wartremoverInspect
 $ must-mirror warts-test.json check3.json
-$ exists target/out/jvm/scala-3.3.6/wartremover-inspector-test/test-backend
+$ exists target/out/jvm/scala-3.3.7/wartremover-inspector-test/test-backend
 
 # test wartremoverFailIfWartLoadError
 > set Compile / wartremoverInspect / wartremoverWarnings := Warts.all
