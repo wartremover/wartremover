@@ -249,7 +249,7 @@ val coreSettings = Def.settings(
 lazy val coreCrossBinary = projectMatrix
   .in(file("core-cross-binary"))
   .withId("core-cross-binary")
-  .defaultAxes()
+  .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions = Seq(latestScala212, latestScala213, latestScala3))
   .settings(
@@ -275,7 +275,7 @@ lazy val inspectorCommon = projectMatrix
   .withId(
     "inspector-common"
   )
-  .defaultAxes()
+  .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions = Seq(latestScala3, latestScala212))
   .settings(
@@ -286,7 +286,7 @@ lazy val inspectorCommon = projectMatrix
 lazy val inspector = projectMatrix
   .in(file("inspector"))
   .withId("inspector")
-  .defaultAxes()
+  .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions = Seq(latestScala3))
   .settings(
@@ -328,7 +328,7 @@ lazy val inspector = projectMatrix
 lazy val core: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("core"))
   .withId("core")
-  .defaultAxes()
+  .defaultAxes(VirtualAxis.jvm)
   .jvmPlatform(
     scalaVersions = allScalaVersions,
     crossVersion = CrossVersion.full
@@ -362,7 +362,7 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
     },
   )
   .configure(p =>
-    if (p.id == "coreJVM2_13_17") {
+    if (p.id == "core2_13_17") {
       p.settings(
         assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
       )
@@ -415,7 +415,7 @@ val scoverage = "org.scoverage" % "sbt-scoverage" % "2.3.1" % "runtime" // for s
 lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("sbt-plugin"))
   .withId("sbt-plugin")
-  .defaultAxes()
+  .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions =
     Seq(
@@ -555,13 +555,13 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
   )
   .enablePlugins(ScriptedPlugin)
 
-val `sbt-pluginJVM3` = sbtPlug.jvm(Scala3forSbt2).dependsOn(inspectorCommon.jvm(latestScala3))
-val `sbt-pluginJVM2_12` = sbtPlug.jvm(latestScala212).dependsOn(inspectorCommon.jvm(latestScala212))
+val `sbt-plugin3` = sbtPlug.jvm(Scala3forSbt2).dependsOn(inspectorCommon.jvm(latestScala3))
+val `sbt-plugin2_12` = sbtPlug.jvm(latestScala212).dependsOn(inspectorCommon.jvm(latestScala212))
 
 lazy val testMacros: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("test-macros"))
   .withId("test-macros")
-  .defaultAxes()
+  .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(
     scalaVersions = allScalaVersions,

@@ -60,10 +60,10 @@ jobs:
             sbt -v Test/compile test assembly && ./wartremover -traverser org.wartremover.warts.Unsafe tmp_scala
             ;;
           "scripted")
-            sbt -v publishLocal "sbt-pluginJVM2_12/scripted wartremover/*${{matrix.test_index}}of3"
+            sbt -v publishLocal "sbt-plugin2_12/scripted wartremover/*${{matrix.test_index}}of3"
             ;;
           "sbt2")
-            sbt -v publishLocal sbt-pluginJVM3/scriptedTestSbt2
+            sbt -v publishLocal sbt-plugin3/scriptedTestSbt2
             ;;
           *)
             echo "unknown job"
