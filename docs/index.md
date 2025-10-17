@@ -25,6 +25,6 @@ Wartremover is released under the [Apache 2.0](https://choosealicense.com/licens
 
 ## Where to Get Help
 
-Feel free to ask questions in Wartremover's [Gitter](https://gitter.im/wartremover/Lobby#) channel.
+Feel free to ask questions in Wartremover's [GitHub Discussions](https://github.com/wartremover/wartremover/discussions).
 
 Issues are managed using [GitHub Issues](https://github.com/wartremover/wartremover/issues).
