@@ -81,7 +81,7 @@ lazy val baseSettings = Def.settings(
   ),
   resolvers ++= {
     if (scalaVersion.value == nightlyScala3) {
-      Seq("scala-nightly" at "https://repo.scala-lang.org/artifactory/maven-nightlies")
+      Seq(Resolver.scalaNightlyRepository)
     } else {
       Nil
     }
