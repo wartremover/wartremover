@@ -1,6 +1,6 @@
 addSbtPlugin("com.eed3si9n" % "sbt-projectmatrix" % "0.11.0")
 
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.6")
 
 // for homebrew
 // https://github.com/Homebrew/homebrew-core/blob/a6f4331fd257cb0fbb7475b535142a41b2353286/Formula/w/wartremover.rb
