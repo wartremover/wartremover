@@ -441,7 +441,6 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
             Defaults.sbtPluginExtra(scoverage, (pluginCrossBuild / sbtBinaryVersion).value, scalaV)
           )
         case _ =>
-          // TODO: sbt-scoverage for sbt 2.x
           Nil
       }
     },
@@ -513,10 +512,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
           IO.move(forSbt2, to)
         }
       }
-      val exclude: Set[(String, String)] = Set(
-        "scoverage",
-      ).map("wartremover" -> _)
-      val args = values.filterNot(exclude).map { case (x1, x2) => s"${x1}/${x2}" }
+      val args = values.map { case (x1, x2) => s"${x1}/${x2}" }
       val arg = args.mkString(" ", " ", "")
       log.info("scripted" + arg)
       scripted.toTask(arg)
