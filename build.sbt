@@ -410,7 +410,7 @@ val wartClasses: Def.Initialize[Task[Seq[String]]] = Def.taskDyn {
   }
 }
 
-val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.0" % "runtime" // for scala-steward
+val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.1" % "runtime" // for scala-steward
 
 lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("sbt-plugin"))
