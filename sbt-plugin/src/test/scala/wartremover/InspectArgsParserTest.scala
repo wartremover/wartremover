@@ -168,6 +168,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "Option2Iterable",
         "OptionPartial",
         "Overloading",
+        "PartialFunctionApply",
         "PlatformDefault",
         "Product",
         "Recursion",
@@ -274,6 +275,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "PartialFunctionApply"
     ).map(
       "org.wartremover.warts." + _
     )
