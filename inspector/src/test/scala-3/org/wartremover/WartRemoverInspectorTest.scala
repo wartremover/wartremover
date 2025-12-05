@@ -63,7 +63,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       }
       .filterNot(exclude)
       .toList
-    assert(values.size == 74)
+    assert(values.size == 75)
     values
   }
 
@@ -190,6 +190,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("Option2Iterable", 1),
         ("OptionPartial", 22),
         ("Overloading", 47),
+        ("PartialFunctionApply", 15),
         ("Recursion", 34),
         ("Return", 8),
         ("RedundantIsInstanceOf", 1), // maybe https://github.com/typelevel/cats/pull/3392#discussion_r434230415
