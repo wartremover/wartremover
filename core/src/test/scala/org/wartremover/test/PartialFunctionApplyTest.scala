@@ -39,6 +39,20 @@ class PartialFunctionApplyTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("can use after `isDefinedAt`") {
+    val pf2: PartialFunction[Int, Int] = { case _ => 3 }
+    val result = WartTestTraverser(PartialFunctionApply) {
+      def f(x: Int): Int = x match {
+        case _ if pf2.isDefinedAt(x) =>
+          pf2(x)
+        case _ =>
+          6
+      }
+      def pf3: PartialFunction[Int, Int] = { case x if pf2.isDefinedAt(x) => pf2(x) }
+    }
+    assertEmpty(result)
+  }
+
   test("PartialFunctionApply wart obeys SuppressWarnings") {
     val result = WartTestTraverser(PartialFunctionApply) {
       @SuppressWarnings(Array("org.wartremover.warts.PartialFunctionApply"))
