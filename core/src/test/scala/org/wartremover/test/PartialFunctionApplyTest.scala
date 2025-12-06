@@ -30,6 +30,15 @@ class PartialFunctionApplyTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("can use try catch") {
+    val pf2: PartialFunction[Throwable, Int] = { case _ => 3 }
+    val result = WartTestTraverser(PartialFunctionApply) {
+      try 2
+      catch pf2
+    }
+    assertEmpty(result)
+  }
+
   test("PartialFunctionApply wart obeys SuppressWarnings") {
     val result = WartTestTraverser(PartialFunctionApply) {
       @SuppressWarnings(Array("org.wartremover.warts.PartialFunctionApply"))

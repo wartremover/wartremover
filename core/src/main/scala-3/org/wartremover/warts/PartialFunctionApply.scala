@@ -11,6 +11,11 @@ object PartialFunctionApply extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
+          case If(
+                Apply(Select(x1, "isDefinedAt"), x2 :: Nil),
+                Apply(Select(x3, "apply"), x4 :: Nil),
+                _
+              ) if (x1.symbol == x3.symbol) && (x2.symbol == x4.symbol) =>
           case Apply(Select(obj, "apply"), _ :: Nil)
               if obj.tpe.derivesFrom(pfType) && !obj.tpe.derivesFrom(seqType) && !obj.tpe.derivesFrom(mapType) =>
             error(tree.pos, "PartialFunction#apply is disabled")
