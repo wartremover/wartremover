@@ -25,7 +25,7 @@ object PartialFunctionApply extends WartTraverser with PartialFunctionApplyCompa
                 Apply(Select(Ident(x3), TermName("apply")), Ident(x4) :: Nil)
               ) if (x1 == x3) && (x2 == x4) =>
           case Apply(Select(obj, TermName("apply")), _ :: Nil)
-              if (obj.tpe.typeConstructor <:< pfType) && !(obj.tpe.typeConstructor <:< seqType) && !(obj.tpe.typeConstructor <:< mapType) =>
+              if (obj.tpe.dealias.typeConstructor <:< pfType) && !(obj.tpe.dealias.typeConstructor <:< seqType) && !(obj.tpe.dealias.typeConstructor <:< mapType) =>
             error(u)(tree.pos, "PartialFunction#apply is disabled")
             super.traverse(tree)
           case _ =>
