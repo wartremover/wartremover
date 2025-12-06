@@ -19,13 +19,55 @@ class PartialFunctionApplyTest extends AnyFunSuite with ResultAssertions {
 
   test("can use Seq#apply and Map#apply") {
     val result = WartTestTraverser(PartialFunctionApply) {
-      collection.Map("a" -> "b").apply("c")
-      collection.Seq.empty[Int].apply(8)
-      collection.immutable.Map("a" -> "b").apply("c")
-      collection.immutable.Seq.empty[Int].apply(8)
-      collection.mutable.Map("a" -> "b").apply("c")
-      collection.mutable.Seq.empty[Int].apply(8)
-      collection.immutable.List.empty[Int].apply(8)
+      scala.sys.props("")
+      scala.sys.props.apply("")
+      scala.sys.env("")
+      scala.sys.env.apply("")
+
+      type MyStringMap = Map[String, String]
+      type MyStringSeq = Seq[String]
+
+      def m1(x: collection.Map[String, String]): String = {
+        x("")
+        x.apply("")
+      }
+      def m2(x: collection.immutable.Map[String, String]): String = {
+        x("")
+        x.apply("")
+      }
+      def m3(x: collection.mutable.Map[String, String]): String = {
+        x("")
+        x.apply("")
+      }
+      def m4(x: MyStringMap): String = {
+        x("")
+        x.apply("")
+      }
+
+      def s1(x: collection.Seq[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s2(x: collection.immutable.Seq[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s3(x: collection.mutable.Seq[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s4(x: List[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s5(x: Vector[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s6(x: MyStringSeq): String = {
+        x(2)
+        x.apply(2)
+      }
     }
     assertEmpty(result)
   }
