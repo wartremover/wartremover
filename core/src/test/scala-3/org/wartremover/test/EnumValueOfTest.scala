@@ -23,6 +23,13 @@ class EnumValueOfTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("not auto generated valueOf") {
+    val result = WartTestTraverser(EnumValueOf) {
+      EnumValueOfTest.D.valueOf("")
+    }
+    assertEmpty(result)
+  }
+
   test("SuppressWarnings") {
     val result = WartTestTraverser(EnumValueOf) {
       @SuppressWarnings(Array("org.wartremover.warts.EnumValueOf"))
@@ -43,5 +50,12 @@ object EnumValueOfTest {
   private object C {
     def valueOf(x: Int): C = C1
     def valueOf(s1: String, s2: String): C = C1
+  }
+
+  private enum D {
+    case D1(x: String)
+  }
+  private object D {
+    def valueOf(s: String): D = D1(s)
   }
 }
