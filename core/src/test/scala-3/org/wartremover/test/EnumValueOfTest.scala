@@ -23,6 +23,14 @@ class EnumValueOfTest extends AnyFunSuite with ResultAssertions {
     assertEmpty(result)
   }
 
+  test("overload") {
+    val result = WartTestTraverser(EnumValueOf) {
+      EnumValueOfTest.C.valueOf(6)
+      EnumValueOfTest.C.valueOf("x1", "x2")
+    }
+    assertEmpty(result)
+  }
+
   test("SuppressWarnings") {
     val result = WartTestTraverser(EnumValueOf) {
       @SuppressWarnings(Array("org.wartremover.warts.EnumValueOf"))
@@ -35,6 +43,14 @@ class EnumValueOfTest extends AnyFunSuite with ResultAssertions {
 object EnumValueOfTest {
   private enum A {
     case A1
+  }
+
+  private enum C {
+    case C1
+  }
+  private object C {
+    def valueOf(x: Int): C = C1
+    def valueOf(s1: String, s2: String): C = C1
   }
 
   private object B {
