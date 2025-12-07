@@ -206,13 +206,6 @@ val coreSettings = Def.settings(
     }.sum
     s"-Dplease-recompile-because-main-source-files-changed-${hash}"
   },
-  Test / scalacOptions ++= {
-    if (scalaBinaryVersion.value == "3") {
-      Seq("-source:3.0-migration")
-    } else {
-      Nil
-    }
-  },
   libraryDependencies ++= {
     Seq(
       "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test",
