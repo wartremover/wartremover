@@ -137,6 +137,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "DefaultArguments",
         "DropTakeToSlice",
         "EitherProjectionPartial",
+        "EnumValueOf",
         "Enumeration",
         "Equals",
         "FilterEmpty",
@@ -275,6 +276,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "EnumValueOf"
     ).map(
       "org.wartremover.warts." + _
     )

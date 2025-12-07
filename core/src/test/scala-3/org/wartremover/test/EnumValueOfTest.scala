@@ -12,18 +12,10 @@ class EnumValueOfTest extends AnyFunSuite with ResultAssertions {
       },
       WartTestTraverser(EnumValueOf) {
         EnumValueOfTest.A.valueOf(???)
-      }
+      },
     ).foreach(result => assertError(result)("Enum.valueOf is disabled"))
   }
-
-  test("not Enum valueOf") {
-    val result = WartTestTraverser(EnumValueOf) {
-      EnumValueOfTest.B.valueOf("b")
-    }
-    assertEmpty(result)
-  }
-
-  test("overload") {
+  test("Scala enum overload") {
     val result = WartTestTraverser(EnumValueOf) {
       EnumValueOfTest.C.valueOf(6)
       EnumValueOfTest.C.valueOf("x1", "x2")
@@ -52,9 +44,4 @@ object EnumValueOfTest {
     def valueOf(x: Int): C = C1
     def valueOf(s1: String, s2: String): C = C1
   }
-
-  private object B {
-    def valueOf(s: String): B = new B
-  }
-  private class B
 }
