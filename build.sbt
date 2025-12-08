@@ -10,7 +10,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / sbtPluginPublishLegacyMavenStyle := false
 
-def nightlyScala3: String = "3.8.1-RC1-bin-20251207-68396ca-NIGHTLY"
+def nightlyScala3: String = "3.8.1-RC1-bin-20251208-0bb0433-NIGHTLY"
 
 // compiler plugin should be fully cross-versioned. e.g.
 // - https://github.com/ghik/silencer/issues/31
