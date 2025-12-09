@@ -334,23 +334,6 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
     crossSrcSetting(Compile),
     crossSrcSetting(Test),
     publish / skip := (scalaVersion.value == nightlyScala3),
-    Test / sources := {
-      val src = (Test / sources).value
-      if (scalaBinaryVersion.value != "3") {
-        src
-      } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
-        // maybe https://github.com/scala/scala3/pull/15642
-        val exclude = Set[String](
-          "AnyVal",
-        ).map(_ + "Test.scala")
-        src.filterNot(f => exclude(f.getName))
-      } else {
-        val exclude = Set[String](
-          "OrTypeLeastUpperBound",
-        ).map(_ + "Test.scala")
-        src.filterNot(f => exclude(f.getName))
-      }
-    },
     crossTarget := {
       // workaround for https://github.com/sbt/sbt/issues/5097
       target.value / s"scala-${scalaVersion.value}"
