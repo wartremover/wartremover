@@ -209,7 +209,6 @@ val coreSettings = Def.settings(
   libraryDependencies ++= {
     Seq(
       "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test",
-      "org.mockito" % "mockito-core" % "4.11.0" % "test",
     )
   },
   scalaCompilerDependency,
@@ -342,7 +341,6 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
       } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
         // maybe https://github.com/scala/scala3/pull/15642
         val exclude = Set[String](
-          "Matchable",
           "AnyVal",
         ).map(_ + "Test.scala")
         src.filterNot(f => exclude(f.getName))
