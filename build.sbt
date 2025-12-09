@@ -52,7 +52,7 @@ lazy val allScalaVersions = Seq(
   }
 }
 
-def Scala3forSbt2 = "3.7.2"
+def Scala3forSbt2 = "3.7.4"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
