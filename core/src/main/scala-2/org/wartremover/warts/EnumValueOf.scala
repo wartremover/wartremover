@@ -11,7 +11,7 @@ object EnumValueOf extends WartTraverser {
           case t @ Apply(Select(obj, TermName("valueOf")), arg :: Nil)
               if (obj.tpe.typeSymbol.companion == t.tpe.typeSymbol) && (
                 arg.tpe <:< typeOf[String]
-              ) && (t.tpe <:< typeOf[java.lang.Enum[?]]) =>
+              ) && t.tpe.baseClasses.exists(_.fullName == "java.lang.Enum") =>
             error(u)(tree.pos, "Enum.valueOf is disabled")
           case _ =>
             super.traverse(tree)
