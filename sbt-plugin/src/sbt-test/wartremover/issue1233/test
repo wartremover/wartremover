@@ -1,0 +1,4 @@
+> print Compile/compile/scalacOptions
+> print Test/compile/scalacOptions
+> check
+> compile
