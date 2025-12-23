@@ -137,6 +137,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "DefaultArguments",
         "DropTakeToSlice",
         "EitherProjectionPartial",
+        "EnumValueOf",
         "Enumeration",
         "Equals",
         "FilterEmpty",
@@ -168,6 +169,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "Option2Iterable",
         "OptionPartial",
         "Overloading",
+        "PartialFunctionApply",
         "PlatformDefault",
         "Product",
         "Recursion",
@@ -230,7 +232,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
   }
 
   test("wart names") {
-    val v = "3.4.1"
+    val v = "3.5.0"
     val jars = coursier.Fetch().addDependencies("org.wartremover" % "wartremover_3" % v).run()
     val jar = jars.find(_.getName == s"wartremover_3-${v}.jar").getOrElse(sys.error(s"not found ${jars}"))
     val classes = WartRemover.getAllClassNamesInJar(jar)

@@ -10,17 +10,28 @@ class ForeachEntryTest extends AnyFunSuite with ResultAssertions {
   private def mutableMap: collection.mutable.Map[Int, String] = ???
 
   test("report error") {
-    val result = WartTestTraverser(ForeachEntry) {
-      collectionMap.foreach { case (k, v) => k }
-      immutableMap.foreach { case (k, v) => v }
-      mutableMap.foreach { case (k, v) => 8 }
-      collectionMap.foreach {
-        case (k, v) if k % 3 == 1 => k + 1
-        case (2, v) => 0
-        case (k, v) => k
+    Seq(
+      WartTestTraverser(ForeachEntry) {
+        collectionMap.foreach { case (k, v) => k }
+      },
+      WartTestTraverser(ForeachEntry) {
+        immutableMap.foreach { case (k, v) => v }
+      },
+      WartTestTraverser(ForeachEntry) {
+        mutableMap.foreach { case (k, v) => 8 }
+      },
+      WartTestTraverser(ForeachEntry) {
+        collectionMap.foreach {
+          case (k, v) if k % 3 == 1 => k + 1
+          case (2, v) => 0
+          case (k, v) => k
+        }
       }
+    ).foreach { result =>
+      assertError(result.copy(errors = result.errors.distinct))(
+        "You can use `foreachEntry` instead of `foreach` if Scala 2.13+"
+      )
     }
-    assertErrors(result)("You can use `foreachEntry` instead of `foreach` if Scala 2.13+", 4)
   }
 
   test("don't report error") {

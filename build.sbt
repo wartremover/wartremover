@@ -10,7 +10,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / sbtPluginPublishLegacyMavenStyle := false
 
-def nightlyScala3: String = "3.8.0-RC1-bin-20251027-520668f-NIGHTLY"
+def nightlyScala3: String = "3.8.1-RC1-bin-20251222-082ba9e-NIGHTLY"
 
 // compiler plugin should be fully cross-versioned. e.g.
 // - https://github.com/ghik/silencer/issues/31
@@ -18,37 +18,33 @@ def nightlyScala3: String = "3.8.0-RC1-bin-20251027-520668f-NIGHTLY"
 //
 // add more scala versions when found binary and/or source incompatibilities in scala-compiler
 lazy val allScalaVersions = Seq(
-  "2.12.18",
   "2.12.19",
   "2.12.20",
-  "2.12.21-M2",
-  "2.13.14",
-  "2.13.15",
+  "2.12.21",
   "2.13.16",
   "2.13.17",
-  "3.3.3",
-  "3.3.4",
+  "2.13.18",
   "3.3.5",
   "3.3.6",
   "3.3.7",
   "3.4.3",
   "3.5.2",
-  "3.6.3",
   "3.6.4",
-  "3.7.0",
-  "3.7.1",
   "3.7.2",
   "3.7.3",
-  "3.7.4-RC2",
+  "3.7.4",
 ) ++ {
   if (scala.util.Properties.isJavaAtLeast("17")) {
-    List(nightlyScala3)
+    List(
+      "3.8.0-RC4",
+      nightlyScala3
+    )
   } else {
     Nil
   }
 }
 
-def Scala3forSbt2 = "3.7.2"
+def Scala3forSbt2 = "3.7.4"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
@@ -81,7 +77,7 @@ lazy val baseSettings = Def.settings(
   ),
   resolvers ++= {
     if (scalaVersion.value == nightlyScala3) {
-      Seq("scala-nightly" at "https://repo.scala-lang.org/artifactory/maven-nightlies")
+      Seq(Resolver.scalaNightlyRepository)
     } else {
       Nil
     }
@@ -202,17 +198,9 @@ val coreSettings = Def.settings(
     }.sum
     s"-Dplease-recompile-because-main-source-files-changed-${hash}"
   },
-  Test / scalacOptions ++= {
-    if (scalaBinaryVersion.value == "3") {
-      Seq("-source:3.0-migration")
-    } else {
-      Nil
-    }
-  },
   libraryDependencies ++= {
     Seq(
       "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test",
-      "org.mockito" % "mockito-core" % "4.11.0" % "test",
     )
   },
   scalaCompilerDependency,
@@ -338,31 +326,13 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
     crossSrcSetting(Compile),
     crossSrcSetting(Test),
     publish / skip := (scalaVersion.value == nightlyScala3),
-    Test / sources := {
-      val src = (Test / sources).value
-      if (scalaBinaryVersion.value != "3") {
-        src
-      } else if (SemanticSelector(">=3.3.0-RC1").matches(VersionNumber(scalaVersion.value))) {
-        // maybe https://github.com/scala/scala3/pull/15642
-        val exclude = Set[String](
-          "Matchable",
-          "AnyVal",
-        ).map(_ + "Test.scala")
-        src.filterNot(f => exclude(f.getName))
-      } else {
-        val exclude = Set[String](
-          "OrTypeLeastUpperBound",
-        ).map(_ + "Test.scala")
-        src.filterNot(f => exclude(f.getName))
-      }
-    },
     crossTarget := {
       // workaround for https://github.com/sbt/sbt/issues/5097
       target.value / s"scala-${scalaVersion.value}"
     },
   )
   .configure(p =>
-    if (p.id == "core2_13_17") {
+    if (p.id == "core2_13_18") {
       p.settings(
         assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
       )
@@ -410,7 +380,7 @@ val wartClasses: Def.Initialize[Task[Seq[String]]] = Def.taskDyn {
   }
 }
 
-val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.0" % "runtime" // for scala-steward
+val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.3" % "runtime" // for scala-steward
 
 lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("sbt-plugin"))
@@ -441,7 +411,6 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
             Defaults.sbtPluginExtra(scoverage, (pluginCrossBuild / sbtBinaryVersion).value, scalaV)
           )
         case _ =>
-          // TODO: sbt-scoverage for sbt 2.x
           Nil
       }
     },
@@ -513,10 +482,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
           IO.move(forSbt2, to)
         }
       }
-      val exclude: Set[(String, String)] = Set(
-        "scoverage",
-      ).map("wartremover" -> _)
-      val args = values.filterNot(exclude).map { case (x1, x2) => s"${x1}/${x2}" }
+      val args = values.map { case (x1, x2) => s"${x1}/${x2}" }
       val arg = args.mkString(" ", " ", "")
       log.info("scripted" + arg)
       scripted.toTask(arg)
@@ -525,7 +491,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
       val base = (Compile / sourceManaged).value
       val file = base / "wartremover" / "Wart.scala"
       val warts = wartClasses.value
-      val expectCount = 72
+      val expectCount = 74
       assert(
         warts.size == expectCount,
         s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"

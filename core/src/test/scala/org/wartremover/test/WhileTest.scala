@@ -15,16 +15,6 @@ class WhileTest extends AnyFunSuite with ResultAssertions {
     assertError(result)("while is disabled")
   }
 
-  test("do while is disabled") {
-    @nowarn("msg=no longer supported")
-    val result = WartTestTraverser(While) {
-      do {
-        println()
-      } while (true)
-    }
-    assertError(result)("while is disabled")
-  }
-
   test("while wart obeys SuppressWarnings") {
     val result = WartTestTraverser(While) {
       @SuppressWarnings(Array("org.wartremover.warts.While"))

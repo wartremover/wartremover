@@ -1,0 +1,105 @@
+package org.wartremover
+package test
+
+import org.wartremover.warts.PartialFunctionApply
+import org.scalatest.funsuite.AnyFunSuite
+
+class PartialFunctionApplyTest extends AnyFunSuite with ResultAssertions {
+  private def pf: PartialFunction[String, String] = { case a => a }
+
+  test("can't use PartialFunction#apply") {
+    Seq(
+      WartTestTraverser(PartialFunctionApply) {
+        pf("a")
+      },
+    ).foreach { result =>
+      assertError(result)("PartialFunction#apply is disabled")
+    }
+  }
+
+  test("can use Seq#apply and Map#apply") {
+    val result = WartTestTraverser(PartialFunctionApply) {
+      scala.sys.props("")
+      scala.sys.props.apply("")
+      scala.sys.env("")
+      scala.sys.env.apply("")
+
+      type MyStringMap = Map[String, String]
+      type MyStringSeq = Seq[String]
+
+      def m1(x: collection.Map[String, String]): String = {
+        x("")
+        x.apply("")
+      }
+      def m2(x: collection.immutable.Map[String, String]): String = {
+        x("")
+        x.apply("")
+      }
+      def m3(x: collection.mutable.Map[String, String]): String = {
+        x("")
+        x.apply("")
+      }
+      def m4(x: MyStringMap): String = {
+        x("")
+        x.apply("")
+      }
+
+      def s1(x: collection.Seq[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s2(x: collection.immutable.Seq[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s3(x: collection.mutable.Seq[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s4(x: List[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s5(x: Vector[String]): String = {
+        x(2)
+        x.apply(2)
+      }
+      def s6(x: MyStringSeq): String = {
+        x(2)
+        x.apply(2)
+      }
+    }
+    assertEmpty(result)
+  }
+
+  test("can use try catch") {
+    val pf2: PartialFunction[Throwable, Int] = { case _ => 3 }
+    val result = WartTestTraverser(PartialFunctionApply) {
+      try 2
+      catch pf2
+    }
+    assertEmpty(result)
+  }
+
+  test("can use after `isDefinedAt`") {
+    val pf2: PartialFunction[Int, Int] = { case _ => 3 }
+    val result = WartTestTraverser(PartialFunctionApply) {
+      def f(x: Int): Int = x match {
+        case _ if pf2.isDefinedAt(x) =>
+          pf2(x)
+        case _ =>
+          6
+      }
+      def pf3: PartialFunction[Int, Int] = { case x if pf2.isDefinedAt(x) => pf2(x) }
+    }
+    assertEmpty(result)
+  }
+
+  test("PartialFunctionApply wart obeys SuppressWarnings") {
+    val result = WartTestTraverser(PartialFunctionApply) {
+      @SuppressWarnings(Array("org.wartremover.warts.PartialFunctionApply"))
+      val foo = pf("a")
+    }
+    assertEmpty(result)
+  }
+}
