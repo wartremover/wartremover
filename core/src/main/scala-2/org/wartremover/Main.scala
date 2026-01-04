@@ -1,5 +1,6 @@
 package org.wartremover
 
+import scala.annotation.tailrec
 import tools.nsc.Global
 import tools.nsc.Settings
 import tools.nsc.io.VirtualDirectory
@@ -17,6 +18,7 @@ object Main {
     val empty = WartArgs(List.empty, List.empty, List.empty)
   }
 
+  @tailrec
   def processArgs(args: List[String], processed: WartArgs): WartArgs = args match {
     case "-traverser" :: traverser :: xs => processArgs(xs, processed.addTraverser(traverser))
     case "-scalac" :: scalacArg :: xs => processArgs(xs, processed.addScalacArg(scalacArg))
