@@ -408,7 +408,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
       scalaBinaryVersion.value match {
         case scalaV @ "2.12" =>
           Seq(
-            Defaults.sbtPluginExtra(scoverage, (pluginCrossBuild / sbtBinaryVersion).value, scalaV)
+            Defaults.sbtPluginExtra(scoverage, "1.0", scalaV)
           )
         case _ =>
           Nil
