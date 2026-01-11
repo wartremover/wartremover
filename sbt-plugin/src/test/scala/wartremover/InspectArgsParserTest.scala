@@ -130,6 +130,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "Any",
         "AnyVal",
         "ArrayEquals",
+        "ArrayToString",
         "AsInstanceOf",
         "AutoUnboxing",
         "CaseClassPrivateApply",
@@ -276,6 +277,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "ArrayToString"
     ).map(
       "org.wartremover.warts." + _
     )
