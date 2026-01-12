@@ -72,6 +72,8 @@ val scalaCompilerDependency = Def.settings(
 )
 
 lazy val baseSettings = Def.settings(
+  exportJars := false,
+  outputPath := thisProject.value.id,
   scalacOptions ++= Seq(
     "-deprecation"
   ),
@@ -98,14 +100,6 @@ lazy val commonSettings = Def.settings(
   baseSettings,
   libraryDependencies ++= {
     Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test")
-  },
-  Seq(packageBin, packageDoc, packageSrc).flatMap {
-    // include LICENSE file in all packaged artifacts
-    inTask(_)(
-      Seq(
-        (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
-      )
-    )
   },
   organization := "org.wartremover",
   licenses := Seq(
@@ -152,20 +146,25 @@ lazy val commonSettings = Def.settings(
     </developers>
 )
 
-commonSettings
-publishArtifact := false
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  releaseStepCommandAndRemaining("publishSigned"),
-  releaseStepCommand("sonaRelease"),
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
-)
+val wartremoverRoot = project
+  .in(file("."))
+  .autoAggregate
+  .settings(
+    commonSettings,
+    publishArtifact := false,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("publishSigned"),
+      releaseStepCommand("sonaRelease"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
+  )
 
 val coreSrcDir = Def.settingDyn {
   val p = core.jvm(scalaVersion.value)
@@ -313,7 +312,7 @@ lazy val inspector = projectMatrix
     inspectorCommon,
   )
 
-lazy val core: sbt.internal.ProjectMatrix = projectMatrix
+lazy val core: ProjectMatrix = projectMatrix
   .in(file("core"))
   .withId("core")
   .defaultAxes(VirtualAxis.jvm)
@@ -382,7 +381,7 @@ val wartClasses: Def.Initialize[Task[Seq[String]]] = Def.taskDyn {
 
 val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.3" % "runtime" // for scala-steward
 
-lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
+lazy val sbtPlug: ProjectMatrix = projectMatrix
   .in(file("sbt-plugin"))
   .withId("sbt-plugin")
   .defaultAxes(VirtualAxis.jvm)
@@ -399,7 +398,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" =>
-          sbtVersion.value
+          "1.12.0"
         case _ =>
           "2.0.0-RC8"
       }
@@ -435,9 +434,9 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
       }
       new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
     },
-    packagedArtifacts := {
-      val value = packagedArtifacts.value
-      val pomFiles = value.values.filter(_.getName.endsWith(".pom")).toList
+    Compile / packagedArtifacts := Def.uncached {
+      val value = (Compile / packagedArtifacts).value
+      val pomFiles = value.values.map(fileConverter.value.toPath(_).toFile).filter(_.getName.endsWith(".pom")).toList
       assert(pomFiles.size >= 1, pomFiles.map(_.getName))
       pomFiles.foreach { f =>
         assert(!IO.read(f).contains("scoverage"))
@@ -524,7 +523,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
 val `sbt-plugin3` = sbtPlug.jvm(Scala3forSbt2).dependsOn(inspectorCommon.jvm(latestScala3))
 val `sbt-plugin2_12` = sbtPlug.jvm(latestScala212).dependsOn(inspectorCommon.jvm(latestScala212))
 
-lazy val testMacros: sbt.internal.ProjectMatrix = projectMatrix
+lazy val testMacros: ProjectMatrix = projectMatrix
   .in(file("test-macros"))
   .withId("test-macros")
   .defaultAxes(VirtualAxis.jvm)
