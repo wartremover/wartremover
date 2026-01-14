@@ -16,9 +16,9 @@ object EitherProjectionPartial extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ (${ a }: Either.RightProjection[left, right]).get } =>
+              case '{ (${ a }: Either.RightProjection[?, ?]).get } =>
                 error(t.pos, "RightProjection#get is disabled - use RightProjection#toOption instead")
-              case '{ (${ a }: Either.LeftProjection[left, right]).get } =>
+              case '{ (${ a }: Either.LeftProjection[?, ?]).get } =>
                 error(t.pos, "LeftProjection#get is disabled - use LeftProjection#toOption instead")
               case _ =>
                 super.traverseTree(tree)(owner)

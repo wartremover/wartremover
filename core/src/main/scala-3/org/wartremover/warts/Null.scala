@@ -33,7 +33,7 @@ object Null extends WartTraverser {
               case '{ null ne ($x: AnyRef) } =>
               case '{ ($x: AnyRef) eq null } =>
               case '{ ($x: AnyRef) ne null } =>
-              case '{ ($x: Option[t]).orNull } =>
+              case '{ ($x: Option[?]).orNull } =>
                 error(tree.pos, "Option#orNull is disabled")
               case _ =>
                 tree.match {

@@ -19,30 +19,30 @@ object SizeIs extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x1: Iterable[t]).size < ($x2: Int) } =>
+              case '{ ($x1: Iterable[?]).size < ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[t]).size == ($x2: Int) } =>
+              case '{ ($x1: Iterable[?]).size == ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[t]).size != ($x2: Int) } =>
+              case '{ ($x1: Iterable[?]).size != ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[t]).size <= ($x2: Int) } =>
+              case '{ ($x1: Iterable[?]).size <= ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[t]).size > ($x2: Int) } =>
+              case '{ ($x1: Iterable[?]).size > ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[t]).size >= ($x2: Int) } =>
+              case '{ ($x1: Iterable[?]).size >= ($x2: Int) } =>
                 error(tree.pos, sizeMessage)
 
-              case '{ ($x1: collection.Seq[t]).length < ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[?]).length < ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[t]).length == ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[?]).length == ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[t]).length != ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[?]).length != ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[t]).length <= ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[?]).length <= ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[t]).length > ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[?]).length > ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[t]).length >= ($x2: Int) } =>
+              case '{ ($x1: collection.Seq[?]).length >= ($x2: Int) } =>
                 error(tree.pos, lengthMessage)
 
               case _ =>

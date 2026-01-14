@@ -11,7 +11,7 @@ object TryPartial extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x: scala.util.Try[t]).get } =>
+              case '{ ($x: scala.util.Try[?]).get } =>
                 error(t.pos, "Try#get is disabled")
               case _ =>
                 super.traverseTree(tree)(owner)
