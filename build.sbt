@@ -37,6 +37,7 @@ lazy val allScalaVersions = Seq(
   if (scala.util.Properties.isJavaAtLeast("17")) {
     List(
       "3.8.0",
+      "3.8.1-RC1",
       nightlyScala3
     )
   } else {
