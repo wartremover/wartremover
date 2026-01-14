@@ -11,7 +11,7 @@ object ReverseTakeReverse extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x: collection.Seq[t1]).reverse.take($n).reverse } =>
+              case '{ ($x: collection.Seq[?]).reverse.take($n).reverse } =>
                 error(t.pos, "you can use takeRight instead of reverse.take.reverse")
               case _ =>
                 super.traverseTree(tree)(owner)

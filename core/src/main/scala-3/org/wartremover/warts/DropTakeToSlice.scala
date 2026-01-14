@@ -11,7 +11,7 @@ object DropTakeToSlice extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x: collection.Iterable[t1]).drop($n).take($m) } =>
+              case '{ ($x: collection.Iterable[?]).drop($n).take($m) } =>
                 error(t.pos, "you can use slice instead of drop.take")
               case _ =>
                 super.traverseTree(tree)(owner)

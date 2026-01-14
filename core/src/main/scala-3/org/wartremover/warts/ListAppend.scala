@@ -12,9 +12,9 @@ object ListAppend extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($list: List[tpe1]) :+ ($value: tpe2) } =>
+              case '{ ($list: List[?]) :+ ($value) } =>
                 error(t.pos, message)
-              case '{ ($list: List[tpe1]).appended($value: tpe2) } =>
+              case '{ ($list: List[?]).appended($value) } =>
                 error(t.pos, message)
               case _ =>
                 super.traverseTree(tree)(owner)

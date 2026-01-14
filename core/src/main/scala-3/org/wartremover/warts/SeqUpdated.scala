@@ -11,7 +11,7 @@ object SeqUpdated extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x: collection.Seq[t1]).updated($n, $y) } =>
+              case '{ ($x: collection.Seq[?]).updated($n, $y) } =>
                 error(t.pos, "Seq.updated is disabled")
               case _ =>
                 super.traverseTree(tree)(owner)
