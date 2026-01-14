@@ -9,6 +9,10 @@ object ExprMatch {
   private val fallbackFunction: Any => String = _ => fallback
 }
 
+/**
+ * @note
+ * [[https://github.com/scala/scala3/issues/22432]]
+ */
 abstract class ExprMatch(
   exprMatch: Quotes ?=> PartialFunction[Expr[Any], String]
 ) extends WartTraverser {
