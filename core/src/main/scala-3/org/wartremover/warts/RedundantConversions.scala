@@ -14,13 +14,13 @@ object RedundantConversions extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x: List[t]).toList } =>
+              case '{ ($x: List[?]).toList } =>
                 error(t.pos, "redundant toList conversion")
-              case '{ ($x: collection.immutable.Seq[t]).toSeq } =>
+              case '{ ($x: collection.immutable.Seq[?]).toSeq } =>
                 error(t.pos, "redundant toSeq conversion")
-              case '{ ($x: Vector[t]).toVector } =>
+              case '{ ($x: Vector[?]).toVector } =>
                 error(t.pos, "redundant toVector conversion")
-              case '{ ($x: Stream[t]).toStream } =>
+              case '{ ($x: Stream[?]).toStream } =>
                 error(t.pos, "redundant toStream conversion")
               case '{
                     type t1
@@ -29,7 +29,7 @@ object RedundantConversions extends WartTraverser {
                   } =>
                 // note https://github.com/scala/scala3/issues/14708
                 error(t.pos, "redundant toSet conversion")
-              case '{ ($x: collection.immutable.IndexedSeq[t]).toIndexedSeq } =>
+              case '{ ($x: collection.immutable.IndexedSeq[?]).toIndexedSeq } =>
                 error(t.pos, "redundant toIndexedSeq conversion")
               case '{ ($x: String).toString } =>
                 error(t.pos, "redundant toString conversion")
