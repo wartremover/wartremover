@@ -11,10 +11,10 @@ object ArrayEquals extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x1: Array[t]) == null } =>
-              case '{ ($x1: Array[t]) == ($x2: Any) } =>
+              case '{ ($x1: Array[?]) == null } =>
+              case '{ ($x1: Array[?]) == ($x2: Any) } =>
                 error(tree.pos, "== is disabled")
-              case '{ ($x1: Iterator[t]) == ($x2: Any) } =>
+              case '{ ($x1: Iterator[?]) == ($x2: Any) } =>
                 error(tree.pos, "== is disabled")
               case _ =>
                 super.traverseTree(tree)(owner)
