@@ -7,7 +7,7 @@ object FilterHeadOption extends WartTraverser {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
-          case _ if sourceCodeNotContains(tree, "headOption") =>
+          case _ if sourceCodeNotContains(tree, "headOption") || sourceCodeNotContains(tree, "filter") =>
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
