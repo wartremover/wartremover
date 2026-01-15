@@ -20,7 +20,7 @@ object IterableOps extends WartTraverser {
           error(tree.pos, s"${method} is disabled - use ${alternative} instead")
 
         tree match {
-          case _ if getSourceCode(tree).fold(false)(src => !methodNames.exists(src.contains)) =>
+          case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
