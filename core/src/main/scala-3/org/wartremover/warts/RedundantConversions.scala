@@ -4,13 +4,30 @@ package warts
 import scala.annotation.nowarn
 
 object RedundantConversions extends WartTraverser {
+  private val methodNames: Seq[String] = Seq(
+    "toList",
+    "toSeq",
+    "toVector",
+    "toStream",
+    "toSet",
+    "toIndexedSeq",
+    "toString",
+    "toInt",
+    "toLong",
+    "toFloat",
+    "toDouble",
+    "toByte",
+    "toShort",
+    "toChar",
+  )
+
   override def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
       @nowarn("msg=LazyList")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
-          case _ if sourceCodeNotContains(tree, "to") =>
+          case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
