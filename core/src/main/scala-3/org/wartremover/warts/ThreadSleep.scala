@@ -9,13 +9,8 @@ object ThreadSleep extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "sleep") =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
-            t.asExpr match {
-              case '{ Thread.sleep($x: Long) } =>
-                error(t.pos, "don't use Thread.sleep")
-              case _ =>
-                super.traverseTree(tree)(owner)
-            }
+          case Apply(Select(threadObject, "sleep"), _) if threadObject.symbol.fullName == "java.lang.Thread" =>
+            error(tree.pos, "don't use Thread.sleep")
           case _ =>
             super.traverseTree(tree)(owner)
         }

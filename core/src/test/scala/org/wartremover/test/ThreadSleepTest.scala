@@ -6,21 +6,31 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class ThreadSleepTest extends AnyFunSuite with ResultAssertions {
   test("Thread.sleep is disabled") {
-    val result = WartTestTraverser(ThreadSleep) {
-      val byte: Byte = 1
-      val short: Short = 2
-      val int: Int = 3
-      val long: Long = 4
-      Thread.sleep(byte)
-      Thread.sleep(short)
-      Thread.sleep(int)
-      Thread.sleep(long)
-      Thread.sleep(5)
-    }
-    assertErrors(result)(
-      "don't use Thread.sleep",
-      5
-    )
+    val byte: Byte = 1
+    val short: Short = 2
+    val int: Int = 3
+    val long: Long = 4
+
+    Seq(
+      WartTestTraverser(ThreadSleep) {
+        Thread.sleep(1, 2)
+      },
+      WartTestTraverser(ThreadSleep) {
+        Thread.sleep(byte)
+      },
+      WartTestTraverser(ThreadSleep) {
+        Thread.sleep(short)
+      },
+      WartTestTraverser(ThreadSleep) {
+        Thread.sleep(int)
+      },
+      WartTestTraverser(ThreadSleep) {
+        Thread.sleep(long)
+      },
+      WartTestTraverser(ThreadSleep) {
+        Thread.sleep(5)
+      }
+    ).foreach(result => assertError(result)("don't use Thread.sleep"))
   }
 
   test("no warn if another Thread class") {

@@ -324,6 +324,13 @@ lazy val core: sbt.internal.ProjectMatrix = projectMatrix
   )
   .settings(
     coreSettings,
+    Test / unmanagedSourceDirectories ++= {
+      if (scala.util.Properties.isJavaAtLeast("21")) {
+        Seq(coreSrcDir.value / "test" / "jdk21")
+      } else {
+        Nil
+      }
+    },
     crossSrcSetting(Compile),
     crossSrcSetting(Test),
     publish / skip := (scalaVersion.value == nightlyScala3),
