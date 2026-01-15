@@ -2,9 +2,13 @@ package org.wartremover
 package warts
 
 object SortedMaxMinOption extends WartTraverser {
-  private val methodNames: Seq[String] = Seq(
+  private val sortMethodNames: Seq[String] = Seq(
     "sortBy",
     "sorted",
+  )
+  private val headOrLastOption: Seq[String] = Seq(
+    "headOption",
+    "lastOption",
   )
 
   def apply(u: WartUniverse): u.Traverser = {
@@ -12,7 +16,9 @@ object SortedMaxMinOption extends WartTraverser {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
-          case _ if getSourceCode(tree).fold(false)(src => !methodNames.exists(src.contains)) =>
+          case _
+              if sortMethodNames
+                .forall(sourceCodeNotContains(tree, _)) || headOrLastOption.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
