@@ -2,12 +2,14 @@ package org.wartremover
 package warts
 
 object SortFilter extends WartTraverser {
+  private val sortMethodNames = Seq("sorted", "sortBy", "sortWith")
+
   override def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
-          case _ if sourceCodeNotContains(tree, "filter") =>
+          case _ if sourceCodeNotContains(tree, "filter") || sortMethodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
           case t if t.isExpr =>
             t.asExpr match {
