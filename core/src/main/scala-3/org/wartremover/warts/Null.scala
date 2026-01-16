@@ -22,17 +22,13 @@ object Null extends WartTraverser {
               case _ =>
                 true
             }.foreach(traverseTree(_)(owner))
+          case Apply(Select(Literal(NullConstant()), "==" | "!=" | "eq" | "ne"), other) =>
+            other.foreach(traverseTree(_)(owner))
+          case Apply(Select(other, "==" | "!=" | "eq" | "ne"), Literal(NullConstant()) :: Nil) =>
+            traverseTree(other)(owner)
           case t if t.isExpr =>
             val e = t.asExpr
             e match {
-              case '{ null == ($x: Any) } =>
-              case '{ null != ($x: Any) } =>
-              case '{ ($x: Any) == null } =>
-              case '{ ($x: Any) != null } =>
-              case '{ null eq ($x: AnyRef) } =>
-              case '{ null ne ($x: AnyRef) } =>
-              case '{ ($x: AnyRef) eq null } =>
-              case '{ ($x: AnyRef) ne null } =>
               case '{ ($x: Option[?]).orNull } =>
                 error(tree.pos, "Option#orNull is disabled")
               case _ =>
