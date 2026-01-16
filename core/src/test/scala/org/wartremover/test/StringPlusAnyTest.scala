@@ -25,10 +25,38 @@ class StringPlusAnyTest extends AnyFunSuite with ResultAssertions {
   }
 
   test("Primitive conversion to string is disabled") {
-    val result = WartTestTraverser(StringPlusAny) {
-      1 + "lol"
+    def byte: Byte = ???
+    def short: Short = ???
+    def char: Char = ???
+    def int: Int = ???
+    def long: Long = ???
+    def float: Float = ???
+    def double: Double = ???
+    Seq(
+      WartTestTraverser(StringPlusAny) {
+        byte + "lol"
+      },
+      WartTestTraverser(StringPlusAny) {
+        short + "lol"
+      },
+      WartTestTraverser(StringPlusAny) {
+        char + "lol"
+      },
+      WartTestTraverser(StringPlusAny) {
+        int + "lol"
+      },
+      WartTestTraverser(StringPlusAny) {
+        long + "lol"
+      },
+      WartTestTraverser(StringPlusAny) {
+        float + "lol"
+      },
+      WartTestTraverser(StringPlusAny) {
+        double + "lol"
+      },
+    ).foreach { result =>
+      assertError(result)("Implicit conversion to string is disabled")
     }
-    assertError(result)("Implicit conversion to string is disabled")
   }
 
   test("Non-string + usage is allowed") {
