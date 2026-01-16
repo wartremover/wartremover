@@ -314,6 +314,54 @@ lazy val inspector = projectMatrix
     inspectorCommon,
   )
 
+def benchmarkScalaVersion = "3.7.4"
+
+lazy val benchmark = project
+  .disablePlugins(AssemblyPlugin)
+  .enablePlugins(JmhPlugin)
+  .settings(
+    baseSettings,
+    scalaVersion := benchmarkScalaVersion,
+    libraryDependencies += "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value,
+    Compile / sourceGenerators += Def.task {
+      val exclude = scala2only.toSet
+      val dir = (Compile / sourceManaged).value
+      def get(key: String): Option[Int] = sys.props.get(key).flatMap(_.toIntOption)
+      val allClasses = wartClasses.value.sorted
+      val classes = (get("benchmark_total"), get("benchmark_index")) match {
+        case (Some(total), Some(index)) =>
+          val count = allClasses.size
+          val size = (count / total) + {
+            if (count % total == 0) 0 else 1
+          }
+          allClasses.drop(index * size).take(size)
+        case _ =>
+          allClasses
+      }
+      classes.flatMap { className =>
+        if (exclude(className)) {
+          Nil
+        } else {
+          val f = dir / s"${className}.scala"
+          IO.write(
+            f,
+            s"""package org.wartremover.benchmark
+               |
+               |class ${className} extends WartremoverBenchmark {
+               |  override def wart = org.wartremover.warts.${className}
+               |}
+               |""".stripMargin
+          )
+          Seq(f)
+        }
+      }
+    }.taskValue,
+    noPublish,
+  )
+  .dependsOn(
+    core.jvm(benchmarkScalaVersion)
+  )
+
 lazy val core: sbt.internal.ProjectMatrix = projectMatrix
   .in(file("core"))
   .withId("core")
@@ -378,15 +426,16 @@ val wartClasses: Def.Initialize[Task[Seq[String]]] = Def.taskDyn {
       .map(_.getSimpleName.replace("$", ""))
       .filterNot(Set("Unsafe", "ForbidInference", "Matchable"))
 
-    val scala2only = Seq(
-      "ExplicitImplicitTypes",
-      "JavaConversions",
-      "JavaSerializable",
-      "PublicInference",
-    )
     (classes ++ scala2only).distinct.sorted
   }
 }
+
+val scala2only = Seq(
+  "ExplicitImplicitTypes",
+  "JavaConversions",
+  "JavaSerializable",
+  "PublicInference",
+)
 
 val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.4" % "runtime" // for scala-steward
 
@@ -543,11 +592,15 @@ lazy val testMacros: sbt.internal.ProjectMatrix = projectMatrix
   )
   .settings(
     baseSettings,
-    publish / skip := true,
-    publishArtifact := false,
-    publish := {},
-    publishLocal := {},
-    PgpKeys.publishSigned := {},
-    PgpKeys.publishLocalSigned := {},
+    noPublish,
     scalaCompilerDependency,
   )
+
+lazy val noPublish = Def.settings(
+  publish / skip := true,
+  publishArtifact := false,
+  publish := {},
+  publishLocal := {},
+  PgpKeys.publishSigned := {},
+  PgpKeys.publishLocalSigned := {},
+)

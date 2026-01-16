@@ -1,0 +1,27 @@
+on:
+  push:
+  pull_request:
+jobs:
+  benchmark:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - index: 0
+          - index: 1
+          - index: 2
+          - index: 3
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-java@v5
+      with:
+        java-version: 21
+        distribution: temurin
+    - uses: actions/checkout@v6
+    - uses: sbt/setup-sbt@v1
+    - run: sbt
+           -v
+           -Dbenchmark_total=4
+           -Dbenchmark_index=${{ matrix.index }}
+           "benchmark/Jmh/run -i 1 -wi 1 -f1 -t1"
