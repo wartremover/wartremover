@@ -5,11 +5,11 @@ object Equals extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
-      val methods = Seq("==", "!=", "equals", "eq", "ne")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr => // && methods.exists(m => sourceCodeContains(t, m)) =>
+          case t: DefDef if (t.name == "equals") && t.symbol.flags.is(Flags.Synthetic) =>
+          case t if t.isExpr =>
             t.asExpr match {
               case '{ ($x1: Any) == ($x2: Any) } =>
                 error(tree.pos, "== is disabled - use === or equivalent instead")

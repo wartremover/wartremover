@@ -76,4 +76,19 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
     assertError(result2)("ne is disabled - use =/= or equivalent instead")
   }
 
+  test("case class") {
+    val result = WartTestTraverser(Equals) {
+      case class Foo(x: Int)
+    }
+    assertEmpty(result)
+  }
+
+  test("eq in equals") {
+    val result = WartTestTraverser(Equals) {
+      class Foo {
+        override def equals(that: Any): Boolean = that eq this
+      }
+    }
+    assertError(result)("eq is disabled - use === or equivalent instead")
+  }
 }
