@@ -91,4 +91,44 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
     }
     assertError(result)("eq is disabled - use === or equivalent instead")
   }
+
+  test("primitive ==") {
+    def int: Int = ???
+    def byte: Byte = ???
+    def short: Short = ???
+    def char: Char = ???
+    def long: Long = ???
+    def float: Float = ???
+    def double: Double = ???
+    def bool: Boolean = ???
+
+    Seq(
+      WartTestTraverser(Equals) {
+        int == int
+      },
+      WartTestTraverser(Equals) {
+        byte == byte
+      },
+      WartTestTraverser(Equals) {
+        short == short
+      },
+      WartTestTraverser(Equals) {
+        char == char
+      },
+      WartTestTraverser(Equals) {
+        long == long
+      },
+      WartTestTraverser(Equals) {
+        float == float
+      },
+      WartTestTraverser(Equals) {
+        double == double
+      },
+      WartTestTraverser(Equals) {
+        bool == bool
+      },
+    ).foreach { result =>
+      assertError(result)("== is disabled - use === or equivalent instead")
+    }
+  }
 }

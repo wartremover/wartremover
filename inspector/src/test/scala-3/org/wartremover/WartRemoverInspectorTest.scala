@@ -154,7 +154,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       result(s"cats-kernel_3-${catsVersion}.jar") === Map(
         ("AsInstanceOf", 5),
         ("CaseClassPrivateApply", 2),
-        ("Equals", 55),
+        ("Equals", 143),
         ("ForeachEntry", 2),
         ("ImplicitParameter", 2),
         ("IsInstanceOf", 2),
@@ -176,7 +176,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("AsInstanceOf", 86),
         ("DefaultArguments", 22),
         ("Discard$Either", 3),
-        ("Equals", 21),
+        ("Equals", 65),
         ("FinalVal", 1),
         ("ForeachEntry", 2),
         ("ImplicitConversion", 239),
@@ -209,7 +209,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       result(s"scala3-library_3-${scala3version}.jar") === Map(
         ("AsInstanceOf", 231),
         ("DefaultArguments", 12),
-        ("Equals", 12),
+        ("Equals", 47),
         ("FinalVal", 9),
         ("ImplicitConversion", 13),
         ("ImplicitParameter", 145),

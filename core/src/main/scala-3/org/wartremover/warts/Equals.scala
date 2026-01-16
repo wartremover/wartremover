@@ -9,17 +9,17 @@ object Equals extends WartTraverser {
         tree match {
           case t if hasWartAnnotation(t) =>
           case t: DefDef if (t.name == "equals") && t.symbol.flags.is(Flags.Synthetic) =>
-          case t if t.isExpr =>
-            t.asExpr match {
-              case '{ ($x1: Any) == ($x2: Any) } =>
+          case Apply(Select(_, method), _ :: Nil) =>
+            method match {
+              case "==" =>
                 error(tree.pos, "== is disabled - use === or equivalent instead")
-              case '{ ($x1: Any) != ($x2: Any) } =>
+              case "!=" =>
                 error(tree.pos, "!= is disabled - use =/= or equivalent instead")
-              case '{ ($x1: Any).equals($x2: Any) } =>
+              case "equals" =>
                 error(tree.pos, "equals is disabled - use === or equivalent instead")
-              case '{ ($x1: AnyRef) eq ($x2: AnyRef) } =>
+              case "eq" =>
                 error(tree.pos, "eq is disabled - use === or equivalent instead")
-              case '{ ($x1: AnyRef) ne ($x2: AnyRef) } =>
+              case "ne" =>
                 error(tree.pos, "ne is disabled - use =/= or equivalent instead")
               case _ =>
                 super.traverseTree(tree)(owner)
