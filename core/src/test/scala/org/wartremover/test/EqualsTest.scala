@@ -82,4 +82,13 @@ class EqualsTest extends AnyFunSuite with ResultAssertions {
     }
     assertEmpty(result)
   }
+
+  test("eq in equals") {
+    val result = WartTestTraverser(Equals) {
+      class Foo {
+        override def equals(that: Any): Boolean = that eq this
+      }
+    }
+    assertError(result)("eq is disabled - use === or equivalent instead")
+  }
 }
