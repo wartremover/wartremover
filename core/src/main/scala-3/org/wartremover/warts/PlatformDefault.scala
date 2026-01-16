@@ -21,26 +21,21 @@ object PlatformDefault extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
+          case Apply(Select(str, "getBytes"), Nil) if str.tpe <:< TypeRepr.of[String] =>
+            error(tree.pos, getByte)
+          case Apply(Select(str, "toLowerCase" | "toUpperCase"), Nil) if str.tpe <:< TypeRepr.of[String] =>
+            error(tree.pos, upperLowerCase)
+          case Apply(
+                Select(New(tpe: TypeTree), "<init>"),
+                arg1 :: Nil
+              ) if tpe.tpe =:= TypeRepr.of[String] && arg1.tpe =:= TypeRepr.of[Array[Byte]] =>
+            error(tree.pos, newString)
           case t if t.isExpr =>
             t.asExpr match {
-              case '{ ($x: String).getBytes } =>
-                error(tree.pos, getByte)
-              case '{ ($_ : String).toLowerCase } | '{ ($_ : String).toUpperCase } =>
-                error(tree.pos, upperLowerCase)
-              case '{ new String($x: Array[Byte]) } =>
-                error(tree.pos, newString)
               case '{ scala.io.Codec.fallbackSystemCodec } =>
                 error(tree.pos, fallbackSystemCodec)
               case _ =>
-                t match {
-                  case Apply(
-                        Select(New(tpe: TypeTree), "<init>"),
-                        arg1 :: Nil
-                      ) if tpe.tpe =:= TypeRepr.of[String] && arg1.tpe =:= TypeRepr.of[Array[Byte]] =>
-                    error(tree.pos, newString)
-                  case _ =>
-                    super.traverseTree(tree)(owner)
-                }
+                super.traverseTree(tree)(owner)
             }
           case _ =>
             super.traverseTree(tree)(owner)
