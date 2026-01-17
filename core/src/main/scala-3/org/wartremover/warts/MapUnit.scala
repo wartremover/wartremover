@@ -3,8 +3,6 @@ package warts
 
 import scala.quoted.Expr
 import scala.quoted.Type
-import scala.quoted.Quotes
-import scala.quoted.quotes
 
 object MapUnit extends WartTraverser {
   override def apply(u: WartUniverse): u.Traverser = {

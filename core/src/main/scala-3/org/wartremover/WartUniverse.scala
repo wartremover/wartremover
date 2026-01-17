@@ -1,9 +1,7 @@
 package org.wartremover
 
-import scala.quoted.Exprs
 import scala.quoted.Quotes
 import scala.quoted.Type
-import scala.quoted.Varargs
 import scala.util.control.NonFatal
 import java.lang.SuppressWarnings
 
