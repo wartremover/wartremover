@@ -68,8 +68,8 @@ final class WartRemoverInspector {
       InspectResult.empty
     } else {
       val classLoader = new URLClassLoader(param.wartClasspath.map(new URI(_).toURL).toArray, getClass.getClassLoader)
-      val (errorLoadFail, errorTraversers) = param.errorWarts.toList.partitionMap(Plugin.loadWart(_, classLoader))
-      val (warnLoadFail, warningTraversers) = param.warningWarts.toList.partitionMap(Plugin.loadWart(_, classLoader))
+      val (errorLoadFail, errorTraversers) = param.errorWarts.partitionMap(Plugin.loadWart(_, classLoader))
+      val (warnLoadFail, warningTraversers) = param.warningWarts.partitionMap(Plugin.loadWart(_, classLoader))
       val loadFailed = errorLoadFail ++ warnLoadFail
       if (loadFailed.nonEmpty) {
         println("load fail warts = " + loadFailed.mkString(", "))
@@ -84,8 +84,8 @@ final class WartRemoverInspector {
         run0(
           errorTraversers = errorTraversers,
           warningTraversers = warningTraversers,
-          tastyFiles = param.tastyFiles.toList,
-          dependenciesClasspath = param.dependenciesClasspath.toList,
+          tastyFiles = param.tastyFiles,
+          dependenciesClasspath = param.dependenciesClasspath,
           exclude = param.exclude,
           outputReporter = param.outputStandardReporter,
         )
