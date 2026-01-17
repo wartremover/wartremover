@@ -7,7 +7,6 @@ import dotty.tools.dotc.quoted.QuotesCache
 import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.dotc.report
 import java.util.concurrent.atomic.AtomicBoolean
-import scala.quoted.Quotes
 import scala.util.control.NonFatal
 
 object WartremoverPhase {
