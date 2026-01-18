@@ -13,6 +13,7 @@ object Var extends WartTraverser {
 
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
+          case _ if sourceCodeNotContains(tree, "var") =>
           case t if hasWartAnnotation(t) =>
           case t: ValDef if t.symbol.flags.is(Flags.Mutable) && !t.symbol.flags.is(Flags.Synthetic) && notXmlTypes(t) =>
             error(t.pos, "var is disabled")
