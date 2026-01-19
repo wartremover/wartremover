@@ -178,14 +178,7 @@ val coreSrcDir = Def.settingDyn {
 def crossSrcSetting(c: Configuration) = {
   c / unmanagedSourceDirectories ++= {
     val dir = coreSrcDir.value / Defaults.nameForSrc(c.name)
-    PartialFunction
-      .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-        case Some((2, v)) if v <= 12 =>
-          dir / s"scala-2.13-"
-        case _ =>
-          dir / s"scala-2.13+"
-      }
-      .toList
+    PartialFunction.condOpt(scalaBinaryVersion.value) { case "3" | "2.13" => dir / "scala-2.13+" }.toList
   }
 }
 
