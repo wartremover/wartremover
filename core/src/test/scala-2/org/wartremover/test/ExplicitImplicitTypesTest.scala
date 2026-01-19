@@ -67,7 +67,7 @@ class ExplicitImplicitTypesTest extends AnyFunSuite with ResultAssertions {
 
   test("can declare implicit vals with a type ascription in macro expansions") {
     val result = WartTestTraverser(ExplicitImplicitTypes) {
-      ExplicitImplicitTypesTestMacros.defsWithTypeAscription
+      ExplicitImplicitTypesTestMacros.valsWithTypeAscription
     }
     assertEmpty(result)
   }
