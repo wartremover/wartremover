@@ -51,6 +51,10 @@ object Null extends WartTraverser {
           case t @ ValDef(_, _, Some(Wildcard()))
               if t.symbol.flags.is(Flags.Mutable) && t.tpt.tpe <:< TypeRepr.of[AnyRef] =>
             error(tree.pos, "null is disabled")
+          case t @ ValDef(_, _, Some(rhs))
+              if t.symbol.flags.is(Flags.Mutable) && t.tpt.tpe <:< TypeRepr
+                .of[AnyRef] && rhs.symbol.fullName == "scala.compiletime.package$package$.uninitialized" =>
+            error(tree.pos, "null is disabled")
 
           case _ =>
             super.traverseTree(tree)(owner)
