@@ -54,10 +54,19 @@ class NullTest extends AnyFunSuite with ResultAssertions {
   }
 
   test("can't use `Option#orNull`") {
-    val result = WartTestTraverser(Null) {
-      println(None.orNull)
+    Seq(
+      WartTestTraverser(Null) {
+        Option("a").orNull
+      },
+      WartTestTraverser(Null) {
+        None.orNull
+      },
+      WartTestTraverser(Null) {
+        Some("b").orNull
+      }
+    ).foreach { result =>
+      assertError(result)("Option#orNull is disabled")
     }
-    assertError(result)("Option#orNull is disabled")
   }
 
   test("can use null in conditions") {
