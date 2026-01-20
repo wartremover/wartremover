@@ -3,7 +3,6 @@ package test
 
 import org.wartremover.warts.While
 import org.scalatest.funsuite.AnyFunSuite
-import scala.annotation.nowarn
 
 class WhileTest extends AnyFunSuite with ResultAssertions {
   test("while is disabled") {
