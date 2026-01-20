@@ -7,6 +7,23 @@ object Null extends WartTraverser {
     new u.Traverser(this) {
       private val constructorDefaultNamePrefix = scala.reflect.NameTransformer.encode("<init>") + "$default"
       import q.reflect.*
+
+      private object OptionOrNull {
+        def unapply(t: Tree): Boolean = t match {
+          case _ if sourceCodeNotContains(t, "orNull") =>
+            false
+          case _ if t.isExpr =>
+            t.asExpr match {
+              case '{ ($x: Option[?]).orNull } =>
+                true
+              case _ =>
+                false
+            }
+          case _ =>
+            false
+        }
+      }
+
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
@@ -26,28 +43,11 @@ object Null extends WartTraverser {
             other.foreach(traverseTree(_)(owner))
           case Apply(Select(other, "==" | "!=" | "eq" | "ne"), Literal(NullConstant()) :: Nil) =>
             traverseTree(other)(owner)
-          case t if t.isExpr =>
-            val e = t.asExpr
-            e match {
-              case '{ ($x: Option[?]).orNull } =>
-                error(tree.pos, "Option#orNull is disabled")
-              case _ =>
-                tree.match {
-                  case Apply(Select(left, _), _) =>
-                    !left.tpe.typeSymbol.fullName.startsWith("scala.xml.")
-                  case _ =>
-                    true
-                }.match {
-                  case true =>
-                    e match {
-                      case '{ null } =>
-                        error(tree.pos, "null is disabled")
-                      case _ =>
-                        super.traverseTree(tree)(owner)
-                    }
-                  case _ =>
-                }
-            }
+          case OptionOrNull() =>
+            error(tree.pos, "Option#orNull is disabled")
+          case Apply(Select(left, _), _) if left.tpe.typeSymbol.fullName.startsWith("scala.xml.") =>
+          case Literal(NullConstant()) =>
+            error(tree.pos, "null is disabled")
           case t @ ValDef(_, _, Some(Wildcard()))
               if t.symbol.flags.is(Flags.Mutable) && t.tpt.tpe <:< TypeRepr.of[AnyRef] =>
             error(tree.pos, "null is disabled")
