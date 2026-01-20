@@ -30,13 +30,8 @@ object PlatformDefault extends WartTraverser {
                 arg1 :: Nil
               ) if tpe.tpe =:= TypeRepr.of[String] && arg1.tpe =:= TypeRepr.of[Array[Byte]] =>
             error(tree.pos, newString)
-          case t if t.isExpr =>
-            t.asExpr match {
-              case '{ scala.io.Codec.fallbackSystemCodec } =>
-                error(tree.pos, fallbackSystemCodec)
-              case _ =>
-                super.traverseTree(tree)(owner)
-            }
+          case _: Ident if tree.symbol.fullName == "scala.io.LowPriorityCodecImplicits.fallbackSystemCodec" =>
+            error(tree.pos, fallbackSystemCodec)
           case _ =>
             super.traverseTree(tree)(owner)
         }
