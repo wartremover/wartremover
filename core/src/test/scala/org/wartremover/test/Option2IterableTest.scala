@@ -12,6 +12,19 @@ class Option2IterableTest extends AnyFunSuite with ResultAssertions {
     v.matches("2\\.1[012].*")
   }
 
+  test("can't use Option.option2Iterable") {
+    Seq(
+      WartTestTraverser(Option2Iterable) {
+        def x: Iterable[Int] = Option(2)
+      },
+      WartTestTraverser(Option2Iterable) {
+        def x: Option[Int] = Option(2).headOption
+      }
+    ).foreach { result =>
+      assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    }
+  }
+
   test("can't use Option.option2Iterable with Some") {
     val result = WartTestTraverser(Option2Iterable) {
       println(Iterable(1).flatMap(Some(_)))
@@ -55,6 +68,8 @@ class Option2IterableTest extends AnyFunSuite with ResultAssertions {
     val result = WartTestTraverser(Option2Iterable) {
       @SuppressWarnings(Array("org.wartremover.warts.Option2Iterable"))
       val foo = {
+        def x1: Iterable[Int] = Option(2)
+        def x2: Option[Int] = Option(3).headOption
         println(Iterable(1).flatMap(Some(_)))
       }
     }
