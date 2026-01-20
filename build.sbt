@@ -310,6 +310,8 @@ lazy val inspector = projectMatrix
 
 def benchmarkScalaVersion = "3.7.4"
 
+def benchmarkLogFile = "benchmark.log"
+
 lazy val benchmark = project
   .disablePlugins(AssemblyPlugin)
   .enablePlugins(JmhPlugin)
@@ -317,6 +319,49 @@ lazy val benchmark = project
     baseSettings,
     scalaVersion := benchmarkScalaVersion,
     libraryDependencies += "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value,
+    TaskKey[Unit]("collectBenchmarkLog") := {
+      sys.env.get("GITHUB_STEP_SUMMARY").map(file).foreach { f =>
+        IO.append(
+          f,
+          Seq(
+            "```",
+            IO.readLines(file(benchmarkLogFile))
+              .dropWhile(!_.matches(".*Benchmark.*Mode.*Cnt.*Score.*Error.*Units"))
+              .mkString("\n"),
+            "```",
+          ).mkString("\n", "\n", "\n")
+        )
+      }
+    },
+    outputStrategy := {
+      if (sys.env.isDefinedAt("GITHUB_ACTION")) {
+        Some(
+          OutputStrategy.CustomOutput(
+            new java.io.OutputStream {
+              private val fileOut = new java.io.FileOutputStream(file(benchmarkLogFile))
+              override def write(b: Int): Unit = {
+                scala.Console.out.write(b)
+                fileOut.write(b)
+              }
+              override def write(b: Array[Byte]): Unit = {
+                scala.Console.out.write(b)
+                fileOut.write(b)
+              }
+              override def close(): Unit = {
+                super.close()
+                fileOut.close()
+              }
+              override def flush(): Unit = {
+                super.flush()
+                fileOut.flush()
+              }
+            }
+          )
+        )
+      } else {
+        outputStrategy.value
+      }
+    },
     Compile / sourceGenerators += Def.task {
       val exclude = scala2only.toSet
       val dir = (Compile / sourceManaged).value
