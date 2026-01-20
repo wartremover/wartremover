@@ -7,10 +7,8 @@ import scala.annotation.nowarn
 
 class Option2IterableTest extends AnyFunSuite with ResultAssertions {
 
-  def isScala212: Boolean = {
-    val v = scala.util.Properties.versionNumberString
-    v.matches("2\\.1[012].*")
-  }
+  val isScala212: Boolean =
+    scala.util.Properties.versionNumberString.startsWith("2.12.")
 
   test("can't use Option.option2Iterable") {
     Seq(
@@ -33,6 +31,8 @@ class Option2IterableTest extends AnyFunSuite with ResultAssertions {
     // https://github.com/scala/scala/pull/8038
     if (isScala212) {
       assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    } else {
+      assertEmpty(result)
     }
   }
   test("can't use Option.option2Iterable with None") {
@@ -43,6 +43,8 @@ class Option2IterableTest extends AnyFunSuite with ResultAssertions {
     // https://github.com/scala/scala/pull/8038
     if (isScala212) {
       assertError(result)("Implicit conversion from Option to Iterable is disabled - use Option#toList instead")
+    } else {
+      assertEmpty(result)
     }
   }
   test("can't use Option.option2Iterable when zipping Options") {

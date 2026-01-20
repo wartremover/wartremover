@@ -10,10 +10,12 @@ class ProductTest extends AnyFunSuite with ResultAssertions {
     val result = WartTestTraverser(Product) {
       List((1, 2, 3), (1, 2))
     }
-    if (versionNumberString.matches("2\\.1[012].*")) {
+    if (versionNumberString.startsWith("2.12.")) {
       assertError(result)("Inferred type containing Product: Product with Serializable")
-    } else {
+    } else if (versionNumberString.startsWith("2.13.")) {
       assertError(result)("Inferred type containing Product: Product with java.io.Serializable")
+    } else {
+      fail(s"unexpected scala version ${versionNumberString}")
     }
   }
   test("Product wart obeys SuppressWarnings") {
