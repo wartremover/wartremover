@@ -1,9 +1,6 @@
 package org.wartremover
 package warts
 
-import scala.quoted.Expr
-import scala.quoted.Type
-
 object MapUnit extends WartTraverser {
   override def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
