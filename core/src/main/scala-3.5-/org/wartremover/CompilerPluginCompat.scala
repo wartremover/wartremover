@@ -1,6 +1,5 @@
 package org.wartremover
 
-import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.plugins.PluginPhase
 
 trait CompilerPluginCompat { self: Plugin =>
