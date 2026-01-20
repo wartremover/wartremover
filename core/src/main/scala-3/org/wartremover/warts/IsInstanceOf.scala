@@ -7,9 +7,10 @@ object IsInstanceOf extends WartTraverser {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
+          case _ if sourceCodeNotContains(tree, "isInstanceOf") =>
           case t if hasWartAnnotation(t) =>
           case _: Typed =>
-          case t if t.isExpr && sourceCodeContains(t, "isInstanceOf") =>
+          case t if t.isExpr =>
             t.asExpr match {
               case '{ ($x: t1).isInstanceOf[t2] } =>
                 error(tree.pos, "isInstanceOf is disabled")
