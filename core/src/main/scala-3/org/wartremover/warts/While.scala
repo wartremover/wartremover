@@ -7,8 +7,9 @@ object While extends WartTraverser {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
+          case _ if sourceCodeNotContains(tree, "while") =>
           case t if hasWartAnnotation(t) =>
-          case t: While =>
+          case _: While =>
             error(tree.pos, "while is disabled")
             super.traverseTree(tree)(owner)
           case _ =>
