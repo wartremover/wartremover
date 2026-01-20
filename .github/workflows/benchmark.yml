@@ -1,11 +1,9 @@
 on:
   push:
-    branches:
-      - master
   pull_request:
 jobs:
   benchmark:
-    timeout-minutes: 30
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -14,6 +12,10 @@ jobs:
           - index: 1
           - index: 2
           - index: 3
+          - index: 4
+          - index: 5
+          - index: 6
+          - index: 7
     runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-java@v5
@@ -24,7 +26,7 @@ jobs:
     - uses: sbt/setup-sbt@v1
     - run: sbt
            -v
-           -Dbenchmark_total=4
+           -Dbenchmark_total=8
            -Dbenchmark_index=${{ matrix.index }}
-           "benchmark/Jmh/run -i 1 -wi 2 -f1 -t1"
+           "benchmark/Jmh/run -i 5 -wi 5 -f1 -t1"
            collectBenchmarkLog
