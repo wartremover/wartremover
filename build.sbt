@@ -2,6 +2,7 @@ import ReleaseTransformations._
 import com.jsuereth.sbtpgp.PgpKeys
 import xsbti.api.ClassLike
 import xsbti.api.DefinitionType
+import sbt.internal.ProjectMatrix
 import scala.collection.compat._
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
@@ -355,7 +356,7 @@ lazy val benchmark = project
     core.jvm(benchmarkScalaVersion)
   )
 
-lazy val core: sbt.internal.ProjectMatrix = projectMatrix
+lazy val core: ProjectMatrix = projectMatrix
   .in(file("core"))
   .withId("core")
   .defaultAxes(VirtualAxis.jvm)
@@ -432,7 +433,7 @@ val scala2only = Seq(
 
 val scoverage = "org.scoverage" % "sbt-scoverage" % "2.4.4" % "runtime" // for scala-steward
 
-lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
+lazy val sbtPlug: ProjectMatrix = projectMatrix
   .in(file("sbt-plugin"))
   .withId("sbt-plugin")
   .defaultAxes(VirtualAxis.jvm)
@@ -574,7 +575,7 @@ lazy val sbtPlug: sbt.internal.ProjectMatrix = projectMatrix
 val `sbt-plugin3` = sbtPlug.jvm(Scala3forSbt2).dependsOn(inspectorCommon.jvm(latestScala3))
 val `sbt-plugin2_12` = sbtPlug.jvm(latestScala212).dependsOn(inspectorCommon.jvm(latestScala212))
 
-lazy val testMacros: sbt.internal.ProjectMatrix = projectMatrix
+lazy val testMacros: ProjectMatrix = projectMatrix
   .in(file("test-macros"))
   .withId("test-macros")
   .defaultAxes(VirtualAxis.jvm)
