@@ -182,7 +182,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("ImplicitConversion", 239),
         ("ImplicitParameter", 10),
         ("IsInstanceOf", 3),
-        ("IterableOps", 62),
+        ("IterableOps", 63),
         ("LeakingSealed", 7),
         ("ListAppend", 3),
         ("MutableDataStructures", 110),
