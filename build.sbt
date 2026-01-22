@@ -211,20 +211,22 @@ val coreSettings = Def.settings(
     }
     new RuleTransformer(strip).transform(node)(0)
   },
-  Compile / unmanagedSourceDirectories ++= {
-    scalaVersion.value match {
-      case VersionNumber(Seq(3, n, _), _, _) =>
-        val dir = {
-          if (n >= 5) {
-            "scala-3.5+"
-          } else {
-            "scala-3.5-"
+  Seq(Compile, Test).map { x =>
+    x / unmanagedSourceDirectories ++= {
+      scalaVersion.value match {
+        case VersionNumber(Seq(3, n, _), _, _) =>
+          val dir = {
+            if (n >= 5) {
+              "scala-3.5+"
+            } else {
+              "scala-3.5-"
+            }
           }
-        }
-        val base = coreSrcDir.value / "main"
-        Seq(base / dir)
-      case _ =>
-        Nil
+          val base = coreSrcDir.value / Defaults.nameForSrc(x.name)
+          Seq(base / dir)
+        case _ =>
+          Nil
+      }
     }
   },
 )
