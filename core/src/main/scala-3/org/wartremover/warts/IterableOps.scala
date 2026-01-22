@@ -12,51 +12,43 @@ object IterableOps extends WartTraverser {
     "min",
   )
 
+  private object Method {
+    def unapply(s: String): Option[String] = PartialFunction.condOpt(s) {
+      case "head" =>
+        "headOption"
+      case "tail" =>
+        "drop(1)"
+      case "init" =>
+        "dropRight(1)"
+      case "last" =>
+        "lastOption"
+      case "reduce" =>
+        "reduceOption or fold"
+      case "reduceLeft" =>
+        "reduceLeftOption or foldLeft"
+      case "reduceRight" =>
+        "reduceRightOption or foldRight"
+      case "maxBy" =>
+        "foldLeft or foldRight"
+      case "max" =>
+        "foldLeft or foldRight"
+      case "minBy" =>
+        "foldLeft or foldRight"
+      case "min" =>
+        "foldLeft or foldRight"
+    }
+  }
+
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
-        def err(method: String, alternative: String) =
-          error(tree.pos, s"${method} is disabled - use ${alternative} instead")
-
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
-            t.asExpr match {
-              case '{ ($x: collection.Iterable[t]).head } =>
-                err("head", "headOption")
-              case '{ ($x: collection.Iterable[t]).tail } =>
-                err("tail", "drop(1)")
-              case '{ ($x: collection.Iterable[t]).init } =>
-                err("init", "dropRight(1)")
-              case '{ ($x: collection.Iterable[t]).last } =>
-                err("last", "lastOption")
-              case '{ ($x: collection.Iterable[t]).reduce($f) } =>
-                err("reduce", "reduceOption or fold")
-              case '{ ($x: collection.Iterable[t]).reduceLeft($f) } =>
-                err("reduceLeft", "reduceLeftOption or foldLeft")
-              case '{ ($x: collection.Iterable[t]).reduceRight($f) } =>
-                err("reduceRight", "reduceRightOption or foldRight")
-              case '{
-                    type t1
-                    type t2
-                    ($x: collection.Iterable[`t1`]).maxBy($f: Function[`t1`, `t2`])(using $o: Ordering[`t2`])
-                  } =>
-                err("maxBy", "foldLeft or foldRight")
-              case '{ ($x: collection.Iterable[t]).max(using $o) } =>
-                err("max", "foldLeft or foldRight")
-              case '{
-                    type t1
-                    type t2
-                    ($x: collection.Iterable[`t1`]).minBy($f: Function[`t1`, `t2`])(using $o: Ordering[`t2`])
-                  } =>
-                err("minBy", "foldLeft or foldRight")
-              case '{ ($x: collection.Iterable[t]).min(using $o) } =>
-                err("min", "foldLeft or foldRight")
-              case _ =>
-                super.traverseTree(tree)(owner)
-            }
+          case Select(t, method @ Method(alternative))
+              if t.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") =>
+            error(tree.pos, s"${method} is disabled - use ${alternative} instead")
           case _ =>
             super.traverseTree(tree)(owner)
         }
