@@ -54,6 +54,7 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
     val (errors2, warningWarts) = options.collect { case s"only-warn-traverser:${name}" =>
       Plugin.loadWart(name, classLoader)
     }.partitionMap(identity)
+    val profile = options.collectFirst { case s"profile:${filePath}" if filePath.trim.nonEmpty => filePath }
     val loglevel = options.collect { case s"loglevel:${level}" =>
       LogLevel.map.get(level)
     }.flatten.headOption.getOrElse(LogLevel.Disable)
@@ -97,6 +98,7 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
               initialLog = initialLog,
               runsAfter = Set(phase),
               phaseName = phaseName(w),
+              profile = None,
             )
           },
           warningWartsInThisPhase.map { w =>
@@ -109,6 +111,7 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
               initialLog = initialLog,
               runsAfter = Set(phase),
               phaseName = phaseName(w),
+              profile = None,
             )
           },
         ).flatten
@@ -126,7 +129,8 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
               WartremoverPhase.defaultWartremoverPhaseName
             case _ =>
               s"${WartremoverPhase.defaultWartremoverPhaseName}-${phase}"
-          }
+          },
+          profile = profile
         ) :: Nil
       }
     }

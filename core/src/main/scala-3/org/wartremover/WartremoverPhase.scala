@@ -1,12 +1,18 @@
 package org.wartremover
 
+import dotty.tools.dotc.CompilationUnit
 import dotty.tools.dotc.ast.tpd
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.quoted.QuotesCache
 import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.dotc.report
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.LongAdder
+import scala.collection.concurrent.TrieMap
 import scala.util.control.NonFatal
 
 object WartremoverPhase {
@@ -22,8 +28,31 @@ class WartremoverPhase(
   logLevel: LogLevel,
   initialLog: AtomicBoolean,
   override val runsAfter: Set[String],
-  override val phaseName: String
+  override val phaseName: String,
+  profile: Option[String]
 ) extends PluginPhase {
+  private val profileResult: TrieMap[String, LongAdder] = TrieMap.empty[String, LongAdder]
+
+  def this(
+    errorWarts: List[WartTraverser],
+    warningWarts: List[WartTraverser],
+    loadFailureWarts: List[(String, Throwable)],
+    excluded: List[String],
+    logLevel: LogLevel,
+    initialLog: AtomicBoolean,
+    runsAfter: Set[String],
+    phaseName: String,
+  ) = this(
+    errorWarts = errorWarts,
+    warningWarts = warningWarts,
+    loadFailureWarts = loadFailureWarts,
+    excluded = excluded,
+    logLevel = logLevel,
+    initialLog = initialLog,
+    runsAfter = runsAfter,
+    phaseName = phaseName,
+    profile = None
+  )
 
   def this(
     errorWarts: List[WartTraverser],
@@ -40,8 +69,38 @@ class WartremoverPhase(
     logLevel = logLevel,
     initialLog = initialLog,
     runsAfter = Set(WartremoverPhase.defaultRunsAfter),
-    phaseName = WartremoverPhase.defaultWartremoverPhaseName
+    phaseName = WartremoverPhase.defaultWartremoverPhaseName,
+    profile = None
   )
+
+  override def runOn(units: List[CompilationUnit])(using Context): List[CompilationUnit] = {
+    try {
+      super.runOn(units)
+    } finally {
+      profile.withFilter(_ => profileResult.nonEmpty).foreach { profileFilePath =>
+        val values = profileResult.view.mapValues(_.sum()).toSeq
+        val sum = values.map(_._2).sum
+        def toMillSeconds(n: Long): String = (n / 1_000_000.0).toString
+        val result =
+          values
+            .sortBy(_._2)(using summon[Ordering[Long]].reverse)
+            .iterator
+            .map((k, v) => s"$k ${toMillSeconds(v)} ${"%.6f".format((v.toDouble / sum) * 100)}")
+            .mkString(s"all ${toMillSeconds(sum)}\n", "\n", "\n")
+
+        logLevel match {
+          case LogLevel.Debug =>
+            println(result)
+          case _ =>
+        }
+
+        Files.write(
+          Paths.get(profileFilePath),
+          result.getBytes(StandardCharsets.UTF_8)
+        )
+      }
+    }
+  }
 
   override def run(using c: Context): Unit = {
     logLevel match {
@@ -88,6 +147,7 @@ class WartremoverPhase(
       )
       val traverser = w.apply(universe)
       val t = tree.asInstanceOf[traverser.q.reflect.Tree]
+      val start = System.nanoTime()
       try {
         traverser.traverseTree(t)(t.symbol)
       } catch {
@@ -97,6 +157,11 @@ class WartremoverPhase(
             case LogLevel.Info | LogLevel.Debug =>
               report.warning(e.toString, tree.srcPos)
           }
+      } finally {
+        if (profile.isDefined) {
+          val adder = profileResult.getOrElseUpdate(w.fullName, new LongAdder)
+          adder.add(System.nanoTime() - start)
+        }
       }
     }
 
