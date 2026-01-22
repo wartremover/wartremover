@@ -8,7 +8,8 @@ object SeqApply extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if hasWartAnnotation(tree) =>
-          case Apply(Select(obj, "apply"), arg :: Nil) if obj.tpe <:< TypeRepr.of[collection.Seq[Any]] =>
+          case Apply(Select(obj, "apply"), _ :: Nil)
+              if obj.tpe.baseClasses.exists(_.fullName == "scala.collection.Seq") =>
             error(tree.pos, "Seq.apply is disabled")
           case _ =>
             super.traverseTree(tree)(owner)
