@@ -8,6 +8,12 @@ import scala.util.Failure
 import org.scalatest.funsuite.AnyFunSuite
 
 class TryPartialTest extends AnyFunSuite with ResultAssertions {
+  test("can't use Try#get") {
+    val result = WartTestTraverser(TryPartial) {
+      println(Try(2).get)
+    }
+    assertError(result)("Try#get is disabled")
+  }
   test("can't use Try#get on Success") {
     val result = WartTestTraverser(TryPartial) {
       println(Success(1).get)
