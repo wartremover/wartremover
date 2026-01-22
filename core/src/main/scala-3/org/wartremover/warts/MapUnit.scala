@@ -9,13 +9,10 @@ object MapUnit extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "map") =>
           case _ if hasWartAnnotation(tree) =>
-          case _ if tree.isExpr =>
-            tree.asExpr match {
-              case '{
-                    type t1
-                    type t2
-                    ($x: collection.Iterable[`t1`]).map($f: Function1[`t1`, `t2`])
-                  } if TypeRepr.of[t2] =:= TypeRepr.of[Unit] =>
+          case Apply(TypeApply(Select(x, "map"), _), f :: Nil)
+              if x.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") =>
+            f.tpe.asType match {
+              case '[Function1[t1, t2]] if TypeRepr.of[t2] =:= TypeRepr.of[Unit] =>
                 error(tree.pos, "Maybe you should use `foreach` instead of `map`")
               case _ =>
                 super.traverseTree(tree)(owner)
