@@ -8,6 +8,7 @@ class ForeachEntryTest extends AnyFunSuite with ResultAssertions {
   private def collectionMap: collection.Map[Int, String] = ???
   private def immutableMap: collection.immutable.Map[Int, String] = ???
   private def mutableMap: collection.mutable.Map[Int, String] = ???
+  private def seq: collection.Seq[(Int, String)] = ???
 
   test("report error") {
     Seq(
@@ -40,6 +41,7 @@ class ForeachEntryTest extends AnyFunSuite with ResultAssertions {
       collectionMap.foreach { x => }
       immutableMap.foreach { x => x }
       mutableMap.foreach { x => }
+      seq.foreach { case (k, v) => k }
     }
     assertEmpty(result)
   }
