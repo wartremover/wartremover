@@ -6,24 +6,44 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class SizeIsTest extends AnyFunSuite with ResultAssertions {
   test("suggest sizeIs") {
-    val result = WartTestTraverser(SizeIs) {
-      List(3).size == 1
-      Vector(3).size <= 1
-      Iterable(3).size >= 1
-      Seq(3).size != 1
-      Map.empty[Int, String].size > 1
-      Set.empty[Boolean].size < 1
+    Seq(
+      WartTestTraverser(SizeIs) {
+        List(3).size == 1
+      },
+      WartTestTraverser(SizeIs) {
+        Vector(3).size <= 1
+      },
+      WartTestTraverser(SizeIs) {
+        Iterable(3).size >= 1
+      },
+      WartTestTraverser(SizeIs) {
+        Seq(3).size != 1
+      },
+      WartTestTraverser(SizeIs) {
+        Map.empty[Int, String].size > 1
+      },
+      WartTestTraverser(SizeIs) {
+        Set.empty[Boolean].size < 1
+      }
+    ).foreach { result =>
+      assertError(result)("Maybe you can use `sizeIs` instead of `size`")
     }
-    assertErrors(result)("Maybe you can use `sizeIs` instead of `size`", 6)
   }
 
   test("suggest lengthIs") {
-    val result = WartTestTraverser(SizeIs) {
-      List(3).length == 1
-      Vector(3).length <= 1
-      IndexedSeq(1).length >= 1
+    Seq(
+      WartTestTraverser(SizeIs) {
+        List(3).length == 1
+      },
+      WartTestTraverser(SizeIs) {
+        Vector(3).length <= 1
+      },
+      WartTestTraverser(SizeIs) {
+        IndexedSeq(1).length >= 1
+      }
+    ).foreach { result =>
+      assertError(result)("Maybe you can use `lengthIs` instead of `length`")
     }
-    assertErrors(result)("Maybe you can use `lengthIs` instead of `length`", 3)
   }
 
   test("don't suggest if Long") {
