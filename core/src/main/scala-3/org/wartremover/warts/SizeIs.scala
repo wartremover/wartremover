@@ -17,37 +17,13 @@ object SizeIs extends WartTraverser {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
-            t.asExpr match {
-              case '{ ($x1: Iterable[?]).size < ($x2: Int) } =>
-                error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[?]).size == ($x2: Int) } =>
-                error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[?]).size != ($x2: Int) } =>
-                error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[?]).size <= ($x2: Int) } =>
-                error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[?]).size > ($x2: Int) } =>
-                error(tree.pos, sizeMessage)
-              case '{ ($x1: Iterable[?]).size >= ($x2: Int) } =>
-                error(tree.pos, sizeMessage)
-
-              case '{ ($x1: collection.Seq[?]).length < ($x2: Int) } =>
-                error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[?]).length == ($x2: Int) } =>
-                error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[?]).length != ($x2: Int) } =>
-                error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[?]).length <= ($x2: Int) } =>
-                error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[?]).length > ($x2: Int) } =>
-                error(tree.pos, lengthMessage)
-              case '{ ($x1: collection.Seq[?]).length >= ($x2: Int) } =>
-                error(tree.pos, lengthMessage)
-
-              case _ =>
-                super.traverseTree(tree)(owner)
-            }
+          case Apply(Select(Select(x1, "size"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
+              if x1.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") && (x2.tpe <:< TypeRepr
+                .of[Int]) =>
+            error(tree.pos, sizeMessage)
+          case Apply(Select(Select(x1, "length"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
+              if x1.tpe.baseClasses.exists(_.fullName == "scala.collection.Seq") && (x2.tpe <:< TypeRepr.of[Int]) =>
+            error(tree.pos, lengthMessage)
           case _ =>
             super.traverseTree(tree)(owner)
         }
