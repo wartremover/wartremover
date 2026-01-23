@@ -7,9 +7,6 @@ import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.quoted.QuotesCache
 import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.dotc.report
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.LongAdder
 import scala.collection.concurrent.TrieMap
@@ -77,28 +74,7 @@ class WartremoverPhase(
     try {
       super.runOn(units)
     } finally {
-      profile.withFilter(_ => profileResult.nonEmpty).foreach { profileFilePath =>
-        val values = profileResult.view.mapValues(_.sum()).toSeq
-        val sum = values.map(_._2).sum
-        def toMillSeconds(n: Long): String = (n / 1_000_000.0).toString
-        val result =
-          values
-            .sortBy(_._2)(using summon[Ordering[Long]].reverse)
-            .iterator
-            .map((k, v) => s"$k ${toMillSeconds(v)} ${"%.6f".format((v.toDouble / sum) * 100)}")
-            .mkString(s"all ${toMillSeconds(sum)}\n", "\n", "\n")
-
-        logLevel match {
-          case LogLevel.Debug =>
-            println(result)
-          case _ =>
-        }
-
-        Files.write(
-          Paths.get(profileFilePath),
-          result.getBytes(StandardCharsets.UTF_8)
-        )
-      }
+      Profile.report(profileResult, profile, logLevel)
     }
   }
 

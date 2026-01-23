@@ -6,6 +6,8 @@ import tools.nsc.Phase
 import java.io.File
 import java.net.URI
 import java.net.URLClassLoader
+import java.util.concurrent.atomic.LongAdder
+import scala.collection.concurrent.TrieMap
 import scala.reflect.internal.util.NoPosition
 import scala.util.control.NonFatal
 
@@ -19,6 +21,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
   private[this] var onlyWarnTraversers: List[WartTraverser] = List.empty
   private[this] var excludedFiles: List[String] = List.empty
   private[this] var logLevel: LogLevel = LogLevel.Disable
+  private[this] var profile: Option[String] = None
 
   def getTraverser(mirror: reflect.runtime.universe.Mirror)(name: String): WartTraverser = {
     val moduleSymbol = mirror.staticModule(name)
@@ -97,6 +100,8 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
       case LogLevel.Disable =>
     }
 
+    profile = filterOptions("profile", options).headOption
+
     true
   }
 
@@ -111,7 +116,14 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     val phaseName = "wartremover-traverser"
 
+    private[this] val profileResult: TrieMap[String, LongAdder] = TrieMap.empty[String, LongAdder]
+
     override def newPhase(prev: Phase) = new StdPhase(prev) {
+      override def run(): Unit = {
+        super.run()
+        Profile.report(profileResult, profile, logLevel)
+      }
+
       override def apply(unit: CompilationUnit) = {
         val isExcluded = excludedFiles exists unit.source.file.absolute.path.startsWith
 
@@ -133,6 +145,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
           def go(ts: List[WartTraverser], onlyWarn: Boolean): Unit = {
             ts.foreach { traverser =>
+              val start = System.nanoTime()
               try {
                 traverser.apply(wartUniverse(onlyWarn)).traverse(unit.body)
               } catch {
@@ -140,6 +153,11 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
                   val message = s"error wartremover ${traverser.className} ${unit.source.path} '${e.getMessage}'"
                   global.reporter.error(unit.targetPos, message)
                   throw e
+              } finally {
+                if (profile.isDefined) {
+                  val adder = profileResult.getOrElseUpdate(traverser.className, new LongAdder)
+                  adder.add(System.nanoTime() - start)
+                }
               }
             }
           }
