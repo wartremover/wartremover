@@ -146,6 +146,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "FilterSize",
         "FinalCaseClass",
         "FinalVal",
+        "FindExists",
         "ForeachEntry",
         "GetGetOrElse",
         "GetOrElseNull",
@@ -277,6 +278,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "FindExists",
     ).map(
       "org.wartremover.warts." + _
     )
