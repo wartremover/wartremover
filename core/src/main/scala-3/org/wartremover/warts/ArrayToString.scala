@@ -8,10 +8,10 @@ object ArrayToString extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case Select(array, "toString") =>
+          case s @ Select(array, "toString") =>
             array.tpe.dealias.asType match {
               case '[Array[_]] =>
-                error(tree.pos, "Array.toString is disabled")
+                error(selectNamePosition(s), "Array.toString is disabled")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

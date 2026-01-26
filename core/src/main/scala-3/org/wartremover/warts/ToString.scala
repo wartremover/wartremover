@@ -9,7 +9,7 @@ object ToString extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case Apply(Select(lhs, "toString"), Nil)
+          case Apply(s @ Select(lhs, "toString"), Nil)
               if !isPrimitive(lhs.tpe) && !(lhs.tpe <:< TypeRepr.of[String]) &&
                 (lhs.tpe.baseClasses.collect {
                   case x if x.declaredMethod("toString").filterNot(_.flags.is(Flags.Synthetic)).nonEmpty => x.fullName
@@ -20,7 +20,7 @@ object ToString extends WartTraverser {
             } else {
               "class " + parent.name
             }
-            error(tree.pos, s"${name} does not override toString and automatic toString is disabled")
+            error(selectNamePosition(s), s"${name} does not override toString and automatic toString is disabled")
           case _ =>
             super.traverseTree(tree)(owner)
         }

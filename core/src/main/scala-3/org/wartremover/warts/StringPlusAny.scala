@@ -18,12 +18,12 @@ object StringPlusAny extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case Apply(Select(lhs, "+"), List(rhs))
+          case Apply(s @ Select(lhs, "+"), List(rhs))
               if lhs.tpe <:< TypeRepr.of[String] && !(rhs.tpe <:< TypeRepr.of[String]) =>
-            error(tree.pos, "Implicit conversion to string is disabled")
-          case Apply(Select(lhs, "+"), rhs :: Nil)
+            error(selectNamePosition(s), "Implicit conversion to string is disabled")
+          case Apply(s @ Select(lhs, "+"), rhs :: Nil)
               if primitiveTypes.exists(lhs.tpe <:< _) && (rhs.tpe <:< TypeRepr.of[String]) =>
-            error(tree.pos, "Implicit conversion to string is disabled")
+            error(selectNamePosition(s), "Implicit conversion to string is disabled")
           case _ =>
             // https://github.com/scala/scala3/commit/1903b4ad8cf709cb729b8967e9708927ffa6688a
             super.traverseTree(tree)(owner)

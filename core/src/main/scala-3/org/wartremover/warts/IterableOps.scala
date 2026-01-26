@@ -46,9 +46,9 @@ object IterableOps extends WartTraverser {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case Select(t, method @ Method(alternative))
+          case s @ Select(t, method @ Method(alternative))
               if t.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") =>
-            error(tree.pos, s"${method} is disabled - use ${alternative} instead")
+            error(selectNamePosition(s), s"${method} is disabled - use ${alternative} instead")
           case _ =>
             super.traverseTree(tree)(owner)
         }

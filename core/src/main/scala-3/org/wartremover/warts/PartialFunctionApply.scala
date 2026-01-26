@@ -22,9 +22,9 @@ object PartialFunctionApply extends WartTraverser {
                 Some(Apply(Select(x1, "isDefinedAt"), x2 :: Nil)),
                 Block(Nil, Apply(Select(x3, "apply"), x4 :: Nil)),
               ) if (x1.symbol == x3.symbol) && (x2.symbol == x4.symbol) =>
-          case Apply(Select(obj, "apply"), _ :: Nil)
+          case Apply(s @ Select(obj, "apply"), _ :: Nil)
               if obj.tpe.derivesFrom(pfType) && !obj.tpe.derivesFrom(seqType) && !obj.tpe.derivesFrom(mapType) =>
-            error(tree.pos, "PartialFunction#apply is disabled")
+            error(selectNamePosition(s), "PartialFunction#apply is disabled")
             super.traverseTree(tree)(owner)
           case _ =>
             super.traverseTree(tree)(owner)
