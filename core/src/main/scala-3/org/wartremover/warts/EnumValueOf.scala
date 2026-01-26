@@ -15,7 +15,7 @@ object EnumValueOf extends WartTraverser {
               ) && t.tpe.typeSymbol.flags.is(Flags.Enum) && (
                 valueOf.symbol.flags.is(Flags.Synthetic) || valueOf.symbol.flags.is(Flags.JavaDefined)
               ) =>
-            error(tree.pos, "Enum.valueOf is disabled")
+            error(selectNamePosition(valueOf), "Enum.valueOf is disabled")
           case _ =>
             super.traverseTree(tree)(owner)
         }

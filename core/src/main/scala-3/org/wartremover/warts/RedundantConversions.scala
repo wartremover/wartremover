@@ -29,36 +29,36 @@ object RedundantConversions extends WartTraverser {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case Select(t, method) =>
+          case s @ Select(t, method) =>
             method match {
               case "toList" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.List") =>
-                error(t.pos, "redundant toList conversion")
+                error(selectNamePosition(s), "redundant toList conversion")
               case "toSeq" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Seq") =>
-                error(t.pos, "redundant toSeq conversion")
+                error(selectNamePosition(s), "redundant toSeq conversion")
               case "toVector" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Vector") =>
-                error(t.pos, "redundant toVector conversion")
+                error(selectNamePosition(s), "redundant toVector conversion")
               case "toStream" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Stream") =>
-                error(t.pos, "redundant toStream conversion")
+                error(selectNamePosition(s), "redundant toStream conversion")
               case "toSet" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Set") =>
-                error(t.pos, "redundant toSet conversion")
+                error(selectNamePosition(s), "redundant toSet conversion")
               case "toIndexedSeq" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.IndexedSeq") =>
-                error(t.pos, "redundant toIndexedSeq conversion")
+                error(selectNamePosition(s), "redundant toIndexedSeq conversion")
               case "toString" if t.tpe <:< TypeRepr.of[String] =>
-                error(t.pos, "redundant toString conversion")
+                error(selectNamePosition(s), "redundant toString conversion")
               case "toInt" if t.tpe <:< TypeRepr.of[Int] =>
-                error(t.pos, "redundant toInt conversion")
+                error(selectNamePosition(s), "redundant toInt conversion")
               case "toLong" if t.tpe <:< TypeRepr.of[Long] =>
-                error(t.pos, "redundant toLong conversion")
+                error(selectNamePosition(s), "redundant toLong conversion")
               case "toFloat" if t.tpe <:< TypeRepr.of[Float] =>
-                error(t.pos, "redundant toFloat conversion")
+                error(selectNamePosition(s), "redundant toFloat conversion")
               case "toDouble" if t.tpe <:< TypeRepr.of[Double] =>
-                error(t.pos, "redundant toDouble conversion")
+                error(selectNamePosition(s), "redundant toDouble conversion")
               case "toByte" if t.tpe <:< TypeRepr.of[Byte] =>
-                error(t.pos, "redundant toByte conversion")
+                error(selectNamePosition(s), "redundant toByte conversion")
               case "toShort" if t.tpe <:< TypeRepr.of[Short] =>
-                error(t.pos, "redundant toShort conversion")
+                error(selectNamePosition(s), "redundant toShort conversion")
               case "toChar" if t.tpe <:< TypeRepr.of[Char] =>
-                error(t.pos, "redundant toChar conversion")
+                error(selectNamePosition(s), "redundant toChar conversion")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

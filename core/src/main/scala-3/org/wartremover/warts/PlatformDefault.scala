@@ -21,10 +21,10 @@ object PlatformDefault extends WartTraverser {
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case t if hasWartAnnotation(t) =>
-          case Apply(Select(str, "getBytes"), Nil) if str.tpe <:< TypeRepr.of[String] =>
-            error(tree.pos, getByte)
-          case Apply(Select(str, "toLowerCase" | "toUpperCase"), Nil) if str.tpe <:< TypeRepr.of[String] =>
-            error(tree.pos, upperLowerCase)
+          case Apply(s @ Select(str, "getBytes"), Nil) if str.tpe <:< TypeRepr.of[String] =>
+            error(selectNamePosition(s), getByte)
+          case Apply(s @ Select(str, "toLowerCase" | "toUpperCase"), Nil) if str.tpe <:< TypeRepr.of[String] =>
+            error(selectNamePosition(s), upperLowerCase)
           case Apply(
                 Select(New(tpe: TypeTree), "<init>"),
                 arg1 :: Nil

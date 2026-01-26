@@ -14,8 +14,8 @@ object SizeToLength extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "size") =>
           case t if hasWartAnnotation(t) =>
-          case Select(t, "size") if t.tpe.baseClasses.exists(t => types(t.fullName)) =>
-            error(tree.pos, "Maybe you should use `length` instead of `size`")
+          case s @ Select(t, "size") if t.tpe.baseClasses.exists(t => types(t.fullName)) =>
+            error(selectNamePosition(s), "Maybe you should use `length` instead of `size`")
           case _ =>
             super.traverseTree(tree)(owner)
         }

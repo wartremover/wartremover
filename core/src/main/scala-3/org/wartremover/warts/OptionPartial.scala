@@ -9,8 +9,8 @@ object OptionPartial extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "get") =>
           case t if hasWartAnnotation(t) =>
-          case Select(t, "get") if t.tpe.baseClasses.exists(_.fullName == "scala.Option") =>
-            error(t.pos, "Option#get is disabled - use Option#fold instead")
+          case s @ Select(t, "get") if t.tpe.baseClasses.exists(_.fullName == "scala.Option") =>
+            error(selectNamePosition(s), "Option#get is disabled - use Option#fold instead")
           case _ =>
             super.traverseTree(tree)(owner)
         }

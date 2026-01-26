@@ -16,8 +16,8 @@ object ArrayEquals extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case Apply(Select(x1, "=="), Literal(NullConstant()) :: Nil) =>
             super.traverseTree(x1)(owner)
-          case Apply(Select(x1, "=="), _ :: Nil) if x1.tpe.baseClasses.exists(t => types(t.fullName)) =>
-            error(tree.pos, "== is disabled")
+          case Apply(s @ Select(x1, "=="), _ :: Nil) if x1.tpe.baseClasses.exists(t => types(t.fullName)) =>
+            error(selectNamePosition(s), "== is disabled")
           case _ =>
             super.traverseTree(tree)(owner)
         }

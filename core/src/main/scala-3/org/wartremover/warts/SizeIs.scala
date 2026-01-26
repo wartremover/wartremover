@@ -17,13 +17,13 @@ object SizeIs extends WartTraverser {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case Apply(Select(Select(x1, "size"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
+          case Apply(Select(s @ Select(x1, "size"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
               if x1.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") && (x2.tpe <:< TypeRepr
                 .of[Int]) =>
-            error(tree.pos, sizeMessage)
-          case Apply(Select(Select(x1, "length"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
+            error(selectNamePosition(s), sizeMessage)
+          case Apply(Select(s @ Select(x1, "length"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
               if x1.tpe.baseClasses.exists(_.fullName == "scala.collection.Seq") && (x2.tpe <:< TypeRepr.of[Int]) =>
-            error(tree.pos, lengthMessage)
+            error(selectNamePosition(s), lengthMessage)
           case _ =>
             super.traverseTree(tree)(owner)
         }

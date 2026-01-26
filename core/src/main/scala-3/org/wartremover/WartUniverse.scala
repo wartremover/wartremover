@@ -147,6 +147,14 @@ abstract class WartUniverse(onlyWarning: Boolean, logLevel: LogLevel) { self =>
       t <:< TypeRepr.of[Double]
     }
 
+    protected[wartremover] def selectNamePosition(s: Select): Position = {
+      if (s.pos.end > s.qualifier.pos.end) {
+        Position(s.pos.sourceFile, s.qualifier.pos.end, s.pos.end)
+      } else {
+        s.pos
+      }
+    }
+
     override def foldOverTree(x: Unit, tree: Tree)(owner: Symbol): Unit = {
       try {
         super.foldOverTree(x, tree)(owner)
