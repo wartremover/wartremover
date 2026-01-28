@@ -12,7 +12,7 @@ scalaVersion := Scala3
 
 crossScalaVersions := Seq(Scala3, "2.13.18")
 
-InputKey[Unit]("check") := Seq("2.13" -> 77, "3" -> 73).foreach { case (v, all) =>
+InputKey[Unit]("check") := Seq("2.13" -> 78, "3" -> 74).foreach { case (v, all) =>
   val mainResult = IO.readLines(file(s"wartremover-main-profile-${v}.txt"))
   val testResult = IO.readLines(file(s"wartremover-test-profile-${v}.txt"))
   assert(mainResult.size == all, mainResult.size)

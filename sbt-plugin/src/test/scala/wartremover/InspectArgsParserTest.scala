@@ -156,6 +156,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "IsInstanceOf",
         "IterableOps",
         "JavaNetURLConstructors",
+        "KeySet",
         "LeakingSealed",
         "ListAppend",
         "ListUnapply",
@@ -279,6 +280,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
       "FindExists",
+      "KeySet",
     ).map(
       "org.wartremover.warts." + _
     )
