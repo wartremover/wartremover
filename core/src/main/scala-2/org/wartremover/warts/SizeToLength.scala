@@ -1,8 +1,6 @@
 package org.wartremover
 package warts
 
-import scala.reflect.NameTransformer
-
 object SizeToLength extends WartTraverser {
   private[this] def message = "Maybe you should use `length` instead of `size`"
   override def apply(u: WartUniverse): u.Traverser = {
