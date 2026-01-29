@@ -10,7 +10,8 @@ object SizeToLength extends WartTraverser {
       override def traverse(tree: Tree): Unit = {
         tree match {
           case t if hasWartAnnotation(u)(t) =>
-          case q"scala.Predef.augmentString($x).size" =>
+          case Select(Apply(predefAugmentString, _ :: Nil), TermName("size"))
+              if predefAugmentString.symbol.fullName == "scala.Predef.augmentString" =>
             error(u)(tree.pos, message)
             super.traverse(tree)
           case Select(Apply(Select(predef, TermName(arrayOps)), array :: Nil), TermName("size"))
