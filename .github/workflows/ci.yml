@@ -48,7 +48,7 @@ jobs:
     - uses: sbt/setup-sbt@v1
     - shell: bash
       env:
-        JAVA_OPTS: "-Xmx7G"
+        JAVA_OPTS: "-Xmx4G"
       run: |
         case ${{ matrix.name }} in
           "format")
