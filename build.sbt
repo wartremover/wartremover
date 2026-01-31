@@ -533,8 +533,8 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
       }
       new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
     },
-    packagedArtifacts := {
-      val value = packagedArtifacts.value
+    Compile / packagedArtifacts := {
+      val value = (Compile / packagedArtifacts).value
       val pomFiles = value.values.filter(_.getName.endsWith(".pom")).toList
       assert(pomFiles.size >= 1, pomFiles.map(_.getName))
       pomFiles.foreach { f =>
