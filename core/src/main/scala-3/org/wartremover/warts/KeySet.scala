@@ -6,6 +6,7 @@ object KeySet extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
+      private val mapSymbol = Symbol.requiredClass("scala.collection.Map")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if sources.exists(sourceCodeNotContains(tree, _)) =>
@@ -28,7 +29,7 @@ object KeySet extends WartTraverser {
                   )
                 ),
                 "toSet"
-              ) if (t1 == t2) && obj.tpe.baseClasses.exists(_.fullName == "scala.collection.Map") =>
+              ) if (t1 == t2) && obj.tpe.derivesFrom(mapSymbol) =>
             error(selectNamePosition(s), "you can use keySet")
           case _ =>
             super.traverseTree(tree)(owner)
