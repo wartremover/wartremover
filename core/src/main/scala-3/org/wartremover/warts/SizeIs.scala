@@ -13,16 +13,17 @@ object SizeIs extends WartTraverser {
   override def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
+      private val iterableSymbol = Symbol.requiredClass("scala.collection.Iterable")
+      private val seqSymbol = Symbol.requiredClass("scala.collection.Seq")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
           case Apply(Select(s @ Select(x1, "size"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
-              if x1.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") && (x2.tpe <:< TypeRepr
-                .of[Int]) =>
+              if x1.tpe.derivesFrom(iterableSymbol) && (x2.tpe <:< TypeRepr.of[Int]) =>
             error(selectNamePosition(s), sizeMessage)
           case Apply(Select(s @ Select(x1, "length"), "<" | "==" | "!=" | "<=" | ">" | ">="), x2 :: Nil)
-              if x1.tpe.baseClasses.exists(_.fullName == "scala.collection.Seq") && (x2.tpe <:< TypeRepr.of[Int]) =>
+              if x1.tpe.derivesFrom(seqSymbol) && (x2.tpe <:< TypeRepr.of[Int]) =>
             error(selectNamePosition(s), lengthMessage)
           case _ =>
             super.traverseTree(tree)(owner)

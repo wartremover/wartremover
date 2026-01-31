@@ -42,12 +42,12 @@ object IterableOps extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
+      private val iterableSymbol = Symbol.requiredClass("scala.collection.Iterable")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case s @ Select(t, method @ Method(alternative))
-              if t.tpe.baseClasses.exists(_.fullName == "scala.collection.Iterable") =>
+          case s @ Select(t, method @ Method(alternative)) if t.tpe.derivesFrom(iterableSymbol) =>
             error(selectNamePosition(s), s"${method} is disabled - use ${alternative} instead")
           case _ =>
             super.traverseTree(tree)(owner)

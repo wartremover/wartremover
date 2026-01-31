@@ -24,6 +24,13 @@ object RedundantConversions extends WartTraverser {
   override def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
+      private val listSymbol = Symbol.requiredClass("scala.collection.immutable.List")
+      private val seqSymbol = Symbol.requiredClass("scala.collection.immutable.Seq")
+      private val vectorSymbol = Symbol.requiredClass("scala.collection.immutable.Vector")
+      private val streamSymbol = Symbol.requiredClass("scala.collection.immutable.Stream")
+      private val setSymbol = Symbol.requiredClass("scala.collection.immutable.Set")
+      private val indexedSeqSymbol = Symbol.requiredClass("scala.collection.immutable.IndexedSeq")
+
       @nowarn("msg=LazyList")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
@@ -31,17 +38,17 @@ object RedundantConversions extends WartTraverser {
           case t if hasWartAnnotation(t) =>
           case s @ Select(t, method) =>
             method match {
-              case "toList" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.List") =>
+              case "toList" if t.tpe.derivesFrom(listSymbol) =>
                 error(selectNamePosition(s), "redundant toList conversion")
-              case "toSeq" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Seq") =>
+              case "toSeq" if t.tpe.derivesFrom(seqSymbol) =>
                 error(selectNamePosition(s), "redundant toSeq conversion")
-              case "toVector" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Vector") =>
+              case "toVector" if t.tpe.derivesFrom(vectorSymbol) =>
                 error(selectNamePosition(s), "redundant toVector conversion")
-              case "toStream" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Stream") =>
+              case "toStream" if t.tpe.derivesFrom(streamSymbol) =>
                 error(selectNamePosition(s), "redundant toStream conversion")
-              case "toSet" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.Set") =>
+              case "toSet" if t.tpe.derivesFrom(setSymbol) =>
                 error(selectNamePosition(s), "redundant toSet conversion")
-              case "toIndexedSeq" if t.tpe.baseClasses.exists(_.fullName == "scala.collection.immutable.IndexedSeq") =>
+              case "toIndexedSeq" if t.tpe.derivesFrom(indexedSeqSymbol) =>
                 error(selectNamePosition(s), "redundant toIndexedSeq conversion")
               case "toString" if t.tpe <:< TypeRepr.of[String] =>
                 error(selectNamePosition(s), "redundant toString conversion")

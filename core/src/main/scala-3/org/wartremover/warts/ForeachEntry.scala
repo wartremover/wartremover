@@ -5,6 +5,7 @@ object ForeachEntry extends WartTraverser {
   def apply(u: WartUniverse): u.Traverser = {
     new u.Traverser(this) {
       import q.reflect.*
+      private val mapSymbol = Symbol.requiredClass("scala.collection.Map")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if sourceCodeNotContains(tree, "for") =>
@@ -32,7 +33,7 @@ object ForeachEntry extends WartTraverser {
                   true
                 case _ =>
                   false
-              } && x.tpe.baseClasses.exists(_.fullName == "scala.collection.Map") =>
+              } && x.tpe.derivesFrom(mapSymbol) =>
             error(tree.pos, "You can use `foreachEntry` instead of `foreach` if Scala 2.13+")
           case _ =>
             super.traverseTree(tree)(owner)
