@@ -6,6 +6,15 @@ object ForeachEntry extends WartTraverser {
     new u.Traverser(this) {
       import q.reflect.*
       private val mapSymbol = Symbol.requiredClass("scala.collection.Map")
+      object BlockSingleOrSelf {
+        def unapply(x: Tree): Some[Tree] = Some(x match {
+          case Block(Nil, y) =>
+            y
+          case _ =>
+            x
+        })
+      }
+
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if sourceCodeNotContains(tree, "for") =>
@@ -34,6 +43,31 @@ object ForeachEntry extends WartTraverser {
                 case _ =>
                   false
               } && x.tpe.derivesFrom(mapSymbol) =>
+            error(tree.pos, "You can use `foreachEntry` instead of `foreach` if Scala 2.13+")
+          case Apply(
+                TypeApply(Select(x, "foreach"), _),
+                BlockSingleOrSelf(
+                  Block(
+                    DefDef(
+                      _,
+                      TermParamClause(
+                        ValDef(p0, _, None) :: Nil
+                      ) :: Nil,
+                      _,
+                      Some(
+                        Block(
+                          List(
+                            ValDef(_, _, Some(Select(Ident(p1), "_1"))),
+                            ValDef(_, _, Some(Select(Ident(p2), "_2")))
+                          ),
+                          _
+                        )
+                      )
+                    ) :: Nil,
+                    _: Closure
+                  )
+                ) :: Nil
+              ) if x.tpe.derivesFrom(mapSymbol) && (p0 == p1) && (p0 == p2) =>
             error(tree.pos, "You can use `foreachEntry` instead of `foreach` if Scala 2.13+")
           case _ =>
             super.traverseTree(tree)(owner)
