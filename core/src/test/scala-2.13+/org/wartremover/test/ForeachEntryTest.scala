@@ -29,7 +29,7 @@ class ForeachEntryTest extends AnyFunSuite with ResultAssertions {
         }
       }
     ).foreach { result =>
-      assertError(result.copy(errors = result.errors.distinct))(
+      assertError(result)(
         "You can use `foreachEntry` instead of `foreach` if Scala 2.13+"
       )
     }
