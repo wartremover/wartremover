@@ -52,20 +52,20 @@ jobs:
       run: |
         case ${{ matrix.name }} in
           "format")
-            sbt -v scalafmtSbt "+ scalafmtAll"
+            sbt -v --server scalafmtSbt "+ scalafmtAll"
             git diff --exit-code
             ;;
           "test")
             # test assembly for brew
             # https://github.com/Homebrew/homebrew-core/blob/a6f4331fd257cb0fbb/Formula/w/wartremover.rb
             echo "class A" > tmp_scala
-            sbt -v Test/compile test assembly && ./wartremover -traverser org.wartremover.warts.Unsafe tmp_scala
+            sbt -v --server Test/compile test assembly && ./wartremover -traverser org.wartremover.warts.Unsafe tmp_scala
             ;;
           "scripted")
-            sbt -v publishLocal "sbt-plugin2_12/scripted wartremover/*${{matrix.test_index}}of3"
+            sbt -v --server publishLocal "sbt-plugin2_12/scripted wartremover/*${{matrix.test_index}}of3"
             ;;
           "sbt2")
-            sbt -v publishLocal sbt-plugin3/scriptedTestSbt2
+            sbt -v --server publishLocal sbt-plugin3/scriptedTestSbt2
             ;;
           *)
             echo "unknown job"
