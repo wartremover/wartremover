@@ -23,6 +23,7 @@ jobs:
     - uses: actions/checkout@v6
     - uses: sbt/setup-sbt@v1
     - run: sbt
+           --server
            -v
            -Dbenchmark_total=4
            -Dbenchmark_index=${{ matrix.index }}
