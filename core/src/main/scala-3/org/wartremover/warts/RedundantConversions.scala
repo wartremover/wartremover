@@ -1,8 +1,6 @@
 package org.wartremover
 package warts
 
-import scala.annotation.nowarn
-
 object RedundantConversions extends WartTraverser {
   private val methodNames: Seq[String] = Seq(
     "toList",
@@ -31,7 +29,6 @@ object RedundantConversions extends WartTraverser {
       private val setSymbol = Symbol.requiredClass("scala.collection.immutable.Set")
       private val indexedSeqSymbol = Symbol.requiredClass("scala.collection.immutable.IndexedSeq")
 
-      @nowarn("msg=LazyList")
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
           case _ if methodNames.forall(sourceCodeNotContains(tree, _)) =>
