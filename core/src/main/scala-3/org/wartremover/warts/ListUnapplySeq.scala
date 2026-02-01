@@ -16,7 +16,7 @@ object ListUnapplySeq extends WartTraverser {
         PartialFunction.cond(t) {
           case TypedOrTest(Unapply(f: TypeApply, _, _), _) =>
             f.fun.symbol == listUnapplySeq
-          case Bind(_, t @ TypedOrTest(Unapply(f: TypeApply, _, _), _)) =>
+          case Bind(_, TypedOrTest(Unapply(f: TypeApply, _, _), _)) =>
             f.fun.symbol == listUnapplySeq
         }
 
