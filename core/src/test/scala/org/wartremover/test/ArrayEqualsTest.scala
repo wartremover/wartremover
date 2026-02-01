@@ -5,6 +5,20 @@ import org.wartremover.warts.ArrayEquals
 import org.scalatest.funsuite.AnyFunSuite
 
 class ArrayEqualsTest extends AnyFunSuite with ResultAssertions {
+  test("Array.equals is disabled") {
+    val result = WartTestTraverser(ArrayEquals) {
+      Array(1).equals(Array(1))
+    }
+    assertError(result)("equals is disabled")
+  }
+
+  test("Array != is disabled") {
+    val result = WartTestTraverser(ArrayEquals) {
+      Array(1) != Array(1)
+    }
+    assertError(result)("!= is disabled")
+  }
+
   test("Array == is disabled") {
     val result = WartTestTraverser(ArrayEquals) {
       Array(1) == Array(1)
@@ -21,14 +35,20 @@ class ArrayEqualsTest extends AnyFunSuite with ResultAssertions {
 
   test("`Array == null` is allowed") {
     val result = WartTestTraverser(ArrayEquals) {
-      Array(1) == null
+      Seq(
+        Array(1) == null,
+        Array(1) != null
+      )
     }
     assertEmpty(result)
   }
 
   test("Collections == is allowed") {
     val result = WartTestTraverser(ArrayEquals) {
-      List(1) == List(1)
+      Seq(
+        List(1) == List(1),
+        List(1) != List(1)
+      )
     }
     assertEmpty(result)
   }
