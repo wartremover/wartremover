@@ -7,6 +7,7 @@ object ObjectThrowable extends WartTraverser {
       import q.reflect.*
       override def traverseTree(tree: Tree)(owner: Symbol): Unit = {
         tree match {
+          case _ if sourceCodeNotContains(tree, "object") =>
           case t if hasWartAnnotation(t) =>
           case t: ClassDef if t.symbol.flags.is(Flags.Module) =>
             val types = t.parents.collect {
