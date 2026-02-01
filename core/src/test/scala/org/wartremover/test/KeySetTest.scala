@@ -8,6 +8,9 @@ class KeySetTest extends AnyFunSuite with ResultAssertions {
   test("report error") {
     Seq(
       WartTestTraverser(KeySet) {
+        Map.empty[Int, Int].map(a => a._1).toSet
+      },
+      WartTestTraverser(KeySet) {
         collection.Map.empty[Int, Int].map(_._1).toSet
       },
       WartTestTraverser(KeySet) {
