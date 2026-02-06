@@ -9,10 +9,10 @@ object TryPartial extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "get") =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: scala.util.Try[?]).get } =>
-                error(t.pos, "Try#get is disabled")
+                error(selectNamePosition(t), "Try#get is disabled")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

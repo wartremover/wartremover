@@ -20,30 +20,30 @@ object SortedMaxMinOption extends WartTraverser {
               if sortMethodNames
                 .forall(sourceCodeNotContains(tree, _)) || headOrLastOption.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{
                     type t1
                     ($x: collection.Seq[`t1`]).sorted(using $o: Ordering[`t1`]).headOption
                   } =>
-                error(t.pos, "You can use minOption instead of sorted.headOption")
+                error(selectNamePosition(t), "You can use minOption instead of sorted.headOption")
               case '{
                     type t1
                     ($x: collection.Seq[`t1`]).sorted(using $o: Ordering[`t1`]).lastOption
                   } =>
-                error(t.pos, "You can use maxOption instead of sorted.lastOption")
+                error(selectNamePosition(t), "You can use maxOption instead of sorted.lastOption")
               case '{
                     type t1
                     type t2
                     ($x: collection.Seq[`t1`]).sortBy($f: Function1[`t1`, `t2`])(using $o: Ordering[`t2`]).headOption
                   } =>
-                error(t.pos, "You can use minByOption instead of sortBy.headOption")
+                error(selectNamePosition(t), "You can use minByOption instead of sortBy.headOption")
               case '{
                     type t1
                     type t2
                     ($x: collection.Seq[`t1`]).sortBy($f: Function1[`t1`, `t2`])(using $o: Ordering[`t2`]).lastOption
                   } =>
-                error(t.pos, "You can use maxByOption instead of sortBy.lastOption")
+                error(selectNamePosition(t), "You can use maxByOption instead of sortBy.lastOption")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

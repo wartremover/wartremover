@@ -9,10 +9,10 @@ object CollectHeadOption extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "collect") || sourceCodeNotContains(tree, "headOption") =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: collection.Iterable[t1]).collect($f).headOption } =>
-                error(t.pos, "you can use collectFirst instead of collect.headOption")
+                error(selectNamePosition(t), "you can use collectFirst instead of collect.headOption")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

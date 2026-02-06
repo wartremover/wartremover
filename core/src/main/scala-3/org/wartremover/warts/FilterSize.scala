@@ -11,12 +11,12 @@ object FilterSize extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "filter") || sizeLengthMethods.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: collection.Iterable[t1]).filter($f).size } =>
-                error(t.pos, "you can use count instead of filter.size")
+                error(selectNamePosition(t), "you can use count instead of filter.size")
               case '{ ($x: collection.Seq[t1]).filter($f).length } =>
-                error(t.pos, "you can use count instead of filter.length")
+                error(selectNamePosition(t), "you can use count instead of filter.length")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

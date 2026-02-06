@@ -9,10 +9,10 @@ object FilterHeadOption extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "headOption") || sourceCodeNotContains(tree, "filter") =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: collection.Iterable[t1]).filter($f).headOption } =>
-                error(t.pos, "you can use find instead of filter.headOption")
+                error(selectNamePosition(t), "you can use find instead of filter.headOption")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

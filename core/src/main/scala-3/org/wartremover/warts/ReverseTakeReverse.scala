@@ -9,10 +9,10 @@ object ReverseTakeReverse extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "reverse") || sourceCodeNotContains(tree, "take") =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: collection.Seq[?]).reverse.take($n).reverse } =>
-                error(t.pos, "you can use takeRight instead of reverse.take.reverse")
+                error(selectNamePosition(t), "you can use takeRight instead of reverse.take.reverse")
               case _ =>
                 super.traverseTree(tree)(owner)
             }
