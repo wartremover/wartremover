@@ -9,10 +9,10 @@ object ReverseIterator extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "iterator") || sourceCodeNotContains(tree, "reverse") =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: collection.Seq[t]).reverse.iterator } =>
-                error(t.pos, "you can use reverseIterator instead of reverse.iterator")
+                error(selectNamePosition(t), "you can use reverseIterator instead of reverse.iterator")
               case _ =>
                 super.traverseTree(tree)(owner)
             }

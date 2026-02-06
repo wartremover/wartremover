@@ -11,16 +11,16 @@ object FilterEmpty extends WartTraverser {
         tree match {
           case _ if sourceCodeNotContains(tree, "filter") || emptyMethodNames.forall(sourceCodeNotContains(tree, _)) =>
           case t if hasWartAnnotation(t) =>
-          case t if t.isExpr =>
+          case t: Select if t.isExpr =>
             t.asExpr match {
               case '{ ($x: collection.Iterable[t1]).filter($f).isEmpty } =>
-                error(t.pos, "you can use exists instead of filter.isEmpty")
+                error(selectNamePosition(t), "you can use exists instead of filter.isEmpty")
               case '{ ($x: collection.Iterable[t1]).filter($f).nonEmpty } =>
-                error(t.pos, "you can use exists instead of filter.nonEmpty")
+                error(selectNamePosition(t), "you can use exists instead of filter.nonEmpty")
               case '{ ($x: collection.Iterable[t1]).filterNot($f).isEmpty } =>
-                error(t.pos, "you can use forall instead of filterNot.isEmpty")
+                error(selectNamePosition(t), "you can use forall instead of filterNot.isEmpty")
               case '{ ($x: collection.Iterable[t1]).filterNot($f).nonEmpty } =>
-                error(t.pos, "you can use forall instead of filterNot.nonEmpty")
+                error(selectNamePosition(t), "you can use forall instead of filterNot.nonEmpty")
               case _ =>
                 super.traverseTree(tree)(owner)
             }
