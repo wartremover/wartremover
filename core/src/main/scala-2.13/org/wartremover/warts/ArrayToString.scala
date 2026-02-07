@@ -7,10 +7,14 @@ object ArrayToString extends WartTraverser {
     import u.universe._
     new u.Traverser {
       private val arrayType = rootMirror.staticClass("scala.Array").toTypeConstructor
+      private val Plus = TermName("+").encodedName
       override def traverse(tree: Tree): Unit = {
         tree match {
           case _ if hasWartAnnotation(u)(tree) =>
           case Select(array, TermName("toString")) if array.tpe.dealias.typeConstructor =:= arrayType =>
+            error(u)(tree.pos, "Array.toString is disabled")
+          case Apply(Select(str, Plus), arg :: Nil)
+              if (str.tpe <:< typeOf[String]) && (arg.tpe.dealias.typeConstructor =:= arrayType) =>
             error(u)(tree.pos, "Array.toString is disabled")
           case _ =>
             super.traverse(tree)

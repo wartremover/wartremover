@@ -15,6 +15,12 @@ class ArrayToStringTest extends AnyFunSuite with ResultAssertions {
   test("Array.toString is disabled") {
     Seq(
       WartTestTraverser(ArrayToString) {
+        s" ${arrayInt} "
+      },
+      WartTestTraverser(ArrayToString) {
+        s" ${arrayLong} "
+      },
+      WartTestTraverser(ArrayToString) {
         arrayLong.toString
       },
       WartTestTraverser(ArrayToString) {
