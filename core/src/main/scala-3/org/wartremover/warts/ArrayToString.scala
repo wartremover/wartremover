@@ -15,6 +15,16 @@ object ArrayToString extends WartTraverser {
               case _ =>
                 super.traverseTree(tree)(owner)
             }
+          case Apply(s, Typed(Repeated(args, _), _) :: Nil) if s.symbol.fullName == "scala.StringContext.s" =>
+            args
+              .map(a => (a, a.tpe.dealias.asType))
+              .collect { case (a, '[Array[_]]) =>
+                a
+              }
+              .foreach { a =>
+                error(a.pos, "Array.toString is disabled")
+              }
+            super.traverseTree(tree)(owner)
           case _ =>
             super.traverseTree(tree)(owner)
         }
