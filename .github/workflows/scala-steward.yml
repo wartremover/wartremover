@@ -21,7 +21,7 @@ jobs:
         app-id: 89668
         private-key: ${{ secrets.WARTREMOVER_BOT_KEY }}
     - name: Launch Scala Steward
-      uses: scala-steward-org/scala-steward-action@91f0a480668e574d7d1b413b19ee8240c56cd629 # v2.81.0
+      uses: scala-steward-org/scala-steward-action@df2a4cec1721d0b48be3e1d1f0acdf7543ea0fb4 # v2.84.0
       with:
         github-token: ${{ steps.generate_token.outputs.token }}
         author-email: "74847867+wartremover-bot[bot]@users.noreply.github.com"
