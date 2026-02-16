@@ -46,7 +46,7 @@ lazy val allScalaVersions = Seq(
   }
 }
 
-def Scala3forSbt2 = "3.7.4"
+def Scala3forSbt2 = "3.8.2-RC3"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
@@ -486,10 +486,21 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
   .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(scalaVersions =
-    Seq(
-      latestScala212,
-      Scala3forSbt2,
+    (
+      if (scala.util.Properties.isJavaAtLeast("17")) {
+        Seq(latestScala212, Scala3forSbt2)
+      } else {
+        Seq(latestScala212)
+      }
     )
+  )
+  .configure(p =>
+    p.id match {
+      case "sbt-plugin2_12" =>
+        p.dependsOn(inspectorCommon.jvm(latestScala212))
+      case "sbt-plugin3" =>
+        p.dependsOn(inspectorCommon.jvm(latestScala3))
+    }
   )
   .settings(
     commonSettings,
@@ -499,7 +510,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
         case "2.12" =>
           sbtVersion.value
         case _ =>
-          "2.0.0-RC8"
+          "2.0.0-RC9"
       }
     },
     libraryDependencies ++= {
@@ -618,9 +629,6 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
     }
   )
   .enablePlugins(ScriptedPlugin)
-
-val `sbt-plugin3` = sbtPlug.jvm(Scala3forSbt2).dependsOn(inspectorCommon.jvm(latestScala3))
-val `sbt-plugin2_12` = sbtPlug.jvm(latestScala212).dependsOn(inspectorCommon.jvm(latestScala212))
 
 lazy val testMacros: ProjectMatrix = projectMatrix
   .in(file("test-macros"))
