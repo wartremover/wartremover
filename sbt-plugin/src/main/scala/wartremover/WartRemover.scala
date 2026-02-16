@@ -578,18 +578,20 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
         )
       )
     ),
-    Seq(Compile, Test).map(x =>
-      x / compile / scalacOptions := {
-        // https://github.com/wartremover/wartremover/issues/1233
-        val old = (x / compile / scalacOptions).value
-        val (wartremoverOptions, other) = old.partition(_.startsWith("-P:wartremover"))
-        val distinctValues = wartremoverOptions.distinct
-        if (distinctValues == wartremoverOptions) {
-          old
-        } else {
-          distinctValues ++ other
+    Seq(Compile, Test).flatMap(x =>
+      Seq(compile, console).map(y =>
+        x / y / scalacOptions := {
+          // https://github.com/wartremover/wartremover/issues/1233
+          val old = (x / y / scalacOptions).value
+          val (wartremoverOptions, other) = old.partition(_.startsWith("-P:wartremover"))
+          val distinctValues = wartremoverOptions.distinct
+          if (distinctValues == wartremoverOptions) {
+            old
+          } else {
+            distinctValues ++ other
+          }
         }
-      }
+      )
     ),
   )
 
