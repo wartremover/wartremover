@@ -311,11 +311,20 @@ lazy val inspector = projectMatrix
     inspectorCommon,
   )
 
-def benchmarkScalaVersion = "3.7.4"
+def benchmarkScalaVersion = "3.8.2"
 
 def benchmarkLogFile = "benchmark.log"
 
-lazy val benchmark = project
+lazy val benchmark = projectMatrix
+  .defaultAxes(VirtualAxis.jvm)
+  .jvmPlatform(
+    scalaVersions =
+      if (scala.util.Properties.isJavaAtLeast("17")) {
+        Seq(benchmarkScalaVersion)
+      } else {
+        Nil
+      }
+  )
   .disablePlugins(AssemblyPlugin)
   .enablePlugins(JmhPlugin)
   .settings(
@@ -401,7 +410,7 @@ lazy val benchmark = project
     noPublish,
   )
   .dependsOn(
-    core.jvm(benchmarkScalaVersion)
+    core
   )
 
 lazy val core: ProjectMatrix = projectMatrix
