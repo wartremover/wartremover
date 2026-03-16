@@ -11,8 +11,6 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / sbtPluginPublishLegacyMavenStyle := false
 
-def nightlyScala3: String = "3.8.1-RC1-bin-20260113-74ab8e5-NIGHTLY"
-
 // compiler plugin should be fully cross-versioned. e.g.
 // - https://github.com/ghik/silencer/issues/31
 // - https://github.com/typelevel/kind-projector/issues/15
@@ -40,7 +38,6 @@ lazy val allScalaVersions = Seq(
       "3.8.1",
       "3.8.2",
       "3.8.3-RC2",
-      nightlyScala3
     )
   } else {
     Nil
@@ -78,13 +75,6 @@ lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
   ),
-  resolvers ++= {
-    if (scalaVersion.value == nightlyScala3) {
-      Seq(Resolver.scalaNightlyRepository)
-    } else {
-      Nil
-    }
-  },
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.12" =>
@@ -432,7 +422,6 @@ lazy val core: ProjectMatrix = projectMatrix
     },
     crossSrcSetting(Compile),
     crossSrcSetting(Test),
-    publish / skip := (scalaVersion.value == nightlyScala3),
     crossTarget := {
       // workaround for https://github.com/sbt/sbt/issues/5097
       target.value / s"scala-${scalaVersion.value}"
