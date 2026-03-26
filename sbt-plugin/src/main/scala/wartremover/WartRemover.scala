@@ -37,6 +37,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     val wartremoverInspectSettings = settingKey[Seq[String]]("extra settings for run inspector")
     val wartremoverErrors = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation errors.")
     val wartremoverWarnings = settingKey[Seq[Wart]]("List of Warts that will be reported as compilation warnings.")
+    @transient
     val wartremoverExcluded = taskKey[Seq[File]]("List of files to be excluded from all checks.")
     val wartremoverClasspaths = taskKey[Seq[String]]("List of classpaths for custom Warts")
     val wartremoverCrossVersion = settingKey[CrossVersion]("CrossVersion setting for wartremover")
