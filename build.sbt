@@ -7,6 +7,8 @@ import scala.collection.compat._
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
+def sbt2 = "2.0.0-RC11"
+
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / sbtPluginPublishLegacyMavenStyle := false
@@ -45,7 +47,7 @@ lazy val allScalaVersions = Seq(
   }
 }
 
-def Scala3forSbt2 = "3.8.2"
+def Scala3forSbt2 = scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
@@ -510,7 +512,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
         case "2.12" =>
           sbtVersion.value
         case _ =>
-          "2.0.0-RC11"
+          sbt2
       }
     },
     libraryDependencies ++= {
