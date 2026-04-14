@@ -51,12 +51,13 @@ def Scala3forSbt2 = scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sb
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
-def latestScala3 = allScalaVersions.filterNot(_ contains "-RC").filter(_ startsWith "3.3.").last // TODO more better way
+def latestScala3 =
+  allScalaVersions.filterNot(_.contains("-RC")).filter(_.startsWith("3.3.")).last // TODO more better way
 
 def latest(n: Int, versions: Seq[String]) = {
   val prefix = "2." + n + "."
   prefix + versions
-    .filter(_ startsWith prefix)
+    .filter(_.startsWith(prefix))
     .flatMap(_.drop(prefix.length).toLongOption)
     .reduceLeftOption(_ max _)
     .getOrElse(
@@ -287,10 +288,12 @@ lazy val inspector = projectMatrix
       if (scalaBinaryVersion.value == "3") {
         Seq(
           "org.scala-sbt" %% "io" % "1.10.5" % Test,
-          "io.get-coursier" % "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13 exclude (
-            "org.scala-lang.modules",
-            "scala-xml_2.13"
-          ),
+          ("io.get-coursier" % "coursier" % "2.1.24" % Test)
+            .cross(CrossVersion.for3Use2_13)
+            .exclude(
+              "org.scala-lang.modules",
+              "scala-xml_2.13"
+            ),
           "io.github.argonaut-io" %% "argonaut" % "6.3.12",
           "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
         )
@@ -619,8 +622,8 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
          |}
          |object Wart {
          |  val PluginVersion: String = "${version.value}"
-         |  private[wartremover] lazy val AllWarts: List[Wart] = List(${warts mkString ", "})
-         |  private[wartremover] lazy val UnsafeWarts: List[Wart] = List(${unsafe mkString ", "})
+         |  private[wartremover] lazy val AllWarts: List[Wart] = List(${warts.mkString(", ")})
+         |  private[wartremover] lazy val UnsafeWarts: List[Wart] = List(${unsafe.mkString(", ")})
          |  /** A fully-qualified class name of a custom Wart implementing `org.wartremover.WartTraverser`. */
          |  def custom(clazz: String): Wart = new Wart(clazz)
          |  private[this] def w(nm: String): Wart = new Wart(s"org.wartremover.warts.$$nm")
