@@ -485,14 +485,25 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
+  private val wartremoverDependency: Def.Initialize[ModuleID] = Def.setting(
+    sbtBinaryVersion.value match {
+      case "2" =>
+        // https://github.com/sbt/sbt/issues/9132
+        wartremoverCrossVersion.value match {
+          case _: CrossVersion.Full =>
+            "org.wartremover" % s"wartremover_${scalaVersion.value}" % Wart.PluginVersion
+          case _: CrossVersion.Binary =>
+            "org.wartremover" % s"wartremover_${scalaBinaryVersion.value}" % Wart.PluginVersion
+          case _ =>
+            ("org.wartremover" %% "wartremover" % Wart.PluginVersion).cross(wartremoverCrossVersion.value)
+        }
+      case _ =>
+        ("org.wartremover" %% "wartremover" % Wart.PluginVersion).cross(wartremoverCrossVersion.value)
+    }
+  )
+
   override lazy val projectSettings: Seq[Def.Setting[?]] = Def.settings(
-    libraryDependencies ++= {
-      Seq(
-        compilerPlugin(
-          "org.wartremover" %% "wartremover" % Wart.PluginVersion cross wartremoverCrossVersion.value
-        )
-      )
-    },
+    libraryDependencies += compilerPlugin(wartremoverDependency.value),
     wartremoverFailIfWartLoadError := false,
     wartremoverInspectFailOnErrors := true,
     wartremoverInspectOutputStandardReporter := true,
@@ -622,10 +633,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     Def.taskDyn {
       val log = streams.value.log
       val wartremoverJars = Def.taskDyn {
-        val wartremoverCross = wartremoverCrossVersion.value
-        getJarFiles(
-          "org.wartremover" %% "wartremover" % Wart.PluginVersion cross wartremoverCross
-        )
+        getJarFiles(wartremoverDependency.value)
       }.value
       if (inspectArg.sources.nonEmpty) {
         val bytes: Seq[Byte] = getJar(inspectArg.sources.toSet).value
