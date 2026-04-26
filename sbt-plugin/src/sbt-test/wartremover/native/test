@@ -1,0 +1,7 @@
+> compile
+> set wartremoverCrossVersion := CrossVersion.binary
+> compile
+> set wartremoverErrors ++= Warts.all
+-> compile
+> set wartremoverCrossVersion := CrossVersion.full
+-> compile
