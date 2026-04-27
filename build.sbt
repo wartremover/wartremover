@@ -2,7 +2,6 @@ import ReleaseTransformations._
 import com.jsuereth.sbtpgp.PgpKeys
 import xsbti.api.ClassLike
 import xsbti.api.DefinitionType
-import sbt.internal.ProjectMatrix
 import scala.collection.compat._
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
@@ -76,6 +75,8 @@ val scalaCompilerDependency = Def.settings(
 )
 
 lazy val baseSettings = Def.settings(
+  exportJars := false,
+  outputPath := thisProject.value.id,
   scalacOptions ++= Seq(
     "-deprecation"
   ),
@@ -96,14 +97,6 @@ lazy val commonSettings = Def.settings(
   libraryDependencies ++= {
     Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.20" % "test")
   },
-  Seq(packageBin, packageDoc, packageSrc).flatMap {
-    // include LICENSE file in all packaged artifacts
-    inTask(_)(
-      Seq(
-        (Compile / mappings) += ((ThisBuild / baseDirectory).value / "LICENSE") -> "LICENSE"
-      )
-    )
-  },
   organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
@@ -112,7 +105,7 @@ lazy val commonSettings = Def.settings(
   publishMavenStyle := true,
   Test / publishArtifact := false,
   (Compile / doc / scalacOptions) ++= {
-    val t = sys.process.Process("git rev-parse HEAD").lineStream_!.head
+    val t = sys.process.Process("git rev-parse HEAD").lazyLines_!.head
     if (scalaBinaryVersion.value == "3") {
       Seq(
         "-source-links:github://wartremover/wartremover",
@@ -149,20 +142,25 @@ lazy val commonSettings = Def.settings(
     </developers>
 )
 
-commonSettings
-publishArtifact := false
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  releaseStepCommandAndRemaining("publishSigned"),
-  releaseStepCommand("sonaRelease"),
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
-)
+val wartremoverRoot = project
+  .in(file("."))
+  .autoAggregate
+  .settings(
+    commonSettings,
+    publishArtifact := false,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("publishSigned"),
+      releaseStepCommand("sonaRelease"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
+  )
 
 val coreSrcDir = Def.settingDyn {
   val p = core.jvm(scalaVersion.value)
@@ -436,7 +434,7 @@ lazy val core: ProjectMatrix = projectMatrix
   .configure(p =>
     if (p.id == "core2_13_18") {
       p.settings(
-        assembly / assemblyOutputPath := file("./wartremover-assembly.jar")
+        assembly / assemblyOutputPath := Def.uncached(file("./wartremover-assembly.jar"))
       )
     } else {
       p.disablePlugins(AssemblyPlugin)
@@ -513,7 +511,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" =>
-          sbtVersion.value
+          "1.12.10"
         case _ =>
           sbt2
       }
@@ -549,9 +547,9 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
       }
       new scala.xml.transform.RuleTransformer(rule).transform(node)(0)
     },
-    Compile / packagedArtifacts := {
+    Compile / packagedArtifacts := Def.uncached {
       val value = (Compile / packagedArtifacts).value
-      val pomFiles = value.values.filter(_.getName.endsWith(".pom")).toList
+      val pomFiles = value.values.map(fileConverter.value.toPath(_).toFile).filter(_.getName.endsWith(".pom")).toList
       assert(pomFiles.size >= 1, pomFiles.map(_.getName))
       pomFiles.foreach { f =>
         assert(!IO.read(f).contains("scoverage"))
