@@ -12,7 +12,7 @@ Documentation for Wartremover is available [here](https://www.wartremover.org).
 ## Reporting Issues
 
 It's very useful to get the tree expanded by the Scala compiler,
-rather than the original source. Adding the `-Xprint:typer` flag to
+rather than the original source. Adding the `-Vprint:typer` flag to
 the Scala compiler will show code like the following:
 
 ```scala
