@@ -575,7 +575,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
         conflictWarning.value
       }
     },
-    libraryDependencies += "io.get-coursier" %% "coursier" % "2.1.24" % Test cross CrossVersion.for3Use2_13,
+    libraryDependencies += ("io.get-coursier" %% "coursier" % "2.1.24" % Test).cross(CrossVersion.for3Use2_13),
     scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
     scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
     TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
@@ -613,7 +613,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
       )
       val wartsDir = core.base / "src" / "main" / "scala" / "org" / "wartremover" / "warts"
       val unsafeSource = IO.read(wartsDir / "Unsafe.scala")
-      val unsafe = warts.filter(unsafeSource contains _)
+      val unsafe = warts.filter(unsafeSource.contains)
       assert(unsafe.nonEmpty)
       val content =
         s"""package wartremover
