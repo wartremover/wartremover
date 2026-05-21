@@ -81,8 +81,7 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 
     traversers = ts("traverser")
     onlyWarnTraversers = ts("only-warn-traverser")
-    excludedFiles =
-      filterOptions("excluded", options) flatMap (_ split ":") map (_.trim) map (new java.io.File(_).getAbsolutePath)
+    excludedFiles = filterOptions("excluded", options) flatMap (_ split ":") map (_.trim)
 
     logLevel match {
       case LogLevel.Debug | LogLevel.Info =>
@@ -125,7 +124,23 @@ class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
       }
 
       override def apply(unit: CompilationUnit) = {
-        val isExcluded = excludedFiles exists unit.source.file.absolute.path.startsWith
+        val isExcluded = {
+          val sourcePath = unit.source.file.absolute.path
+          excludedFiles.exists { path =>
+            val f = new java.io.File(path)
+            if (f.isAbsolute) {
+              sourcePath.startsWith(path)
+            } else {
+              // Resolve against user.dir (works under sbt where user.dir == project root)
+              sourcePath.startsWith(f.getAbsolutePath) || {
+                // Suffix match for tools like Bloop/Metals where user.dir != project root
+                val sep = java.io.File.separator
+                val suffix = sep + path.replace("/", sep).replace("\\", sep)
+                sourcePath.endsWith(suffix) || sourcePath.contains(suffix + sep)
+              }
+            }
+          }
+        }
 
         if (isExcluded) {
           logLevel match {

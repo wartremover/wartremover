@@ -38,7 +38,7 @@ class Plugin extends StandardPlugin with CompilerPluginCompat {
     context: Option[Context]
   ): List[PluginPhase] = {
     val excluded = options.collect { case s"excluded:${path}" =>
-      new File(path).getAbsolutePath
+      path
     }
     val classPathEntries = options.collect {
       case s"cp:file:${c}" =>
