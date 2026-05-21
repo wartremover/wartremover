@@ -97,7 +97,23 @@ class WartremoverPhase(
         }
       case LogLevel.Disable =>
     }
-    val skip = excluded.exists(c.source.file.absolute.path.startsWith)
+    val skip = {
+      val sourcePath = c.source.file.absolute.path
+      excluded.exists { path =>
+        val f = new java.io.File(path)
+        if (f.isAbsolute) {
+          sourcePath.startsWith(path)
+        } else {
+          // Resolve against user.dir (works under sbt where user.dir == project root)
+          sourcePath.startsWith(f.getAbsolutePath) || {
+            // Suffix match for tools like Bloop/Metals where user.dir != project root
+            val sep = java.io.File.separator
+            val suffix = sep + path.replace("/", sep).replace("\\", sep)
+            sourcePath.endsWith(suffix) || sourcePath.contains(suffix + sep)
+          }
+        }
+      }
+    }
     logLevel match {
       case LogLevel.Info | LogLevel.Disable =>
       case LogLevel.Debug =>
