@@ -308,7 +308,7 @@ lazy val inspector = projectMatrix
     inspectorCommon,
   )
 
-def benchmarkScalaVersion = "3.8.3"
+def benchmarkScalaVersion = "3.8.4"
 
 def benchmarkLogFile = "benchmark.log"
 
