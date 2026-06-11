@@ -7,7 +7,7 @@ import scala.collection.compat._
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
-def sbt2 = "2.0.0-RC15"
+def sbt2 = "2.0.0-RC16"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
