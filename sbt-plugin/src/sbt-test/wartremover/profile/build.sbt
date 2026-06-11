@@ -6,7 +6,7 @@ Compile / compile / scalacOptions += s"-P:wartremover:profile:wartremover-main-p
 
 Test / compile / scalacOptions += s"-P:wartremover:profile:wartremover-test-profile-${scalaBinaryVersion.value}.txt"
 
-def Scala3 = "3.3.7"
+def Scala3 = "3.3.8"
 
 scalaVersion := Scala3
 
