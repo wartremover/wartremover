@@ -306,7 +306,7 @@ lazy val inspector = projectMatrix
               "org.scala-lang.modules",
               "scala-xml_2.13"
             ),
-          "io.github.argonaut-io" %% "argonaut" % "6.3.12",
+          "io.github.argonaut-io" %% "argonaut" % "6.3.13",
           "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
         )
       } else {
