@@ -35,19 +35,12 @@ lazy val allScalaVersions = Seq(
   "3.7.2",
   "3.7.3",
   "3.7.4",
-) ++ {
-  if (scala.util.Properties.isJavaAtLeast("17")) {
-    List(
-      "3.8.1",
-      "3.8.2",
-      "3.8.3",
-      "3.8.4",
-      "3.9.0-RC1",
-    )
-  } else {
-    Nil
-  }
-}
+  "3.8.1",
+  "3.8.2",
+  "3.8.3",
+  "3.8.4",
+  "3.9.0-RC1",
+)
 
 def Scala3forSbt2 = scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
 
@@ -81,6 +74,23 @@ lazy val baseSettings = Def.settings(
   scalacOptions ++= Seq(
     "-deprecation"
   ),
+  Compile / compile / scalacOptions ++= {
+    VersionNumber(scalaVersion.value).numbers match {
+      case Seq(2, 12 | 13, _) =>
+        Seq("-release:8")
+      case Seq(3, 3, v) if v <= 7 =>
+        Seq("-release:8")
+      case Seq(3, 3, v) if 8 <= v =>
+        Seq(
+          "-Yfuture-lazy-vals",
+          "-release:11",
+        )
+      case Seq(3, v, _) if 4 <= v && v <= 7 =>
+        Seq("-release:8")
+      case Seq(3, v, _) if 8 <= v =>
+        Nil
+    }
+  },
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.12" =>
@@ -316,12 +326,7 @@ def benchmarkLogFile = "benchmark.log"
 lazy val benchmark = projectMatrix
   .defaultAxes(VirtualAxis.jvm)
   .jvmPlatform(
-    scalaVersions =
-      if (scala.util.Properties.isJavaAtLeast("17")) {
-        Seq(benchmarkScalaVersion)
-      } else {
-        Nil
-      }
+    scalaVersions = Seq(benchmarkScalaVersion)
   )
   .disablePlugins(AssemblyPlugin)
   .enablePlugins(JmhPlugin)
@@ -492,14 +497,8 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
   .withId("sbt-plugin")
   .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
-  .jvmPlatform(scalaVersions =
-    (
-      if (scala.util.Properties.isJavaAtLeast("17")) {
-        Seq(latestScala212, Scala3forSbt2)
-      } else {
-        Seq(latestScala212)
-      }
-    )
+  .jvmPlatform(
+    scalaVersions = Seq(latestScala212, Scala3forSbt2)
   )
   .configure(p =>
     p.id match {
