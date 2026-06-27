@@ -48,7 +48,7 @@ jobs:
     - uses: sbt/setup-sbt@v1
     - shell: bash
       env:
-        JAVA_OPTS: "-Xmx4G"
+        JAVA_OPTS: "-Xmx4G -XX:ReservedCodeCacheSize=1024m"
       run: |
         case ${{ matrix.name }} in
           "format")
