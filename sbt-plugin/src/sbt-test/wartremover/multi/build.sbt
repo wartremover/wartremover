@@ -4,7 +4,7 @@ lazy val commonSettings = Def.settings(
   wartremoverWarnings += Wart.custom("org.wartremover.contrib.warts.OldTime"),
   wartremoverCrossVersion := CrossVersion.binary,
   wartremoverDependencies += {
-    "org.wartremover" %% "wartremover-contrib" % "2.4.5" cross wartremoverCrossVersion.value
+    ("org.wartremover" %% "wartremover-contrib" % "2.4.5").cross(wartremoverCrossVersion.value)
   },
 )
 
@@ -13,7 +13,7 @@ lazy val myWarts = project
   .settings(
     commonSettings,
     libraryDependencies ++= Seq(
-      "org.wartremover" % "wartremover" % wartremover.Wart.PluginVersion cross CrossVersion.full
+      ("org.wartremover" % "wartremover" % wartremover.Wart.PluginVersion).cross(CrossVersion.full)
     )
   )
 
