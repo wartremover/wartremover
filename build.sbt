@@ -116,7 +116,7 @@ lazy val commonSettings = Def.settings(
   ),
   publishMavenStyle := true,
   Test / publishArtifact := false,
-  (Compile / doc / scalacOptions) ++= {
+  (Compile / doc / scalacOptions) ++= Def.uncached {
     val t = sys.process.Process("git rev-parse HEAD").lazyLines_!.head
     if (scalaBinaryVersion.value == "3") {
       Seq(
