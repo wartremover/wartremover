@@ -105,7 +105,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
   }
   test("completions") {
     def f(input: String, expected: Set[String])(implicit p: Position) = {
-      val actual = input.foldLeft(parser)(_ derive _).completions(0).get.map(_.display)
+      val actual = input.foldLeft(parser)(_.derive(_)).completions(0).get.map(_.display)
       if (actual.size != expected.size) {
         actual.toList.sorted.map("\"" + _ + "\",").foreach(println)
       }
