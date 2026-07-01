@@ -9,7 +9,7 @@ lazy val myWarts = project
   .settings(
     commonSettings,
     libraryDependencies ++= Seq(
-      "org.wartremover" % "wartremover" % wartremover.Wart.PluginVersion cross (ThisBuild / wartremoverCrossVersion).value
+      ("org.wartremover" % "wartremover" % wartremover.Wart.PluginVersion).cross((ThisBuild / wartremoverCrossVersion).value)
     )
   )
 
