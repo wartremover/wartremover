@@ -330,7 +330,7 @@ lazy val benchmark = projectMatrix
     baseSettings,
     scalaVersion := benchmarkScalaVersion,
     libraryDependencies += "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value,
-    TaskKey[Unit]("collectBenchmarkLog") := {
+    TaskKey[Unit]("collectBenchmarkLog") := Def.uncached {
       sys.env.get("GITHUB_STEP_SUMMARY").map(file).foreach { f =>
         IO.append(
           f,
