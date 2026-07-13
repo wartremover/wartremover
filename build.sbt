@@ -116,7 +116,7 @@ lazy val commonSettings = Def.settings(
   organization := "org.wartremover",
   licenses := Seq(
     "The Apache Software License, Version 2.0" ->
-      url("https://www.apache.org/licenses/LICENSE-2.0.txt")
+      uri("https://www.apache.org/licenses/LICENSE-2.0.txt")
   ),
   publishMavenStyle := true,
   Test / publishArtifact := false,
@@ -139,7 +139,7 @@ lazy val commonSettings = Def.settings(
     }
   },
   publishTo := (if (isSnapshot.value) None else localStaging.value),
-  homepage := Some(url("https://github.com/wartremover/wartremover")),
+  homepage := Some(uri("https://github.com/wartremover/wartremover")),
   pomExtra :=
     <scm>
       <url>git@github.com:wartremover/wartremover.git</url>
