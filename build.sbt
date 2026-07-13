@@ -6,7 +6,11 @@ import scala.collection.compat._
 import scala.reflect.NameTransformer
 import java.lang.reflect.Modifier
 
-def sbt2 = "2.0.1"
+val sbt2 = {
+  val p = new java.util.Properties
+  p.load(new java.io.FileInputStream("project/build.properties"))
+  p.getProperty("sbt.version").trim
+}
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
