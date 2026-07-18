@@ -13,6 +13,14 @@ class AnyTest extends AnyFunSuite with ResultAssertions {
     }
     assertError(result)("Inferred type containing Any: Any")
   }
+  test("string interpolation") {
+    // https://github.com/wartremover/wartremover/issues/1799
+    val result = WartTestTraverser(Any) {
+      val world = "World!"
+      val hello = s"Hello, $world"
+    }
+    assertEmpty(result)
+  }
   test("Any wart obeys SuppressWarnings") {
     val result = WartTestTraverser(Any) {
       @SuppressWarnings(Array("org.wartremover.warts.Any"))
