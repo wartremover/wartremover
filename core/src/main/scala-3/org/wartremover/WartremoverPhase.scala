@@ -7,6 +7,7 @@ import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.quoted.QuotesCache
 import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.dotc.report
+import dotty.tools.io.AbstractFile
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.LongAdder
 import scala.collection.concurrent.TrieMap
@@ -98,20 +99,28 @@ class WartremoverPhase(
       case LogLevel.Disable =>
     }
     val skip = {
-      val sourcePath = c.source.file.absolute.path
-      excluded.exists { path =>
-        val f = new java.io.File(path)
-        if (f.isAbsolute) {
-          sourcePath.startsWith(path)
-        } else {
-          // Resolve against user.dir (works under sbt where user.dir == project root)
-          sourcePath.startsWith(f.getAbsolutePath) || {
-            // Suffix match for tools like Bloop/Metals where user.dir != project root
-            val sep = java.io.File.separator
-            val suffix = sep + path.replace("/", sep).replace("\\", sep)
-            sourcePath.endsWith(suffix) || sourcePath.contains(suffix + sep)
+      Option(c.source.file) match {
+        case Some(f) =>
+          extension (x: AbstractFile) {
+            def absolute: AbstractFile = x
           }
-        }
+          val sourcePath = f.absolute.path
+          excluded.exists { path =>
+            val f = new java.io.File(path)
+            if (f.isAbsolute) {
+              sourcePath.startsWith(path)
+            } else {
+              // Resolve against user.dir (works under sbt where user.dir == project root)
+              sourcePath.startsWith(f.getAbsolutePath) || {
+                // Suffix match for tools like Bloop/Metals where user.dir != project root
+                val sep = java.io.File.separator
+                val suffix = sep + path.replace("/", sep).replace("\\", sep)
+                sourcePath.endsWith(suffix) || sourcePath.contains(suffix + sep)
+              }
+            }
+          }
+        case None =>
+          false
       }
     }
     logLevel match {
