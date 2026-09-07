@@ -10,7 +10,7 @@ def Scala3 = "3.3.8"
 
 scalaVersion := Scala3
 
-crossScalaVersions := Seq(Scala3, "2.13.18")
+crossScalaVersions := Seq(Scala3, "3.9.0")
 
 InputKey[Unit]("check") := Seq("2.13" -> 78, "3" -> 74).foreach { case (v, all) =>
   val mainResult = IO.readLines(file(s"wartremover-main-profile-${v}.txt"))
