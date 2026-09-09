@@ -301,7 +301,7 @@ lazy val inspector = projectMatrix
     libraryDependencies ++= {
       if (scalaBinaryVersion.value == "3") {
         Seq(
-          "org.scala-sbt" %% "io" % "1.13.1" % Test,
+          "org.scala-sbt" %% "io" % "1.13.2" % Test,
           ("io.get-coursier" % "coursier" % "2.1.24" % Test)
             .cross(CrossVersion.for3Use2_13)
             .exclude(
