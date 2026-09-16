@@ -104,7 +104,12 @@ class WartremoverPhase(
           extension (x: AbstractFile) {
             def absolute: AbstractFile = x
           }
-          val sourcePath = f.absolute.path
+          val sourcePath = (try {
+            f.absolute
+          } catch {
+            case _: NoSuchMethodError =>
+              f
+          }).path
           excluded.exists { path =>
             val f = new java.io.File(path)
             if (f.isAbsolute) {
