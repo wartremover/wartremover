@@ -193,6 +193,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         "SortedMaxMin",
         "SortedMaxMinOption",
         "StringPlusAny",
+        "SynchronizedValueBasedClasses",
         "ThreadSleep",
         "Throw",
         "ToString",
@@ -279,6 +280,7 @@ class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAnd
         if (s.endsWith("$")) s.dropRight(1) else s
       }.filterNot(_.contains("$anon")).filterNot(exclude)
     } ++ Seq[String](
+      "SynchronizedValueBasedClasses"
     ).map(
       "org.wartremover.warts." + _
     )
