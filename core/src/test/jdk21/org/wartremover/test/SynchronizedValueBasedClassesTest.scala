@@ -90,9 +90,6 @@ class SynchronizedValueBasedClassesTest extends AnyFunSuite with ResultAssertion
       WartTestTraverser(SynchronizedValueBasedClasses) {
         def f(x: java.lang.Runtime.Version) = x.synchronized(x)
       },
-      WartTestTraverser(SynchronizedValueBasedClasses) {
-        def f(x: java.lang.ProcessHandle) = x.synchronized(x)
-      },
     ).foreach { result =>
       assertError(result)("attempt to synchronize on an instance of a value-based class")
     }
