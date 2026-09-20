@@ -10,6 +10,7 @@ import dotty.tools.dotc.report
 import dotty.tools.io.AbstractFile
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.LongAdder
+import scala.annotation.nowarn
 import scala.collection.concurrent.TrieMap
 import scala.util.control.NonFatal
 
@@ -102,6 +103,7 @@ class WartremoverPhase(
       Option(c.source.file) match {
         case Some(f) =>
           extension (x: AbstractFile) {
+            @nowarn("msg=Extension method absolute will never be selected from type AbstractFile")
             def absolute: AbstractFile = x
           }
           val sourcePath = (try {
