@@ -101,11 +101,10 @@ lazy val baseSettings = Def.settings(
   run / fork := true,
 )
 
+val scalatest = "org.scalatest" %% "scalatest-funsuite" % "3.2.20" % "test"
+
 lazy val commonSettings = Def.settings(
   baseSettings,
-  libraryDependencies ++= {
-    Seq("org.scalatest" %% "scalatest-funsuite" % "3.2.20" % "test")
-  },
   Seq(packageBin, packageDoc, packageSrc).flatMap {
     // include LICENSE file in all packaged artifacts
     Project.inTask(_)(
@@ -194,6 +193,7 @@ def crossSrcSetting(c: Configuration) = {
 
 val coreSettings = Def.settings(
   commonSettings,
+  libraryDependencies += scalatest,
   name := "wartremover",
   Test / fork := true,
   Test / scalacOptions += Def.uncached {
@@ -299,13 +299,9 @@ lazy val inspector = projectMatrix
       }
     ),
     libraryDependencies ++= Seq(
+      "org.scalameta" %% "munit" % "1.3.6" % Test,
       "org.scala-sbt" %% "io" % "1.13.3" % Test,
-      ("io.get-coursier" % "coursier" % "2.1.24" % Test)
-        .cross(CrossVersion.for3Use2_13)
-        .exclude(
-          "org.scala-lang.modules",
-          "scala-xml_2.13"
-        ),
+      ("io.get-coursier" % "coursier" % "2.1.25" % Test).cross(CrossVersion.for3Use2_13),
       "io.github.argonaut-io" %% "argonaut" % "6.3.13",
       "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
     ),
@@ -506,6 +502,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
   )
   .settings(
     commonSettings,
+    libraryDependencies += scalatest,
     name := "sbt-wartremover",
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
