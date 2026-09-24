@@ -47,7 +47,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
           sample.getPackage.getName.replace('.', '/')
         )
       )
-      .getLines
+      .getLines()
       .filter(_.endsWith(suffix))
       .map(_.dropRight(suffix.length))
       .map { className =>
