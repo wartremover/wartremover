@@ -204,7 +204,7 @@ val coreSettings = Def.settings(
   },
   libraryDependencies ++= {
     Seq(
-      "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % "test",
+      "org.scala-lang.modules" %% "scala-xml" % "2.5.0" % "test",
     )
   },
   scalaCompilerDependency,
