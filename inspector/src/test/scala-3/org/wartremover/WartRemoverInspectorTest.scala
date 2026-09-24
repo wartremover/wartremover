@@ -1,7 +1,6 @@
 package org.wartremover
 
 import java.io.File
-import org.scalatest.funsuite.AnyFunSuite
 import sbt.io.IO
 import scala.io.Source
 import scala.quoted.Quotes
@@ -9,8 +8,11 @@ import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
 import scala.sys.process.Process
+import scala.concurrent.duration.*
 
-class WartRemoverInspectorTest extends AnyFunSuite {
+class WartRemoverInspectorTest extends munit.FunSuite {
+  override val munitTimeout: Duration = 150.seconds
+
   extension (groupId: String) {
     def %(artifactId: String): coursier.core.Module =
       coursier.core.Module(
@@ -25,7 +27,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
 
   extension (module: coursier.core.Module) {
     def %(version: String): coursier.core.Dependency =
-      coursier.core.Dependency(module, version)
+      coursier.core.Dependency(module, coursier.VersionConstraint(version))
   }
 
   private val inspector = new WartRemoverInspector
