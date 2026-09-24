@@ -282,7 +282,7 @@ lazy val inspector = projectMatrix
   .withId("inspector")
   .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
-  .jvmPlatform(scalaVersions = Seq(latestScala3))
+  .jvmPlatform(scalaVersions = Seq("3.9.0"))
   .settings(
     commonSettings,
     name := "wartremover-inspector",
@@ -301,7 +301,7 @@ lazy val inspector = projectMatrix
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % "1.3.6" % Test,
       "org.scala-sbt" %% "io" % "1.13.3" % Test,
-      ("io.get-coursier" % "coursier" % "2.1.25" % Test).cross(CrossVersion.for3Use2_13),
+      "io.get-coursier" %% "coursier" % "2.1.25" % Test,
       "io.github.argonaut-io" %% "argonaut" % "6.3.13",
       "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
     ),
@@ -561,14 +561,13 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
       }
       javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
     },
-    conflictWarning := {
+    libraryDependencies += {
       if (scalaBinaryVersion.value == "3") {
-        ConflictWarning("warn", Level.Warn, false)
+        "io.get-coursier" %% "coursier" % "2.1.25" % Test
       } else {
-        conflictWarning.value
+        "io.get-coursier" %% "coursier" % "2.1.24" % Test
       }
     },
-    libraryDependencies += ("io.get-coursier" %% "coursier" % "2.1.24" % Test).cross(CrossVersion.for3Use2_13),
     scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
     scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
     TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
