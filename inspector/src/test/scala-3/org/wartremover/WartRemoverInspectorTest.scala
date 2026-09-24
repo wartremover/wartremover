@@ -151,7 +151,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       )
     )
     assert(
-      result(s"cats-kernel_3-${catsVersion}.jar") === Map(
+      result(s"cats-kernel_3-${catsVersion}.jar") == Map(
         ("AsInstanceOf", 5),
         ("CaseClassPrivateApply", 2),
         ("Equals", 143),
@@ -172,7 +172,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       )
     )
     assert(
-      result(s"cats-core_3-${catsVersion}.jar") === Map(
+      result(s"cats-core_3-${catsVersion}.jar") == Map(
         ("AsInstanceOf", 86),
         ("DefaultArguments", 22),
         ("Discard$Either", 3),
@@ -206,7 +206,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
       )
     )
     assert(
-      result(s"scala3-library_3-${scala3version}.jar") === Map(
+      result(s"scala3-library_3-${scala3version}.jar") == Map(
         ("AsInstanceOf", 231),
         ("DefaultArguments", 12),
         ("Equals", 47),
@@ -234,7 +234,7 @@ class WartRemoverInspectorTest extends AnyFunSuite {
         ("While", 12)
       )
     )
-    assert(result("scala-library-2.13.10.jar") === Map.empty)
-    assert(result.size === 4)
+    assert(result("scala-library-2.13.10.jar") == Map.empty)
+    assert(result.size == 4)
   }
 }
