@@ -298,23 +298,17 @@ lazy val inspector = projectMatrix
         IO.delete((Test / baseDirectory).value)
       }
     ),
-    libraryDependencies ++= {
-      if (scalaBinaryVersion.value == "3") {
-        Seq(
-          "org.scala-sbt" %% "io" % "1.13.3" % Test,
-          ("io.get-coursier" % "coursier" % "2.1.24" % Test)
-            .cross(CrossVersion.for3Use2_13)
-            .exclude(
-              "org.scala-lang.modules",
-              "scala-xml_2.13"
-            ),
-          "io.github.argonaut-io" %% "argonaut" % "6.3.13",
-          "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
-        )
-      } else {
-        Nil
-      }
-    }
+    libraryDependencies ++= Seq(
+      "org.scala-sbt" %% "io" % "1.13.3" % Test,
+      ("io.get-coursier" % "coursier" % "2.1.24" % Test)
+        .cross(CrossVersion.for3Use2_13)
+        .exclude(
+          "org.scala-lang.modules",
+          "scala-xml_2.13"
+        ),
+      "io.github.argonaut-io" %% "argonaut" % "6.3.13",
+      "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
+    ),
   )
   .dependsOn(
     coreCrossBinary,
