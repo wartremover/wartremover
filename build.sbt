@@ -301,7 +301,7 @@ lazy val inspector = projectMatrix
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % "1.3.6" % Test,
       "org.scala-sbt" %% "io" % "1.13.3" % Test,
-      ("io.get-coursier" % "coursier" % "2.1.25" % Test).cross(CrossVersion.for3Use2_13),
+      "io.get-coursier" %% "coursier" % "2.1.26" % Test,
       "io.github.argonaut-io" %% "argonaut" % "6.3.13",
       "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
     ),
@@ -568,7 +568,13 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
         conflictWarning.value
       }
     },
-    libraryDependencies += ("io.get-coursier" %% "coursier" % "2.1.24" % Test).cross(CrossVersion.for3Use2_13),
+    libraryDependencies += {
+      if (scalaBinaryVersion.value == "3") {
+        "io.get-coursier" %% "coursier" % "2.1.26" % Test
+      } else {
+        "io.get-coursier" %% "coursier" % "2.1.24" % Test
+      }
+    },
     scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
     scriptedLaunchOpts += ("-Dscoverage.version=" + scoverage.revision),
     TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
