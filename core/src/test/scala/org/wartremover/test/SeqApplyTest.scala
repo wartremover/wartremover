@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.SeqApply
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.SeqApply
 
 class SeqApplyTest extends AnyFunSuite with ResultAssertions {
   private def list: List[Int] = ???

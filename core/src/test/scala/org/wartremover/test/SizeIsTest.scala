@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.SizeIs
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.SizeIs
 
 class SizeIsTest extends AnyFunSuite with ResultAssertions {
   test("suggest sizeIs") {

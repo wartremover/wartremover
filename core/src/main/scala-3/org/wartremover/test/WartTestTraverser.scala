@@ -1,13 +1,13 @@
 package org.wartremover.test
 
+import dotty.tools.dotc.core.Contexts.Context
+import dotty.tools.dotc.core.Contexts.FreshContext
+import dotty.tools.dotc.interfaces.Diagnostic as DiagnosticInterface
+import dotty.tools.dotc.reporting.Diagnostic
+import dotty.tools.dotc.reporting.Reporter
 import org.wartremover.LogLevel
 import org.wartremover.WartTraverser
 import org.wartremover.WartUniverse
-import dotty.tools.dotc.core.Contexts.Context
-import dotty.tools.dotc.core.Contexts.FreshContext
-import dotty.tools.dotc.reporting.Diagnostic
-import dotty.tools.dotc.reporting.Reporter
-import dotty.tools.dotc.interfaces.Diagnostic as DiagnosticInterface
 import scala.collection.mutable.ListBuffer
 import scala.quoted.Expr
 import scala.quoted.Quotes

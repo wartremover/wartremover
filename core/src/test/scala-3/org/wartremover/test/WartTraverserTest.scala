@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
+import org.scalatest.funsuite.AnyFunSuite
 import org.wartremover.warts.AutoUnboxing
 import org.wartremover.warts.OrTypeLeastUpperBound
 import org.wartremover.warts.Return
-import org.scalatest.funsuite.AnyFunSuite
 
 class WartTraverserTest extends AnyFunSuite {
   test("simpleName") {

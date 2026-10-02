@@ -1,9 +1,9 @@
 package org.wartremover
 package test
 
-import scala.annotation.tailrec
-import org.wartremover.warts.Recursion
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Recursion
+import scala.annotation.tailrec
 
 class RecursionTest extends AnyFunSuite with ResultAssertions {
 

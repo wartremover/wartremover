@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.FinalVal
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.FinalVal
 
 class FinalValTest extends AnyFunSuite with ResultAssertions {
   test("final val is disabled") {

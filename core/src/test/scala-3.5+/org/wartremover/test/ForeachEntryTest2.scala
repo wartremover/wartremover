@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ForeachEntry
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ForeachEntry
 
 class ForeachEntryTest2 extends AnyFunSuite with ResultAssertions {
   private def collectionMap: collection.Map[Int, String] = ???

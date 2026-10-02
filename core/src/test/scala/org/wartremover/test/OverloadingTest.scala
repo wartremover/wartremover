@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Overloading
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Overloading
 
 class OverloadingTest extends AnyFunSuite with ResultAssertions {
   test("Overloading is disabled") {

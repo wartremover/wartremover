@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ExplicitImplicitTypes
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ExplicitImplicitTypes
 
 class WartTraverserTest extends AnyFunSuite with ResultAssertions {
   test("isWartAnnotation should correctly look at the annotations of the accessed fields for accessors") {

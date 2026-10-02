@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.OptionPartial
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.OptionPartial
 
 class OptionPartialTest extends AnyFunSuite with ResultAssertions {
   test("can't use Option#get on Some") {

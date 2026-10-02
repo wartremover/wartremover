@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ReverseFind
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ReverseFind
 
 class ReverseFindTest extends AnyFunSuite with ResultAssertions {
   test("reverse.find disabled") {

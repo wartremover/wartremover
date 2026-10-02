@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.NonUnitStatements
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.NonUnitStatements
 
 // TODO Scala 3 ?
 class NonUnitStatementsTest extends AnyFunSuite with ResultAssertions {

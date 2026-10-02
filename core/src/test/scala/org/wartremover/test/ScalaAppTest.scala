@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ScalaApp
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ScalaApp
 
 class ScalaAppTest extends AnyFunSuite with ResultAssertions {
   test("scala.App is disabled") {

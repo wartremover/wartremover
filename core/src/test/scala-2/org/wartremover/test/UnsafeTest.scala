@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Unsafe
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Unsafe
 
 // TODO Scala 3 ?
 class UnsafeTest extends AnyFunSuite {

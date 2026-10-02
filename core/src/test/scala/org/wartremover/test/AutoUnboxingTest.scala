@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.AutoUnboxing
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.AutoUnboxing
 
 class AutoUnboxingTest extends AnyFunSuite with ResultAssertions {
 

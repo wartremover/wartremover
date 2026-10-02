@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.MapContains
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.MapContains
 
 class MapContainsTest extends AnyFunSuite with ResultAssertions {
   private def message = "Maybe you can use `contains`"

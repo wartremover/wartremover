@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.SortedMaxMinOption
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.SortedMaxMinOption
 
 class SortedMaxMinOptionTest extends AnyFunSuite with ResultAssertions {
   private def seq = 1 to 10

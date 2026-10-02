@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Any
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Any
 
 class AnyTest extends AnyFunSuite with ResultAssertions {
   private def foo: Any = 42

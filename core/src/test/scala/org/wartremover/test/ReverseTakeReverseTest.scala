@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ReverseTakeReverse
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ReverseTakeReverse
 
 class ReverseTakeReverseTest extends AnyFunSuite with ResultAssertions {
   test("reverse.take.reverse disabled") {

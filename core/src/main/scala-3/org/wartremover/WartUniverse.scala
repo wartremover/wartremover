@@ -1,9 +1,9 @@
 package org.wartremover
 
+import java.lang.SuppressWarnings
 import scala.quoted.Quotes
 import scala.quoted.Type
 import scala.util.control.NonFatal
-import java.lang.SuppressWarnings
 
 object WartUniverse {
   type Aux[X <: Quotes] = WartUniverse { type Q = X }

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ReverseIterator
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ReverseIterator
 
 class ReverseIteratorTest extends AnyFunSuite with ResultAssertions {
   test("reverse.iterator disabled") {

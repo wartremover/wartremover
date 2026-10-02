@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Equals
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Equals
 
 class EqualsTest2 extends AnyFunSuite with ResultAssertions {
   test("can't use == or != method on primitives") {

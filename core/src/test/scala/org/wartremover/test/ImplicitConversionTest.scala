@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ImplicitConversion
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ImplicitConversion
 import scala.language.implicitConversions
 
 class ImplicitConversionTest extends AnyFunSuite with ResultAssertions {

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.{Enumeration => EnumerationWart}
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.{Enumeration => EnumerationWart}
 
 class EnumerationTest extends AnyFunSuite with ResultAssertions {
   test("can't declare Enumeration classes") {

@@ -1,9 +1,9 @@
 package org.wartremover
 package test
 
-import scala.util.Properties.versionNumberString
-import org.wartremover.warts.Serializable
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Serializable
+import scala.util.Properties.versionNumberString
 
 class SerializableTest extends AnyFunSuite with ResultAssertions {
   test("Serializable can't be inferred") {

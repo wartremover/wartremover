@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Unsafe
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Unsafe
 
 class WartTestTraverserTest extends AnyFunSuite with ResultAssertions {
   test("WartTestTraverser") {

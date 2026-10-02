@@ -2,17 +2,17 @@ package org.wartremover
 
 import argonaut.DecodeJson
 import argonaut.EncodeJson
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.net.URI
 import java.net.URLClassLoader
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import scala.io.Source
 import scala.quoted.Quotes
 import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.net.URI
-import java.nio.file.Files
-import java.nio.charset.StandardCharsets
 
 object WartRemoverInspector {
   def main(args: Array[String]): Unit = {

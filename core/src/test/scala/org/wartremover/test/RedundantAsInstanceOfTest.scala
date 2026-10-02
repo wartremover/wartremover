@@ -1,9 +1,9 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.RedundantAsInstanceOf
 import org.scalatest.funsuite.AnyFunSuite
 import org.wartremover.test.RedundantAsInstanceOfTest._
+import org.wartremover.warts.RedundantAsInstanceOf
 import scala.annotation.nowarn
 
 class RedundantAsInstanceOfTest extends AnyFunSuite with ResultAssertions {

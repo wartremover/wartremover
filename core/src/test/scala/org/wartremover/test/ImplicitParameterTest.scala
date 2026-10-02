@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ImplicitParameter
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ImplicitParameter
 
 class ImplicitParameterTest extends AnyFunSuite with ResultAssertions {
 

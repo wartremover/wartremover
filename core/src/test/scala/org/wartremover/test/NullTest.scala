@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Null
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Null
 import scala.annotation.nowarn
 
 class NullTest extends AnyFunSuite with ResultAssertions {

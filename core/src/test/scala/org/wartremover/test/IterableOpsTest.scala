@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.IterableOps
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.IterableOps
 
 class IterableOpsTest extends AnyFunSuite with ResultAssertions {
 

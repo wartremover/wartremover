@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Nothing
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Nothing
 
 // TODO Scala 3
 class NothingTest extends AnyFunSuite with ResultAssertions {

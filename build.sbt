@@ -1,10 +1,10 @@
 import ReleaseTransformations._
 import com.jsuereth.sbtpgp.PgpKeys
-import xsbti.api.ClassLike
-import xsbti.api.DefinitionType
+import java.lang.reflect.Modifier
 import scala.collection.compat._
 import scala.reflect.NameTransformer
-import java.lang.reflect.Modifier
+import xsbti.api.ClassLike
+import xsbti.api.DefinitionType
 
 val sbt2 = {
   val p = new java.util.Properties

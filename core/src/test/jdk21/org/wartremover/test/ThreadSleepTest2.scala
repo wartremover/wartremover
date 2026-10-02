@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ThreadSleep
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ThreadSleep
 
 class ThreadSleepTest2 extends AnyFunSuite with ResultAssertions {
   private def d: java.time.Duration = ???

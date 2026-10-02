@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ObjectThrowable
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ObjectThrowable
 import scala.util.control.NoStackTrace
 
 class ObjectThrowableTest2 extends AnyFunSuite with ResultAssertions {

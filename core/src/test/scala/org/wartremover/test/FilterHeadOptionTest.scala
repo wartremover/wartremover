@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.FilterHeadOption
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.FilterHeadOption
 
 class FilterHeadOptionTest extends AnyFunSuite with ResultAssertions {
   test("filter.haddOption disabled") {

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.MapUnit
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.MapUnit
 
 class MapUnitTest extends AnyFunSuite with ResultAssertions {
   private def message = "Maybe you should use `foreach` instead of `map`"
