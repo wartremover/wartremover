@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.GetGetOrElse
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.GetGetOrElse
 
 class GetGetOrElseTest extends AnyFunSuite with ResultAssertions {
   test("get.getOrElse disabled") {

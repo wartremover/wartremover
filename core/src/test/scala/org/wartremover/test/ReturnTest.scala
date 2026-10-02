@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Return
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Return
 
 class ReturnTest extends AnyFunSuite with ResultAssertions {
   test("local return is disabled") {

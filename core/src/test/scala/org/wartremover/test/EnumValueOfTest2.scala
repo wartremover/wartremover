@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.EnumValueOf
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.EnumValueOf
 
 class EnumValueOfTest2 extends AnyFunSuite with ResultAssertions {
   test("valueOf is disabled") {

@@ -1,22 +1,22 @@
 package wartremover
 
+import java.io.File
+import java.lang.reflect.Modifier
+import java.net.URLClassLoader
 import org.scalactic.source.Position
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.EitherValues
 import org.scalatest.funsuite.AnyFunSuite
-import java.io.File
 import sbt.complete.Parser
 import sbt.io.IO
 import sbt.uri
+import scala.annotation.tailrec
+import scala.util.Using
 import wartremover.InspectArgsParserTest._
 import wartremover.InspectWart.SourceFile
 import wartremover.InspectWart.Type
 import wartremover.InspectWart.Uri
 import wartremover.InspectWart.WartName
-import java.lang.reflect.Modifier
-import java.net.URLClassLoader
-import scala.annotation.tailrec
-import scala.util.Using
 
 class InspectArgsParserTest extends AnyFunSuite with EitherValues with BeforeAndAfterAll {
   private[this] lazy val base: File = IO.createTemporaryDirectory

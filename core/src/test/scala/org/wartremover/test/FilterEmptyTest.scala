@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.FilterEmpty
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.FilterEmpty
 
 class FilterEmptyTest extends AnyFunSuite with ResultAssertions {
   private val seq = 1 to 10

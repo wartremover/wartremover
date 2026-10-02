@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.While
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.While
 
 class WhileTest extends AnyFunSuite with ResultAssertions {
   test("while is disabled") {

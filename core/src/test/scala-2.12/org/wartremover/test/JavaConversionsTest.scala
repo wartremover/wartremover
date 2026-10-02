@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.JavaConversions
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.JavaConversions
 
 class JavaConversionsTest extends AnyFunSuite with ResultAssertions {
   test("handle explicit method reference") {

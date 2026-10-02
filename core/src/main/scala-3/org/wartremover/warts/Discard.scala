@@ -1,8 +1,8 @@
 package org.wartremover
 package warts
 
-import scala.quoted.Type
 import scala.quoted.Quotes
+import scala.quoted.Type
 
 object Discard {
   object Either

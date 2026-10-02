@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Discard
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Discard
 import scala.concurrent.Future
 import scala.util.Try
 

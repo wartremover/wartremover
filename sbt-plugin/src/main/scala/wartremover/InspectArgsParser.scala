@@ -1,15 +1,15 @@
 package wartremover
 
 import java.io.File
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import sbt.complete.DefaultParsers.*
+import sbt.complete.FileExamples
 import sbt.complete.Parser
 import sbt.complete.Parser.token
-import sbt.complete.FileExamples
-import sbt.complete.DefaultParsers.*
 import wartremover.InspectWart.Type
-import java.net.URI
 
 /**
  * derived from sbt-scalafix

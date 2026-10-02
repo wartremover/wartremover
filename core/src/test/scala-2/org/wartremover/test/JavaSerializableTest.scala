@@ -2,8 +2,8 @@ package org.wartremover
 package test
 
 import java.io.Serializable
-import org.wartremover.warts.JavaSerializable
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.JavaSerializable
 
 object Foo extends Serializable
 

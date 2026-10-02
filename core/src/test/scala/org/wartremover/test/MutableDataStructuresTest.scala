@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.MutableDataStructures
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.MutableDataStructures
 
 class MutableDataStructuresTest extends AnyFunSuite with ResultAssertions {
   test("disable scala.collection.mutable._ when referenced") {

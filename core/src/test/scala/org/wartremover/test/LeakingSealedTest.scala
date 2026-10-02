@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.LeakingSealed
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.LeakingSealed
 
 class LeakingSealedTest extends AnyFunSuite with ResultAssertions {
   test("Descendants of a sealed type must be final or sealed") {

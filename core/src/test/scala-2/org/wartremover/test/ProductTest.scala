@@ -1,9 +1,9 @@
 package org.wartremover
 package test
 
-import scala.util.Properties.versionNumberString
-import org.wartremover.warts.Product
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Product
+import scala.util.Properties.versionNumberString
 
 class ProductTest extends AnyFunSuite with ResultAssertions {
   test("Product can't be inferred") {

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Throw
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Throw
 
 class ThrowTest extends AnyFunSuite with ResultAssertions {
   test("throw is disabled") {

@@ -2,13 +2,13 @@ package org.wartremover
 
 import java.io.File
 import sbt.io.IO
+import scala.concurrent.duration.*
 import scala.io.Source
 import scala.quoted.Quotes
+import scala.sys.process.Process
 import scala.tasty.inspector.Inspector
 import scala.tasty.inspector.Tasty
 import scala.tasty.inspector.TastyInspector
-import scala.sys.process.Process
-import scala.concurrent.duration.*
 
 class WartRemoverInspectorTest extends munit.FunSuite {
   override val munitTimeout: Duration = 150.seconds

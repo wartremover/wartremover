@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ArrayToString
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ArrayToString
 
 class ArrayToStringTest extends AnyFunSuite with ResultAssertions {
   private def arrayInt: Array[Int] = Array.empty

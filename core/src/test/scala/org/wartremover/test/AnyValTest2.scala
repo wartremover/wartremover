@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.AnyVal
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.AnyVal
 
 class AnyValTest2 extends AnyFunSuite with ResultAssertions {
   private def f1: AnyVal = 7

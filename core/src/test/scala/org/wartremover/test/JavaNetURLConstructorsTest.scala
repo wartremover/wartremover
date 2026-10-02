@@ -1,9 +1,9 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.JavaNetURLConstructors
-import org.scalatest.funsuite.AnyFunSuite
 import java.net.URL
+import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.JavaNetURLConstructors
 
 class JavaNetURLConstructorsTest extends AnyFunSuite with ResultAssertions {
   test("java.net.URL constructors disabled") {

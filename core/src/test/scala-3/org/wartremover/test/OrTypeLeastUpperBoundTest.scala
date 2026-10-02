@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.OrTypeLeastUpperBound
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.OrTypeLeastUpperBound
 
 class OrTypeLeastUpperBoundTest extends AnyFunSuite with ResultAssertions {
 

@@ -1,16 +1,14 @@
 package wartremover
 
-import java.nio.file.Path
+import java.io.FileInputStream
+import java.lang.reflect.Modifier
+import java.net.URLClassLoader
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
+import java.util.zip.ZipInputStream
 import org.wartremover.InspectParam
 import org.wartremover.InspectResult
 import sbt.Keys.*
-import sjsonnew.JsonFormat
-import sjsonnew.support.scalajson.unsafe.CompactPrinter
-import java.io.FileInputStream
-import java.util.zip.ZipInputStream
-import java.net.URLClassLoader
-import java.lang.reflect.Modifier
 import scala.annotation.tailrec
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Await
@@ -18,6 +16,8 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import scala.util.Using
+import sjsonnew.JsonFormat
+import sjsonnew.support.scalajson.unsafe.CompactPrinter
 import wartremover.InspectWart.Type
 // format: off
 import sbt.{given, *}

@@ -1,9 +1,9 @@
 package org.wartremover
 package test
 
+import org.scalatest.funsuite.AnyFunSuite
 import org.wartremover.test.CaseClassPrivateApplyTest._
 import org.wartremover.warts.CaseClassPrivateApply
-import org.scalatest.funsuite.AnyFunSuite
 
 class CaseClassPrivateApplyTest extends AnyFunSuite with ResultAssertions {
   test("disable apply") {

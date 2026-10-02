@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.CollectHeadOption
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.CollectHeadOption
 
 class CollectHeadOptionTest extends AnyFunSuite with ResultAssertions {
   test("collect.headOption disabled") {

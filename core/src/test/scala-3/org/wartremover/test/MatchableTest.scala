@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Matchable
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Matchable
 
 class MatchableTest extends AnyFunSuite with ResultAssertions {
   private def f1: Matchable = 2

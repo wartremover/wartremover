@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.RedundantConversions
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.RedundantConversions
 
 class RedundantConversionsTest extends AnyFunSuite with ResultAssertions {
   test("redundant toInt disabled") {

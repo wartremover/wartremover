@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.PartialFunctionApply
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.PartialFunctionApply
 
 class PartialFunctionApplyTest extends AnyFunSuite with ResultAssertions {
   private def pf: PartialFunction[String, String] = { case a => a }

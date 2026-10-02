@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ObjectThrowable
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ObjectThrowable
 
 class ObjectThrowableTest extends AnyFunSuite with ResultAssertions {
   test("report error") {

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.PublicInference
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.PublicInference
 import wartremover.test.PublicInferenceTestMacros
 
 // TODO Scala 3 ?

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Var
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Var
 
 class VarTest extends AnyFunSuite with ResultAssertions {
   test("can't use `var`") {

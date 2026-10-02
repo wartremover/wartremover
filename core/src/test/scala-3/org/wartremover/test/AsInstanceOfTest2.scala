@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
+import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.AsInstanceOf
 import scala.quoted.Expr
 import scala.quoted.Quotes
-import org.wartremover.warts.AsInstanceOf
-import org.scalatest.funsuite.AnyFunSuite
 
 class AsInstanceOfTest2 extends AnyFunSuite with ResultAssertions {
   test("match Expr") {

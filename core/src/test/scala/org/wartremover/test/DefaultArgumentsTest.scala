@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.DefaultArguments
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.DefaultArguments
 
 class DefaultArgumentsTest extends AnyFunSuite with ResultAssertions {
   test("Default arguments can't be used") {

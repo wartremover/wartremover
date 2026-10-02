@@ -1,10 +1,10 @@
 package wartremover
 
-import sbt.file
 import java.io.File
 import java.io.FileNotFoundException
-import java.nio.file.Path
 import java.net.URI
+import java.nio.file.Path
+import sbt.file
 import scala.io.Source
 
 private[wartremover] sealed abstract class InspectArg extends Product with Serializable

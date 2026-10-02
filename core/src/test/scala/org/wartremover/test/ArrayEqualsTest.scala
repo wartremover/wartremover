@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ArrayEquals
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ArrayEquals
 
 class ArrayEqualsTest extends AnyFunSuite with ResultAssertions {
   test("Array.equals is disabled") {

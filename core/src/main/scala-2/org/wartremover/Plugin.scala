@@ -1,8 +1,5 @@
 package org.wartremover
 
-import tools.nsc.plugins.PluginComponent
-import tools.nsc.Global
-import tools.nsc.Phase
 import java.io.File
 import java.net.URI
 import java.net.URLClassLoader
@@ -10,6 +7,9 @@ import java.util.concurrent.atomic.LongAdder
 import scala.collection.concurrent.TrieMap
 import scala.reflect.internal.util.NoPosition
 import scala.util.control.NonFatal
+import tools.nsc.Global
+import tools.nsc.Phase
+import tools.nsc.plugins.PluginComponent
 
 class Plugin(val global: Global) extends tools.nsc.plugins.Plugin {
 

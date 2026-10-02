@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Option2Iterable
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Option2Iterable
 import scala.annotation.nowarn
 
 class Option2IterableTest extends AnyFunSuite with ResultAssertions {

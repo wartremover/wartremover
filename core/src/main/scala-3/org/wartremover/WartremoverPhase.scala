@@ -5,8 +5,8 @@ import dotty.tools.dotc.ast.tpd
 import dotty.tools.dotc.core.Contexts.Context
 import dotty.tools.dotc.plugins.PluginPhase
 import dotty.tools.dotc.quoted.QuotesCache
-import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.dotc.report
+import dotty.tools.dotc.typer.TyperPhase
 import dotty.tools.io.AbstractFile
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.LongAdder

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ImplicitParameter
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ImplicitParameter
 
 class ImplicitParameterTest2 extends AnyFunSuite with ResultAssertions {
   test("Parent context bounds are enabled") {

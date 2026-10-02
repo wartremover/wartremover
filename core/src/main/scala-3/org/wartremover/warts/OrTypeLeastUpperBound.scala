@@ -1,10 +1,10 @@
 package org.wartremover
 package warts
 
+import dotty.tools.dotc.core.Types.Type as DottyType
 import scala.quoted.Quotes
 import scala.quoted.Type
 import scala.quoted.runtime.impl.QuotesImpl
-import dotty.tools.dotc.core.Types.Type as DottyType
 
 /**
  * @note [[https://github.com/scala/scala3/pull/24258]]

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.FindExists
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.FindExists
 
 class FindExistsTest extends AnyFunSuite with ResultAssertions {
   private def seq: Seq[Int] = Nil

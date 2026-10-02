@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.EitherProjectionPartial
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.EitherProjectionPartial
 
 class EitherProjectionPartialTest extends AnyFunSuite with ResultAssertions {
   test("can't use LeftProjection#get on Left") {

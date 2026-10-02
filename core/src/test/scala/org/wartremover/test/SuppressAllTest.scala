@@ -1,10 +1,10 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Var
+import org.scalatest.funsuite.AnyFunSuite
 import org.wartremover.warts.Null
 import org.wartremover.warts.Return
-import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Var
 
 class SuppressAllTest extends AnyFunSuite with ResultAssertions {
   test("all warts obeys SuppressWarnings") {

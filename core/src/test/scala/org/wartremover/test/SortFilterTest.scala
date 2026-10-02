@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.SortFilter
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.SortFilter
 
 class SortFilterTest extends AnyFunSuite with ResultAssertions {
   test("sorted.filter disabled") {

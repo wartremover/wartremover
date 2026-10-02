@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.Unsafe
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.Unsafe
 
 class CompanionTest extends AnyFunSuite with ResultAssertions {
   test("can use companion objects for type aliases") {

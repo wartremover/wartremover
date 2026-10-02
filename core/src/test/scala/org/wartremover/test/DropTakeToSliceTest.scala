@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.DropTakeToSlice
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.DropTakeToSlice
 
 class DropTakeToSliceTest extends AnyFunSuite with ResultAssertions {
   test("drop.take disabled") {

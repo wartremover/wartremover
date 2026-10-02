@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ThreadSleep
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ThreadSleep
 
 class ThreadSleepTest extends AnyFunSuite with ResultAssertions {
   test("Thread.sleep is disabled") {

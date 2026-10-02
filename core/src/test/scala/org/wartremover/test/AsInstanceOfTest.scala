@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.AsInstanceOf
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.AsInstanceOf
 
 class AsInstanceOfTest extends AnyFunSuite with ResultAssertions {
   test("asInstanceOf is disabled") {

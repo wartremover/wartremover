@@ -1,7 +1,7 @@
 package wartremover
 
+import sbt.Keys._
 import sbt._
-import Keys._
 
 object Warts {
 

@@ -1,8 +1,8 @@
 package org.wartremover
 package test
 
-import org.wartremover.warts.ToString
 import org.scalatest.funsuite.AnyFunSuite
+import org.wartremover.warts.ToString
 
 class ToStringTest extends AnyFunSuite with ResultAssertions {
   test("can't use automatic toString method") {
