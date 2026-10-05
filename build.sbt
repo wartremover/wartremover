@@ -300,7 +300,7 @@ lazy val inspector = projectMatrix
     ),
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % "1.3.6" % Test,
-      "org.scala-sbt" %% "io" % "1.13.4" % Test,
+      "org.scala-sbt" %% "io" % "1.13.5" % Test,
       "io.get-coursier" %% "coursier" % "2.1.26" % Test,
       "io.github.argonaut-io" %% "argonaut" % "6.3.13",
       "org.scala-lang" %% "scala3-tasty-inspector" % scalaVersion.value % Provided,
