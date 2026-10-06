@@ -7,7 +7,7 @@ crossScalaVersions := Seq(
   "3.3.8",
   "3.8.4",
   "3.9.0",
-  "3.10.0-RC3",
+  "3.10.0",
 )
 
 wartremoverWarnings ++= Warts.all
