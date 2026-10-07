@@ -63,7 +63,7 @@ val scalaCompilerDependency = Def.settings(
     } else {
       "org.scala-lang" % "scala-compiler" % scalaVersion.value
     }
-  },
+  }.excludeAll(ExclusionRule("org.jline", "*")),
 )
 
 lazy val baseSettings = Def.settings(
