@@ -2,7 +2,7 @@ Compile / wartremoverInspect / wartremoverWarnings ++= Warts.all
 
 name := "wartremover-inspector-test"
 
-scalaVersion := "3.3.8"
+scalaVersion := "3.3.9"
 
 wartremoverExcluded += (baseDirectory.value / "src/main/scala/ignore")
 
