@@ -509,7 +509,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" =>
-          "1.13.0"
+          "1.13.1"
         case _ =>
           sbt2
       }
