@@ -65,7 +65,7 @@ class WartRemoverInspectorTest extends munit.FunSuite {
       }
       .filterNot(exclude)
       .toList
-    assert(values.size == 80)
+    assert(values.size == 81)
     values
   }
 
