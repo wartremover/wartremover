@@ -607,7 +607,7 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
       val base = (Compile / sourceManaged).value
       val file = base / "wartremover" / "Wart.scala"
       val warts = wartClasses.value
-      val expectCount = 78
+      val expectCount = 79
       assert(
         warts.size == expectCount,
         s"${warts.size} != ${expectCount}. please update build.sbt when add or remove wart"
