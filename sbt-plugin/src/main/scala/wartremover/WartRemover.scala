@@ -64,7 +64,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     wartremoverClasspaths := Def.uncached(Nil)
   )
 
-  private[this] def runInspector(
+  private def runInspector(
     projectName: String,
     base: File,
     param: InspectParam,
@@ -125,7 +125,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
-  private[this] def copyToCompilerPluginJarsDir(
+  private def copyToCompilerPluginJarsDir(
     src: File,
     jarDir: Option[File],
     base: File,
@@ -162,7 +162,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     k := Def.uncached {
       val prefix = "-Xplugin:"
       k.value.map { opt =>
-        if (opt startsWith prefix) {
+        if (opt `startsWith` prefix) {
           val originalPluginFile = file(opt.drop(prefix.length))
           copyToCompilerPluginJarsDir(
             src = originalPluginFile,
@@ -194,7 +194,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
-  private[this] implicit val inspectParamFormat: JsonFormat[InspectParam] = {
+  private implicit val inspectParamFormat: JsonFormat[InspectParam] = {
     import sjsonnew.BasicJsonProtocol.*
     caseClass8(InspectParam.apply, (_: InspectParam).asTupleOption)(
       "tastyFiles",
@@ -208,7 +208,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     )
   }
 
-  private[this] implicit val inspectResultFormat: JsonFormat[InspectResult] = {
+  private implicit val inspectResultFormat: JsonFormat[InspectResult] = {
     import sjsonnew.BasicJsonProtocol.*
 
     implicit val positionInstance: JsonFormat[org.wartremover.Position] =
@@ -237,7 +237,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     )
   }
 
-  private[this] implicit class JsonOps[A](private val self: A) extends AnyVal {
+  private implicit class JsonOps[A](private val self: A) extends AnyVal {
     def toJsonString(implicit w: sjsonnew.JsonWriter[A]): String = {
       val builder = new sjsonnew.Builder(sjsonnew.support.scalajson.unsafe.Converter.facade)
       w.write(self, builder)
@@ -247,7 +247,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
-  private[this] implicit class JsonStringOps(private val string: String) extends AnyVal {
+  private implicit class JsonStringOps(private val string: String) extends AnyVal {
     def decodeFromJsonString[A](implicit r: sjsonnew.JsonReader[A]): A = {
       val json = sjsonnew.support.scalajson.unsafe.Parser.parseUnsafe(string)
       val unbuilder = new sjsonnew.Unbuilder(sjsonnew.support.scalajson.unsafe.Converter.facade)
@@ -255,7 +255,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
-  private[this] def inspectTask(x: Configuration): Seq[Def.Setting[?]] = Def.settings(
+  private def inspectTask(x: Configuration): Seq[Def.Setting[?]] = Def.settings(
     x / wartremoverInspectOutputFile := None,
     wartremoverTaskSetting(x),
     x / wartremoverInspect := Def.uncached(Def.taskDyn {
@@ -289,9 +289,9 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
-  private[this] case class WartCacheKey(scalaV: String, files: Set[String])
+  private case class WartCacheKey(scalaV: String, files: Set[String])
 
-  private[this] val wartRunCache: TrieMap[WartCacheKey, Future[Seq[Byte]]] = TrieMap.empty
+  private val wartRunCache: TrieMap[WartCacheKey, Future[Seq[Byte]]] = TrieMap.empty
 
   private[wartremover] def getJar(files: Set[String]): Def.Initialize[Task[Seq[Byte]]] = Def.task {
     val key = WartCacheKey(
@@ -469,7 +469,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
       .distinct
   }
 
-  private[this] def sbtLauncher[A](k: InputKey[A]): Def.Initialize[Task[File]] = Def.taskDyn {
+  private def sbtLauncher[A](k: InputKey[A]): Def.Initialize[Task[File]] = Def.taskDyn {
     val v = (k / sbtVersion).value
     Def.task {
       val Seq(launcher) = getJarFiles("org.scala-sbt" % "sbt-launch" % v).value
@@ -477,7 +477,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
     }
   }
 
-  private[this] def sbtLauncher[A](k: TaskKey[A]): Def.Initialize[Task[File]] = Def.taskDyn {
+  private def sbtLauncher[A](k: TaskKey[A]): Def.Initialize[Task[File]] = Def.taskDyn {
     val v = (k / sbtVersion).value
     Def.task {
       val Seq(launcher) = getJarFiles("org.scala-sbt" % "sbt-launch" % v).value
@@ -608,7 +608,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
   )
 
   private[wartremover] def derive[T](s: Setting[T]): Setting[T] =
-    Def derive s
+    Def `derive` s
 
   private def wartremoverTaskSetting(x: Configuration): Seq[Def.Setting[?]] = {
     x / wartremoverTask := Def.inputTaskDyn {

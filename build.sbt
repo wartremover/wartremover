@@ -6,11 +6,7 @@ import scala.reflect.NameTransformer
 import xsbti.api.ClassLike
 import xsbti.api.DefinitionType
 
-val sbt2 = {
-  val p = new java.util.Properties
-  p.load(new java.io.FileInputStream("project/build.properties"))
-  p.getProperty("sbt.version").trim
-}
+val sbt2 = "2.1.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -40,7 +36,7 @@ lazy val allScalaVersions = Seq(
   "3.10.1",
 )
 
-def Scala3forSbt2 = scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
+val Scala3forSbt2 = "3.9.0"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
@@ -506,6 +502,9 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
     commonSettings,
     libraryDependencies += scalatest,
     name := "sbt-wartremover",
+    scalacOptions ++= {
+      if (scalaBinaryVersion.value == "2.12") Seq("-Xsource:3") else Nil
+    },
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" =>

@@ -16,7 +16,7 @@ import wartremover.InspectWart.Type
  * [[https://github.com/scalacenter/sbt-scalafix/blob/2051bf05f79befc8db66/src/main/scala/scalafix/internal/sbt/ScalafixCompletions.scala]]
  */
 private[wartremover] object InspectArgsParser {
-  private[this] val typeParser: Parser[Type] = {
+  private val typeParser: Parser[Type] = {
     val base: Parser[Type] =
       Space ~> ((token("--warn") ^^^ Type.Warn) | (token("--error") ^^^ Type.Err))
 
@@ -76,7 +76,7 @@ private[wartremover] object InspectArgsParser {
     }
   }
 
-  private[this] val f2: Parser[InspectWart] = {
+  private val f2: Parser[InspectWart] = {
     val examples = Seq(
       "https://",
       "https://raw.githubusercontent.com/",
@@ -98,8 +98,8 @@ private[wartremover] object InspectArgsParser {
     wartremover.Warts.all.map(_.clazz).toSet -- exclude
   }
 
-  private[this] val f3: Parser[InspectWart] =
-    token(Space) ~> token(NotSpace examples scala3warts).doNotParseSpecialArgs.map { wartName =>
+  private val f3: Parser[InspectWart] =
+    token(Space) ~> token(NotSpace `examples` scala3warts).doNotParseSpecialArgs.map { wartName =>
       InspectWart.WartName(wartName)
     }
 }

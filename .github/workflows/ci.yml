@@ -34,6 +34,12 @@ jobs:
           - name: "sbt2"
             java: 17
             os: ubuntu-latest
+          - name: "sbt2"
+            java: 21
+            os: ubuntu-latest
+          - name: "sbt2"
+            java: 25
+            os: ubuntu-latest
           - name: "test"
             java: 25
             os: ubuntu-latest
