@@ -6,11 +6,7 @@ import scala.reflect.NameTransformer
 import xsbti.api.ClassLike
 import xsbti.api.DefinitionType
 
-val sbt2 = {
-  val p = new java.util.Properties
-  p.load(new java.io.FileInputStream("project/build.properties"))
-  p.getProperty("sbt.version").trim
-}
+val sbt2 = "2.1.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -41,7 +37,8 @@ lazy val allScalaVersions = Seq(
   "3.10.2-RC1",
 )
 
-def Scala3forSbt2 = scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
+def Scala2forSbt1 = "2.12.21"
+def Scala3forSbt2 = "3.9.0"
 
 def latestScala212 = latest(12, allScalaVersions)
 def latestScala213 = latest(13, allScalaVersions)
@@ -493,12 +490,12 @@ lazy val sbtPlug: ProjectMatrix = projectMatrix
   .defaultAxes(VirtualAxis.jvm)
   .disablePlugins(AssemblyPlugin)
   .jvmPlatform(
-    scalaVersions = Seq(latestScala212, Scala3forSbt2)
+    scalaVersions = Seq(Scala2forSbt1, Scala3forSbt2)
   )
   .configure(p =>
     p.id match {
       case "sbt-plugin2_12" =>
-        p.dependsOn(inspectorCommon.jvm(latestScala212))
+        p.dependsOn(inspectorCommon.jvm(Scala2forSbt1))
       case "sbt-plugin3" =>
         p.dependsOn(inspectorCommon.jvm(latestScala3))
     }
