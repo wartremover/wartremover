@@ -19,7 +19,7 @@ jobs:
         distribution: temurin
     - name: Generate token
       id: generate_token
-      uses: actions/create-github-app-token@v3.3.0
+      uses: actions/create-github-app-token@v3.4.0
       with:
         client-id: 89668
         private-key: ${{ secrets.WARTREMOVER_BOT_KEY }}
