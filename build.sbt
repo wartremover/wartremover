@@ -38,7 +38,7 @@ lazy val allScalaVersions = Seq(
   "3.9.0",
   "3.10.0",
   "3.10.1",
-  "3.10.2-RC1",
+  "3.10.2-RC2",
 )
 
 def Scala3forSbt2 = scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
