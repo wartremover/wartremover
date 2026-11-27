@@ -38,4 +38,23 @@ lazy val a1 = project.settings(
     Seq(b)
   },
   wartremover.WartRemover.dependsOnLocalProjectWarts(myWarts),
+  TaskKey[Unit]("checkClasspathOptions") := {
+    val cpOptions = (Compile / scalacOptions).value.filter(_.startsWith("-P:wartremover:cp:"))
+    assert(cpOptions.nonEmpty, "wartremover classpath options are empty")
+    if (sbtVersion.value.startsWith("2")) {
+      // machine specific paths in scalac options break the cache hit between machines
+      val machinePaths = Seq(
+        (LocalRootProject / baseDirectory).value.getCanonicalPath,
+        csrCacheDirectory.value.getCanonicalPath,
+      )
+      cpOptions.foreach { opt =>
+        assert(machinePaths.forall(p => !opt.contains(p)), s"machine specific path in ${opt}")
+        assert(opt.contains("${"), s"virtual id is not used in ${opt}")
+      }
+      assert(
+        extraIncOptions.value.exists(_._1 == "wartremover.classpath.sha256"),
+        "wartremover.classpath.sha256 is missing from extraIncOptions"
+      )
+    }
+  },
 )
