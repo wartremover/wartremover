@@ -180,18 +180,29 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
   }
 
   def dependsOnLocalProjectWarts(p: Reference, configuration: Configuration = Compile): Def.SettingsDefinition = {
-    wartremoverClasspaths ++= Def.uncached {
-      val converter = fileConverter.value
-      (p / configuration / fullClasspath).value.map(_.data).map { virtualFile =>
-        val f = convertToFile(virtualFile, converter)
-        copyToCompilerPluginJarsDir(
-          src = f,
-          jarDir = wartremoverPluginJarsDir.value,
-          base = (LocalRootProject / baseDirectory).value,
-          log = streams.value.log
-        ).map("file:" + _).getOrElse(f.toURI.toString)
+    Seq(
+      wartremoverClasspaths ++= Def.uncached {
+        val converter = fileConverter.value
+        (p / configuration / fullClasspath).value.map(_.data).map { virtualFile =>
+          val f = convertToFile(virtualFile, converter)
+          if (wartremoverPluginJarsDir.value.isEmpty) {
+            toVirtualIdEntry(virtualFile, converter)
+          } else
+            copyToCompilerPluginJarsDir(
+              src = f,
+              jarDir = wartremoverPluginJarsDir.value,
+              base = (LocalRootProject / baseDirectory).value,
+              log = streams.value.log
+            ).map("file:" + _).getOrElse(f.toURI.toString)
+        }
+      },
+      extraIncOptions ++= Def.uncached {
+        val converter = fileConverter.value
+        classpathDigest((p / configuration / fullClasspath).value.map(_.data), converter).map {
+          "wartremover.classpath.sha256" -> _
+        }.toList
       }
-    }
+    )
   }
 
   private[this] implicit val inspectParamFormat: JsonFormat[InspectParam] = {
@@ -366,6 +377,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
           } else {
             Def.task {
               val converter = fileConverter.value
+              val roots = virtualIdRoots.value
               val dependenciesClasspath = (x / dependencyClasspath).value.map(x => convertToFile(x.data, converter))
 
               val logStr = {
@@ -402,7 +414,7 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
                   val filePrefix = "file:"
                   (x / wartremoverClasspaths).value.map {
                     case a if a.startsWith(filePrefix) =>
-                      file(a.drop(filePrefix.length)).getCanonicalFile.toURI.toURL
+                      resolveVirtualId(a.drop(filePrefix.length), roots, converter).getCanonicalFile.toURI.toURL
                     case a =>
                       new URI(a).toURL
                   }.map(_.toString)
@@ -553,13 +565,17 @@ object WartRemover extends sbt.AutoPlugin with WartRemoverCompat {
               .map(e => throw e.resolveException)
               .merge
           }.distinct
+          val converter = fileConverter.value
           jars.map { a =>
-            copyToCompilerPluginJarsDir(
-              src = a,
-              jarDir = wartremoverPluginJarsDir.value,
-              base = (LocalRootProject / baseDirectory).value,
-              log = streams.value.log
-            ).map("file:" + _).getOrElse(a.toURI.toString)
+            if (wartremoverPluginJarsDir.value.isEmpty) {
+              fileToVirtualIdEntry(a, converter)
+            } else
+              copyToCompilerPluginJarsDir(
+                src = a,
+                jarDir = wartremoverPluginJarsDir.value,
+                base = (LocalRootProject / baseDirectory).value,
+                log = streams.value.log
+              ).map("file:" + _).getOrElse(a.toURI.toString)
           }
         },
         derive(
